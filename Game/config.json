@@ -1,0 +1,600 @@
+{"Config": {
+	"App" : { 
+		"Title" : "Double Dragon 3: The Rosetta Stone",
+		"Resolution" : { 
+			"Width" : 320, 
+			"Height" : 224, 
+			"Scale" : 3 
+			},
+		"InitialFadeTime" : 3
+	},
+	"Modules" : {
+		"Input" : {
+			"MouseButtons" : 5,
+			"KeyboardKeys" : 300,
+			"NumberPlayers" : 2,
+			"NumKeysPlayer" : 8,
+			"KeysPlayer" : [
+				["Up", "Down", "Left", "Right", "Return", "J", "K", "L"],
+				["W", "S", "A", "D", "Space", "C", "V", "B"]
+			]
+		},
+		"Window" : {
+			"Fullscreen" : false,
+			"Borderless" : false,
+			"Resizable" : false,
+			"Fullscreen_Window" : false 
+		},
+		"Render" : { 
+			"Vsync" : true,
+			"DefaultBlitSpeed" : 1,
+			"CameraMargin" : 0.66
+		},
+		"Audio" : {
+			"MusicDefaultFadeTime" : 2,
+			"EffectsVolume" : 15,
+			"MusicVolume" : 5
+		},
+		"FadeToBlack" : {
+			"DefaultTime" : 1
+		},
+		"Fonts" : {
+			"DefaultBlitSpeed" : 0,
+			"TexturePath" : "assets/fonts.png",
+			"NumFonts" : 7,
+			"Fonts" : [
+				[" 0123456789abcdefghijklmnopqrstuvwxyz?!\"#$%&'()*+,-./", 8, 8, 0, 0],
+				[" 0123456789abcdefghijklmnopqrstuvwxyz?!\"#$%&'()*+,-./", 8, 8, 0, 8],
+				[" 0123456789abcdefghijklmnopqrstuvwxyz?!\"#$%&'()*+,-./", 8, 8, 0, 16],
+				[" 0123456789timecns:", 8, 15, 0, 24],
+				["0123456789", 16, 24, 0, 40],
+				["0123456789", 16, 24, 0, 64],
+				[" aegmorv", 16, 16, 0, 88]
+			]
+		},
+		"UI" : {
+			"PlayersInUI" : 2,
+			"NumberLength" : 3,
+			"Health_RelPos" : [ [-64, 16], [64, 16] ],
+			"Health_Font" : [4, 5],
+			"Name_RelPos" : [ [-64, 40], [64, 40] ],
+			"Name_Font" : 0,
+			"Face_RelPos" : [ [-64, 16], [32, 16] ],
+			"TimeName" : "time",
+			"TimeName_RelPos" : [-32, 24],
+			"TimeNumber_RelPos" : [32, 24],
+			"CoinsName" : "coins",
+			"CoinsName_RelPos" : [-32, 32],
+			"CoinsNumber_RelPos" : [32, 32],
+			"PressStartTimer" : 1.5,
+			"NumTextLines" : 4,
+			"TextLines" : ["press" , "start" , "  to", "buy in"],
+			"TextLines2" : ["cont -", "inue ?", "press" , "start"]
+		},
+		"Debug" : {
+			"FunctionKeyNumber" : 4,
+			"FunctionKeys" : ["f1-colliders","f2-camera","f3-position","f4-godmode" ],
+			"FunctionPositions" : [ [0,0],[104,0],[184,0],[0,8] ],
+			"Letter_Init" : [8,48],
+			"Number_Init" : [48,48],
+			"XIncrement" : 48,
+			"UnactivatedFontId" : 0,
+			"ActivatedFontId" : 2
+		}
+	},
+	"Scenes" : {
+		"Title" : {
+			"FirstScreen" : {
+				"TexturePath" : "assets/title_sega.png",
+				"SegaLogo_Animation" : {
+					"Speed" : 0.7,
+					"Frames" : 14,
+					"Sprites" : [
+						[0,0,96,32],[0,64,96,32],[0,64,96,32],[0,96,96,32],[0,128,96,32],[0,160,96,32],[0,192,96,32],[0,224,96,32],[0,256,96,32],[0,288,96,32],
+						[0,320,96,32],[0,352,96,32],[0,384,96,32],[0,416,96,32]
+					]
+				},
+				"TimeSeconds" : 6,
+				"FadeTime" : 2,
+				"MusicPath" : "assets/mus_rosetta-stone.ogg",
+				"MusicFade" : 0
+			},
+			"SecondScreen" : {
+				"TexturePath" : "assets/title_flyingedge.png",
+				"BackgroundColor" : [144, 180, 216, 255],
+				"TimeSeconds" : 10,
+				"FadeTime" : 3
+			},
+			"TitleScreen" : {
+				"TexturePath" : "assets/title_dd3.png",
+				"BackgroundRect" : [0, 0, 960, 224],
+				"TitleRect" : [0, 224, 320, 162],
+				"TitleSpeed" : 2,
+				"SubtitleRect" : [0, 386, 320, 62],
+				"StringTextTitle" : "press start to play",
+				"PositionYText" : 200,
+				"FontText" : 0,
+				"CameraSpeed" : 5,
+				"TransitionTime" : 0.5,
+				"FadeTime" : 1,
+				"MusicPath" : "assets/mus_rosetta-stone.ogg",
+				"MusicFade" : 0
+			}
+		},
+		"PreStage" : {
+			"Point_Animation" : {
+				"Speed" : 0.3,
+				"Frames" : 16,
+				"Sprites" : [
+					[232,145,6,6],[239,145,6,6],[246,145,6,6],[253,145,6,6],[260,145,6,6],[267,145,6,6],[274,145,6,6],[281,145,6,6],
+					[281,145,6,6],[274,145,6,6],[267,145,6,6],[260,145,6,6],[253,145,6,6],[246,145,6,6],[239,145,6,6],[232,145,6,6]
+				]
+			},
+			"Mouth_Animation" : {
+				"Speed" : 0.1,
+				"Frames" : 16,
+				"Sprites" : [
+					[163,115,46,24],[163,141,46,24],[163,167,46,24],[163,193,46,24],[163,167,46,24],[163,141,46,24],[163,115,46,24],[163,141,46,24],
+					[163,167,46,24],[163,193,46,24],[163,167,46,24],[163,141,46,24],[163,167,46,24],[163,193,46,24],[163,167,46,24],[163,141,46,24]
+				]
+			},
+			"Eyes_Animation" : {
+				"Speed" : 0.1,
+				"Frames" : 32,
+				"Sprites" : [
+					[211,116,65,22],[211,142,65,22],[211,168,65,22],[211,194,65,22],[211,168,65,22],[211,142,65,22],[211,116,65,22],[211,116,65,22],[211,116,65,22],[211,142,65,22],
+					[211,168,65,22],[211,194,65,22],[211,168,65,22],[211,142,65,22],[211,116,65,22],[211,116,65,22],[211,116,65,22],[211,142,65,22],[211,168,65,22],[211,194,65,22],
+					[211,194,65,22],[211,194,65,22],[211,194,65,22],[211,194,65,22],[211,194,65,22],[211,168,65,22],[211,142,65,22],[211,116,65,22],[211,116,65,22],[211,116,65,22],
+					[211,116,65,22],[211,116,65,22]
+				]
+			},
+			"History1" : {
+				"TexturePath" : "assets/history.png",
+				"BackRect" : [0, 0, 160, 128],
+				"BackPos" : [80, 16],
+				"NumTextLines" : 4,
+				"TextLines" : [ 
+					[1, 32, 152, "billy and jimmy went on a journey"], [1, 41, 160, "to complete their martial arts."], 
+					[1, 9, 168, "on their return home, two years later,"], [1, 57, 176, "they met a fortune teller."]
+				],
+				"TimeSeconds" : 10,
+				"FadeTime" : 1
+			},
+			"History23" : {
+				"TexturePath" : "assets/history.png",
+				"BackRect" : [160, 0, 176, 112],
+				"BackPos" : [72, 24],
+				"EyesOnFace" : [56, 34],
+				"MouthOnFace" : [65, 64],
+				"NumTextLines" : 7,
+				"FirstPrint" : 3,
+				"TextLines" : [ 
+					[0, 136, 152, "hiruko"], [1, 48, 168, "find the three rosetta stones"], 
+					[1, 97, 176, "then go to egypt,"], 
+					[0, 136, 152, "hiruko"], [1, 41, 168, "there you will find the worlds"], 
+					[1, 49, 176, "strongest enemy. but beware,"], [1, 56, 184, "no one has come back alive."]
+				],
+				"TimeSeconds" : 6,
+				"FadeTime" : 1
+			},
+			"Stage3" : {
+				"TexturePath" : "assets/stage3_map.png",
+				"MapRect" : [0, 0, 288, 144],
+				"MapPos" : [16, 24],
+				"MissionRect" : [0, 145, 139, 15],
+				"MissionPos" : [90, 177],
+				"CountryRect" : [0, 161, 75, 15],
+				"CountryPos" : [122, 201],
+				"PointOnMap" : [241,33],
+				"TimeSeconds" : 10,
+				"FadeTime" : 2,
+				"MusicPath" : "assets/mus_in-japan.ogg",
+				"MusicFade" : 0
+			}
+		},
+		"Stage3" : {
+			"BackgroundTexture" : "assets/back_japan.png",
+			"MusicPath" : "assets/mus_in-japan.ogg",
+			"MusicFade" : 0,
+			"Entity_Scenario_Outside" : "Config.Entities.Japan_Outside",
+			"Entity_Scenario_Details_Num" : 7,
+			"Entity_Scenario_Details_1" : [
+				"Config.Entities.Japan_Outside.Bamboo1", "Config.Entities.Japan_Outside.Bamboo2", "Config.Entities.Japan_Outside.Bamboo3", 
+				"Config.Entities.Japan_Outside.Bamboo4", "Config.Entities.Japan_Outside.Spear1", "Config.Entities.Japan_Outside.Spear2", "Config.Entities.Japan_Outside.Spear3"
+			],
+			"Entity_Scenario_Door" : "Config.Entities.Japan_Outside.Door",
+			"Dimensions" : [1280, 224],
+			"Borders_zmin" : [ [0, 212], [96, 212], [128, 165], [470, 165], [471, 212], [1280, 212] ],
+			"Borders_zmax" : 223,
+			"Borders_xmin" : [ [0, 128], [165, 128], [211, 96], [212, 0], [224, 0] ],
+			"Borders_xmax" : [ [0, 470], [211, 470], [212, 1280], [224, 1280] ],
+			"Plataform_Min" : [470, 165],
+			"Plataform_Max" : [1280, 212],
+			"PlataformHeight" : 20,
+			"Player1_InitialPos" : [80, 220],
+			"Player2_InitialPos" : [130, 185],
+			"Timer" : 180.0,
+			"NumberOfEnemies" : 9,
+			"StartingEnemies" : 3,
+			"MaxEnemies" : 4,
+			"StartingEnemiesPositions" : [ [300, 170], [350, 220], [400, 200] ],
+			"NumberSpawnPoints" : 3,
+			"SpawnPoints" : [ [1050, 216], [600, 216], [150, 180] ],
+			"SpawnTime" : 20
+		}
+	},
+	"Entities" : {
+		"Globals" : {
+			"NumberOfSounds" : 5,
+			"Sounds" : [ "assets/player_attack.wav", "assets/fall_sound.wav", "assets/player_hit.wav", "assets/player_hit_hard.wav", "assets/death.wav" ],
+			"MaxPlayers" : 2,
+			"PlayerTexture" : "assets/char_billyjimmy.png",
+			"EnemiesTexture" : "assets/enemies.png",
+			"PlayerFaces" : "assets/faces.png",
+			"SceneSignals" : "assets/signals.png",
+			"Coins" : 25,
+			"ContinueTime" : 10.0
+		},
+		"Japan_Outside" : {
+			"Rectangle" : [8 ,8, 1280, 224],
+			"Position" : [0, 0],
+			"HasTransition" : true,
+			"TransitionColliderPosition" : [1152, 48, 164],
+			"TransitionColliderDimensions" : [80, 96, 3],
+			"Bamboo1" : {
+				"Rectangle" : [640 ,416, 48, 48],
+				"RelativePosition" : [192, 176]
+			},
+			"Bamboo2" : {
+				"Rectangle" : [696 ,448, 16, 16],
+				"RelativePosition" : [272, 208]
+			},
+			"Bamboo3" : {
+				"Rectangle" : [720 ,416, 64, 48],
+				"RelativePosition" : [304, 176]
+			},
+			"Bamboo4" : {
+				"Rectangle" : [792 ,432, 16, 32],
+				"RelativePosition" : [400, 192]
+			},
+			"Door" : {
+				"Animated" : true,
+				"AnimationStops" : true,
+				"Animation" : {
+					"Speed" : 0.04,
+					"Loop" : false,
+					"Frames" : 3,
+					"Sprites" : [
+						[1032 ,265, 120, 96],[1032,368,120,96],[1160,344,120,120]
+					]
+				},
+				"Rectangle" : [1032 ,265, 120, 96],
+				"RelativePosition" : [1132, 48],
+				"HasActivation" : true,
+				"OnlyTriggerOnce" : true,
+				"ActivationColliderPosition" : [1100, 144, 162],
+				"ActivationColliderDimensions" : [180, 40, 40]
+			},
+			"Spear1" : {
+				"Animated" : true,
+				"Animation" : {
+					"Speed" : 0.15,
+					"Frames" : 11,
+					"Sprites" : [
+						[816 ,446, 8, 8], [816 ,456, 8, 8], [832 ,456, 8, 8], [848 ,448, 16, 16], [872 ,432, 32, 32], [912 ,417, 48, 48],
+						[872 ,432, 32, 32], [848 ,448, 16, 16], [832 ,456, 8, 8], [816 ,456, 8, 8], [816 ,446, 8, 8]
+					]
+				},
+				"Rectangle" : [816 ,446, 8, 8],
+				"RelativePosition" : [648, 88],
+				"HasDifferentHeight" : true,
+				"Height" : 50,
+				"HasActivation" : true,
+				"AnimationStops" : true,
+				"InPlataform" : true,
+				"ActivationColliderPosition" : [635, 142, 162],
+				"ActivationColliderDimensions" : [60, 40, 40],
+				"HasAttack" : true,
+				"TrapDamage" : 15,
+				"MinFrameDamage" : 4,
+				"MaxFrameDamage" : 8
+			},
+			"Spear2" : {
+				"Animated" : true,
+				"Animation" : {
+					"Speed" : 0.15,
+					"Frames" : 11,
+					"Sprites" : [
+						[816 ,446, 8, 8], [816 ,456, 8, 8], [832 ,456, 8, 8], [848 ,448, 16, 16], [872 ,432, 32, 32], [912 ,417, 48, 48],
+						[872 ,432, 32, 32], [848 ,448, 16, 16], [832 ,456, 8, 8], [816 ,456, 8, 8], [816 ,446, 8, 8]
+					]
+				},
+				"Rectangle" : [816 ,446, 8, 8],
+				"RelativePosition" : [737, 88],
+				"HasDifferentHeight" : true,
+				"Height" : 50,
+				"HasActivation" : true,
+				"AnimationStops" : true,
+				"InPlataform" : true,
+				"ActivationColliderPosition" : [724, 142, 162],
+				"ActivationColliderDimensions" : [60, 40, 40],
+				"HasAttack" : true,
+				"TrapDamage" : 15,
+				"MinFrameDamage" : 4,
+				"MaxFrameDamage" : 8
+			},
+			"Spear3" : {
+				"Animated" : true,
+				"Animation" : {
+					"Speed" : 0.15,
+					"Frames" : 11,
+					"Sprites" : [
+						[816 ,446, 8, 8], [816 ,456, 8, 8], [832 ,456, 8, 8], [848 ,448, 16, 16], [872 ,432, 32, 32], [912 ,417, 48, 48],
+						[872 ,432, 32, 32], [848 ,448, 16, 16], [832 ,456, 8, 8], [816 ,456, 8, 8], [816 ,446, 8, 8]
+					]
+				},
+				"Rectangle" : [816 ,446, 8, 8],
+				"RelativePosition" : [968, 88],
+				"HasDifferentHeight" : true,
+				"Height" : 50,
+				"HasActivation" : true,
+				"AnimationStops" : true,
+				"InPlataform" : true,
+				"ActivationColliderPosition" : [955, 142, 162],
+				"ActivationColliderDimensions" : [60, 40, 40],
+				"HasAttack" : true,
+				"TrapDamage" : 15,
+				"MinFrameDamage" : 4,
+				"MaxFrameDamage" : 8
+			}
+		},
+		"StoreSign" : {
+			"Animated" : true,
+			"Animation" : {
+				"Speed" : 0.09,
+				"Frames" : 2,
+				"Sprites" : [
+					[0 ,0, 32, 25],[33,0,32,25]
+				]
+			},
+			"Rectangle" : [0 ,0, 32, 25],
+			"RelativePosition" : [8, 107]
+		},
+		"Player1" : {
+			"Name" : "billy",
+			"Speed" : 1,
+			"Depth" : 5,
+			"MaxEngagedEnemies" : 3,
+			"SlotPositionChangeTime" : 2.0,
+			"ImmunityAfterAttack" : 1.0,
+			"BlinkRatio" : 0.1,
+			"BlinkTimeAlive" : 3.0,
+			"Health" : 250,
+			"MaxAccumulatedDamage" : 50,
+			"Face" : [0, 0, 32, 32],
+			"Sound_Jump" : 1,
+			"Sound_Attack" : 0,
+			"Sound_Damaged" : 2,
+			"Sound_Falling" : 3,
+			"Sound_Dying" : 4,
+			"PlayerSignEntity" : "Config.Entities.Player1.PlayerSign",
+			"PlayerSign" : {
+				"Animated" : true,
+				"Animation" : {
+					"Speed" : 0.1,
+					"Frames" : 2,
+					"Sprites" : [
+						[0,93,16,32],[16,93,16,32]
+					]
+				},
+				"Timer" : true,
+				"MaxTime" : 5.0,
+				"Rectangle" : [0,93,16,32],
+				"RelativePosition" : [4, -39]
+			},
+			"Static_Frame" : [8,0,26,63],
+			"DamageHigh_Frame" : [8,392,26,63],
+			"DamageLow_Frame" : [40,392,26,63],
+			"Falling_Frame" : [72,408,46,47],
+			"Fallen_Frame" : [128,431,61,24],
+			"Fallen_Time" : 2,
+			"FallenShift" : [-15,39],
+			"Rising_Frame" : [200,392,26,63],
+			"Rising_Time" : 0.5,
+			"Time_DamageState" : 0.5, 
+			"Move_Animation" : {
+				"Speed" : 0.08,
+				"Frames" : 4,
+				"Sprites" : [
+					[8,0,26,63],[48,0,26,63],[80,0,26,63],[113,0,26,63]
+				]
+			},
+			"MoveUp_Animation" : {
+				"Speed" : 0.08,
+				"Frames" : 4,
+				"Sprites" : [
+					[152,0,21,63],[184,0,21,63],[216,0,21,63],[248,0,21,63]
+				]
+			}, 
+			"JumpFrame" : [248, 95, 31, 48],
+			"AerialKickFrame" : [288, 101, 46, 42],
+			"JumpSpeed" : [1.4, 3],
+			"Gravity" : 0.08,
+			"JumpCollider" : [0,0,31,48],
+			"AerialKickCollider" : [0,0,27, 42],
+			"AerialKickAttackCollider" : [20, 16, 26, 17],
+			"AerialKickDamage" : 25,
+			"Punch_Animation" : {
+				"Speed" : 0.15,
+				"Frames" : 4,
+				"Sprites" : [
+					[8,80,26,63],[40,80,39,63],[8,80,26,63],[8,0,26,63]
+				]
+			},
+			"PunchDamage" : 15,
+			"PunchDamageFrame" : 1,
+			"PunchRect" : [23, 5, 16, 16],
+			"Kick_Animation" : {
+				"Speed" : 0.15,
+				"Frames" : 4,
+				"Sprites" : [
+					[88,80,26,63],[120,80,38,63],[88,80,26,63],[8,0,26,63]
+				]
+			},
+			"KickDamage" : 20,
+			"KickDamageFrame" : 1,
+			"KickRect" : [16, 19, 22, 18]
+		},
+		"Player2" : {
+			"Name" : "jimmy",
+			"Speed" : 1,
+			"Depth" : 5,
+			"MaxEngagedEnemies" : 3,
+			"SlotPositionChangeTime" : 2.0,
+			"ImmunityAfterAttack" : 1.0,
+			"BlinkRatio" : 0.1,
+			"BlinkTimeAlive" : 3.0,
+			"Health" : 250,
+			"MaxAccumulatedDamage" : 50,
+			"Face" : [0, 128, 32, 32],
+			"Sound_Jump" : 1,
+			"Sound_Attack" : 0,
+			"Sound_Damaged" : 2,
+			"Sound_Falling" : 3,
+			"Sound_Dying" : 4,
+			"PlayerSignEntity" : "Config.Entities.Player2.PlayerSign",
+			"PlayerSign" : {
+				"Animated" : true,
+				"Animation" : {
+					"Speed" : 0.1,
+					"Frames" : 2,
+					"Sprites" : [
+						[32,93,16,32],[48,93,16,32]
+					]
+				},
+				"Timer" : true,
+				"MaxTime" : 5.0,
+				"Rectangle" : [32,93,16,32],
+				"RelativePosition" : [4, -39]
+			},
+			"Static_Frame" : [8,464,26,63],
+			"DamageHigh_Frame" : [8,856,26,63],
+			"DamageLow_Frame" : [40,856,26,63],
+			"Falling_Frame" : [72,872,46,47],
+			"Fallen_Frame" : [128,895,61,24],
+			"Fallen_Time" : 2,
+			"FallenShift" : [-15,39],
+			"Rising_Frame" : [200,856,26,63],
+			"Rising_Time" : 0.5,
+			"Time_DamageState" : 0.5, 
+			"Move_Animation" : {
+				"Speed" : 0.08,
+				"Frames" : 4,
+				"Sprites" : [
+					[8,464,26,63],[48,464,26,63],[80,464,26,63],[113,464,26,63]
+				]
+			},
+			"MoveUp_Animation" : {
+				"Speed" : 0.08,
+				"Frames" : 4,
+				"Sprites" : [
+					[152,464,21,63],[184,464,21,63],[216,464,21,63],[248,464,21,63]
+				]
+			}, 
+			"JumpFrame" : [248, 559, 31, 48],
+			"AerialKickFrame" : [288, 565, 46, 42],
+			"JumpSpeed" : [1.4, 3],
+			"Gravity" : 0.08,
+			"JumpCollider" : [0,0,31,48],
+			"AerialKickCollider" : [0,0,27, 42],
+			"AerialKickAttackCollider" : [20, 16, 26, 17],
+			"AerialKickDamage" : 25,
+			"Punch_Animation" : {
+				"Speed" : 0.15,
+				"Frames" : 4,
+				"Sprites" : [
+					[8,544,26,63],[40,544,39,63],[8,544,26,63],[8,464,26,63]
+				]
+			},
+			"PunchDamage" : 15,
+			"PunchDamageFrame" : 1,
+			"PunchRect" : [23, 5, 16, 16],
+			"Kick_Animation" : {
+				"Speed" : 0.15,
+				"Frames" : 4,
+				"Sprites" : [
+					[88,544,26,63],[120,544,38,63],[88,544,26,63],[8,464,26,63]
+				]
+			},
+			"KickDamage" : 20,
+			"KickDamageFrame" : 1,
+			"KickRect" : [16, 19, 22, 18]
+		},
+		"Samurai" : {
+			"Speed" : 1,
+			"Depth" : 5,
+			"ImmunityAfterAttack" : 1.0,
+			"BlinkRatio" : 0.1,
+			"Health" : 90,
+			"LogicTime" : 0.3,
+			"AttackTime" : 0.3,
+			"AttackRange" : 5,
+			"SightRange" : 400,
+			"EngageDistance" : 200,
+			"CloseCombatDistance" : 100,
+			"MaxAccumulatedDamage" : 50,
+			"Sound_Jump" : 1,
+			"Sound_Dying" : 4,
+			"Static_Frame" : [8,696,29,88],
+			"DamageHigh_Frame" : [272,803,48,61],
+			"DamageHigh_Shift" : [-19,27],
+			"DamageLow_Frame" : [231,803,31,61],
+			"DamageLow_Shift" : [0,27],
+			"Falling_Frame" : [272,803,48,61],
+			"Fallen_Frame" : [328,843,56,21],
+			"Fallen_Time" : 1.5,
+			"FallenShift" : [-15,67],
+			"Rising_Frame" : [231,803,31,61],
+			"RisingShift" : [0,27],
+			"Rising_Time" : 0.5,
+			"Time_DamageState" : 0.5, 
+			"MoveCollider" : [0,24,29,64],
+			"MoveUpCollider" : [1,24,29,64],
+			"Move_Animation" : {
+				"Speed" : 0.08,
+				"Frames" : 4,
+				"Sprites" : [
+					[8,696,29,88],[48,696,29,88],[88,696,29,88],[128,696,29,88]
+				]
+			},
+			"MoveUp_Animation" : {
+				"Speed" : 0.08,
+				"Frames" : 4,
+				"Sprites" : [
+					[168,696,31,88],[208,696,32,88],[248,696,31,88],[288,696,32,88]
+				]
+			}, 
+			"JumpFrame" : [128, 804, 32, 60],
+			"AerialKickFrame" : [168, 815, 53, 49],
+			"JumpSpeed" : [1.4, 3],
+			"Gravity" : 0.08,
+			"JumpCollider" : [5,10,27,50],
+			"AerialKickCollider" : [7,7,46, 42],
+			"AerialKickAttackCollider" : [19, 31, 34, 18],
+			"AerialKickDamage" : 15,
+			"Attack_Animation" : {
+				"Speed" : 0.15,
+				"Frames" : 4,
+				"Sprites" : [
+					[8,794,35,70],[49,794,67,70],[8,794,35,70],[8,696,29,88]
+				]
+			},
+			"PunchDamage" : 15,
+			"PunchDamageFrame" : 1,
+			"PunchRect" : [39, 16, 28, 17],
+			"PunchAnimationColliders" : [ [6,6,29,64], [7,10,36, 60], [6,6,29,64], [0,24,29,64] ],
+			"PunchShiftFrames" : [ [-7,18],[-7,18],[-7,18],[0,0]]
+		}
+	}
+	}
+}
