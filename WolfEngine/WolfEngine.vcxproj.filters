@@ -371,6 +371,9 @@
     <ClInclude Include="Math.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="TimerUs.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\src\Geometry\KDTree.inl">

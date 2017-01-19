@@ -227,6 +227,7 @@
     <ClInclude Include="parson\parson.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerUs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\src\Geometry\KDTree.inl" />
