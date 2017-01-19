@@ -17,8 +17,11 @@ public:
 
 	void Stop()
 	{
-		final_time = SDL_GetTicks();
-		running = false;
+		if (running)
+		{
+			final_time = SDL_GetTicks();
+			running = false;
+		}
 	}
 
 	bool IsRunning() { return running; }

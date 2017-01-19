@@ -5,9 +5,13 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "JsonHandler.h"
+#include "TimerUs.h"
 
 Application::Application()
 {
+	TimerUs timer;
+	timer.Start();
+	
 	parser = new JSONParser(CONFIGJSON);
 
 	modules.push_back(input = new ModuleInput(parser));
@@ -15,6 +19,9 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
+	
+	timer.Stop();
+	LOG("App creation time (in us): %lu", timer.GetTimeInUs());
 }
 
 Application::~Application()
@@ -27,16 +34,24 @@ Application::~Application()
 
 bool Application::Init()
 {
+	TimerUs timer;
+	timer.Start();
+
 	bool ret = true;
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
+
+	LOG("App init time (in us): %lu", timer.GetTimeInUs());
+	timer.Start();
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 	{
 		if ((*it)->IsEnabled())
 			ret = (*it)->Start();
 	}
+
+	LOG("App start time (in us): %lu", timer.GetTimeInUs());
 
 	return ret;
 }
