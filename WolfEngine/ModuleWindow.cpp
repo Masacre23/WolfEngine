@@ -31,23 +31,23 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 }
 	 else
 	 {
-		 int width = iSCREENWIDTH * iSCREENSIZE;
-		 int height = iSCREENHEIGHT * iSCREENSIZE;
+		 int width = SCREENWIDTH * SCREENSIZE;
+		 int height = SCREENHEIGHT * SCREENSIZE;
 		 Uint32 flags = SDL_WINDOW_SHOWN;
 
-		 if (bFULLSCREEN)
+		 if (FULLSCREEN)
 			 flags |= SDL_WINDOW_FULLSCREEN;
 		 
-		 if (bRESIZABLE)
+		 if (RESIZABLE)
 			 flags |= SDL_WINDOW_RESIZABLE;
 
-		 if (bBORDERLESS)
+		 if (BORDERLESS)
 			 flags |= SDL_WINDOW_BORDERLESS;
 
-		 if (bFULLSCREEN_DESKTOP)
+		 if (FULLSCREEN_DESKTOP)
 			 flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-		 window = SDL_CreateWindow(strTITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+		 window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 		 if (window == nullptr)
 		 {
@@ -84,10 +84,10 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 
 	 if (App->parser->LoadObject(APP_SECTION) == true)
 	 {
-		 strTITLE = App->parser->GetString("Title");
-		 iSCREENWIDTH = App->parser->GetInt("Resolution.Width");
-		 iSCREENHEIGHT = App->parser->GetInt("Resolution.Height");
-		 iSCREENSIZE = App->parser->GetInt("Resolution.Scale");
+		 TITLE = App->parser->GetString("Title");
+		 SCREENWIDTH = App->parser->GetInt("Resolution.Width");
+		 SCREENHEIGHT = App->parser->GetInt("Resolution.Height");
+		 SCREENSIZE = App->parser->GetInt("Resolution.Scale");
 		 ret = App->parser->UnloadObject();
 	 }
 	 else
@@ -95,10 +95,10 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 
 	 if (App->parser->LoadObject(WINDOW_SECTION) == true)
 	 {
-		 bFULLSCREEN = App->parser->GetBoolMandatory("Fullscreen");
-		 bBORDERLESS = App->parser->GetBoolMandatory("Borderless");
-		 bRESIZABLE = App->parser->GetBoolMandatory("Resizable");
-		 bFULLSCREEN_DESKTOP = App->parser->GetBoolMandatory("Fullscreen_Window");
+		 FULLSCREEN = App->parser->GetBoolMandatory("Fullscreen");
+		 BORDERLESS = App->parser->GetBoolMandatory("Borderless");
+		 RESIZABLE = App->parser->GetBoolMandatory("Resizable");
+		 FULLSCREEN_DESKTOP = App->parser->GetBoolMandatory("Fullscreen_Window");
 		 ret = ret && App->parser->UnloadObject();
 	 }
 	 else

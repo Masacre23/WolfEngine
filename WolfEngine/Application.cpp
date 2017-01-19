@@ -29,14 +29,6 @@ bool Application::Init()
 {
 	bool ret = true;
 
-	if (parser->LoadObject(APP_SECTION))
-	{
-		ffade_time = abs(parser->GetFloat("InitialFadeTime"));
-		ret = parser->UnloadObject();
-	}
-	else
-		ret = false;
-
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
 

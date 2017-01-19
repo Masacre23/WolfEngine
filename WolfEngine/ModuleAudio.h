@@ -20,13 +20,13 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	bool PlayMusic(const char* path) { return PlayMusic(path, fDEFAULT_FADE); }
+	bool PlayMusic(const char* path) { return PlayMusic(path, DEFAULT_FADE); }
 	bool PlayMusic(const char* path, float fade_time);
 	void StopMusic();
 	unsigned int LoadFx(const char* path);
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
-	bool isPlayingMusic() const;
+	bool IsPlayingMusic() const;
 
 	bool ConstantConfig();
 
@@ -34,9 +34,9 @@ private:
 	Mix_Music* music = nullptr;
 	std::vector<Mix_Chunk*> fx;
 
-	float fDEFAULT_FADE = 2.0f;
-	int iVOLUME_MUSIC = 1;
-	int iVOLUME_FX = 1;
+	float DEFAULT_FADE = 2.0f;
+	int VOLUME_MUSIC = 1;
+	int VOLUME_FX = 1;
 };
 
 

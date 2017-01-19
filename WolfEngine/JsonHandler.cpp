@@ -17,14 +17,14 @@ JSONParser::~JSONParser()
 
 bool JSONParser::LoadObject(const char* name)
 {
-	bparsing_success = false;
+	parsing_success = false;
 
 	if (loaded_object == nullptr)
 	{
 		if (json_object_dothas_value(root_object, name))
 		{
 			loaded_object = json_object_dotget_object(root_object, name);
-			bparsing_success = true;
+			parsing_success = true;
 		}
 		else
 			LOG("JSONParser: Unable to load section %s.", name);
@@ -32,17 +32,17 @@ bool JSONParser::LoadObject(const char* name)
 	else
 		LOG("JSONParser: Already one section loaded. Section %s not loaded.", name);
 	
-	return bparsing_success;
+	return parsing_success;
 }
 
 bool JSONParser::UnloadObject()
 {
-	bool ret = bparsing_success;
+	bool ret = parsing_success;
 
-	if (bparsing_success == false)
+	if (parsing_success == false)
 		LOG("JSONParser: Parsing ended with some errors.");
 
-	bparsing_success = true;
+	parsing_success = true;
 	loaded_object = nullptr;
 	loaded_array = nullptr;
 	return ret;
@@ -88,19 +88,19 @@ bool JSONParser::GetRect(SDL_Rect& rect, const char* name)
 			if (ret == false)
 			{
 				LOG("JSONParser: Rectangle array %s has incorrect number of elements.", name);
-				bparsing_success = false;
+				parsing_success = false;
 			}
 		}
 		else
 		{
 			LOG("JSONParser: Rectangle name %s not found.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded. Rectangle %s cannot load.", name);
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -121,19 +121,19 @@ bool JSONParser::GetPoint(iPoint& point, const char * name)
 			if (ret == false)
 			{
 				LOG("JSONParser: Point array %s has incorrect number of elements.", name);
-				bparsing_success = false;
+				parsing_success = false;
 			}
 		}
 		else
 		{
 			LOG("JSONParser: Point name %s not found.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded. Point %s cannot load.", name);
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -154,19 +154,19 @@ bool JSONParser::GetPoint3D(Point3d & point, const char * name)
 			if (ret == false)
 			{
 				LOG("JSONParser: Point array %s has incorrect number of elements.", name);
-				bparsing_success = false;
+				parsing_success = false;
 			}
 		}
 		else
 		{
 			LOG("JSONParser: Point name %s not found.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded. Point %s cannot load.", name);
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -187,19 +187,19 @@ bool JSONParser::GetPoint(fPoint& point, const char * name)
 			if (ret == false)
 			{
 				LOG("JSONParser: Point array %s has incorrect number of elements.", name);
-				bparsing_success = false;
+				parsing_success = false;
 			}
 		}
 		else
 		{
 			LOG("JSONParser: Point name %s not found.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded. Point %s cannot load.", name);
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -222,9 +222,9 @@ bool JSONParser::GetAnimation(Animation& anim, const char* name)
 			if (json_object_has_value_of_type(animation, ANIMATION_SPEED, JSONNumber))
 				anim.speed = (float)json_object_get_number(animation, ANIMATION_SPEED);
 			if (json_object_has_value_of_type(animation, ANIMATION_LOOP, JSONBoolean))
-				anim.bloop = (json_object_get_boolean(animation, ANIMATION_LOOP) > 0 ? true : false);
+				anim.loop = (json_object_get_boolean(animation, ANIMATION_LOOP) > 0 ? true : false);
 			else
-				anim.bloop = true;
+				anim.loop = true;
 			if (json_object_has_value_of_type(animation, ANIMATION_FRAMES, JSONNumber))
 				iframes = (int)json_object_get_number(animation, ANIMATION_FRAMES);
 			if (json_object_has_value_of_type(animation, ANIMATION_SPRITES, JSONArray))
@@ -243,13 +243,13 @@ bool JSONParser::GetAnimation(Animation& anim, const char* name)
 					{
 						LOG("JSONParser: Error retrieving one or more rectangle array from %s.", name);
 						ret = false;
-						bparsing_success = false;
+						parsing_success = false;
 					}
 				}
 				else
 				{
 					LOG("JSONParser: Sprites array %s has incorrect number of elements.", name);
-					bparsing_success = false;
+					parsing_success = false;
 					ret = false;
 				}
 			}
@@ -257,14 +257,14 @@ bool JSONParser::GetAnimation(Animation& anim, const char* name)
 		else
 		{
 			LOG("JSONParser: Animation name %s not found.", name);
-			bparsing_success = false;
+			parsing_success = false;
 			ret = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded. Animation %s cannot load.", name);
-		bparsing_success = false;
+		parsing_success = false;
 		ret = false;
 	}
 
@@ -319,13 +319,13 @@ const char* JSONParser::GetString(const char* name)
 		else
 		{
 			LOG("JSONParser: Incorrect string value for %s.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded.");
-		bparsing_success = true;
+		parsing_success = true;
 	}
 
 	return ret;
@@ -344,13 +344,13 @@ int JSONParser::GetInt(const char * name)
 		else
 		{
 			LOG("JSONParser: Incorrect integer value for %s.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -369,13 +369,13 @@ float JSONParser::GetFloat(const char * name)
 		else
 		{
 			LOG("JSONParser: Incorrect float value for %s.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -407,13 +407,13 @@ bool JSONParser::GetBoolMandatory(const char * name)
 		else
 		{
 			LOG("JSONParser: Incorrect boolean value for %s.", name);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No section loaded.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -432,13 +432,13 @@ int JSONParser::GetIntFromArray(size_t index_array)
 		else
 		{
 			LOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No array loaded to extract value.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -457,13 +457,13 @@ const char * JSONParser::GetStringFromArray(size_t index_array)
 		else
 		{
 			LOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No array loaded to extract value.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -486,13 +486,13 @@ bool JSONParser::GetRectFromArray(SDL_Rect& rect, size_t index_array)
 		else
 		{
 			LOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No array loaded to extract value.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -515,13 +515,13 @@ bool JSONParser::GetPointFromArray(iPoint& point, size_t index_array)
 		else
 		{
 			LOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No array loaded to extract value.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -543,19 +543,19 @@ int JSONParser::GetIntFromArrayInArray(size_t array_element, size_t index_array)
 			else
 			{
 				LOG("JSONParser: Error loading element in array. Index %i out of range.", index_array);
-				bparsing_success = false;
+				parsing_success = false;
 			}
 		}
 		else
 		{
 			LOG("JSONParser: Error loading array in loaded array. Index %i out of range.", array_element);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No array loaded to extract value.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;
@@ -577,19 +577,19 @@ const char* JSONParser::GetStringFromArrayInArray(size_t array_element, size_t i
 			else
 			{
 				LOG("JSONParser: Error loading element in array. Index %i out of range.", index_array);
-				bparsing_success = false;
+				parsing_success = false;
 			}
 		}
 		else
 		{
 			LOG("JSONParser: Error loading array in loaded array. Index %i out of range.", array_element);
-			bparsing_success = false;
+			parsing_success = false;
 		}
 	}
 	else
 	{
 		LOG("JSONParser: No array loaded to extract value.");
-		bparsing_success = false;
+		parsing_success = false;
 	}
 
 	return ret;

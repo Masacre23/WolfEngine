@@ -49,8 +49,8 @@ bool ModuleAudio::Init()
 	}
 	else
 	{
-		Mix_Volume(-1, iVOLUME_FX);
-		Mix_VolumeMusic(iVOLUME_MUSIC);
+		Mix_Volume(-1, VOLUME_FX);
+		Mix_VolumeMusic(VOLUME_MUSIC);
 	}
 
 	return ret;
@@ -161,7 +161,7 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 	return ret;
 }
 
-bool ModuleAudio::isPlayingMusic() const 
+bool ModuleAudio::IsPlayingMusic() const 
 { 
 	return Mix_PlayingMusic(); 
 }
@@ -172,9 +172,9 @@ bool ModuleAudio::ConstantConfig()
 
 	if (App->parser->LoadObject(AUDIO_SECTION) == true)
 	{
-		fDEFAULT_FADE = App->parser->GetFloat("MusicDefaultFadeTime");
-		iVOLUME_MUSIC = App->parser->GetInt("MusicVolume");
-		iVOLUME_FX = App->parser->GetInt("EffectsVolume");
+		DEFAULT_FADE = App->parser->GetFloat("MusicDefaultFadeTime");
+		VOLUME_MUSIC = App->parser->GetInt("MusicVolume");
+		VOLUME_FX = App->parser->GetInt("EffectsVolume");
 		ret = App->parser->UnloadObject();
 	}
 	else

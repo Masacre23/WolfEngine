@@ -19,9 +19,9 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	int GetScreenWidth() const { return iSCREENWIDTH; }
-	int GetScreenHeight() const { return iSCREENHEIGHT; }
-	int GetScreenSize() const { return iSCREENSIZE; }
+	int GetScreenWidth() const { return SCREENWIDTH; }
+	int GetScreenHeight() const { return SCREENHEIGHT; }
+	int GetScreenSize() const { return SCREENSIZE; }
 
 private:
 	bool ConstantConfig();
@@ -31,15 +31,15 @@ public:
 	SDL_Surface* screen_surface = nullptr;
 
 private:
-	const char* strTITLE = "";
-	int iSCREENWIDTH = 0;
-	int iSCREENHEIGHT = 0;
-	int iSCREENSIZE = 0;
+	const char* TITLE = "";
+	int SCREENWIDTH = 0;
+	int SCREENHEIGHT = 0;
+	int SCREENSIZE = 0;
 
-	bool bFULLSCREEN = false;
-	bool bBORDERLESS = false;
-	bool bRESIZABLE = false;
-	bool bFULLSCREEN_DESKTOP = false;
+	bool FULLSCREEN = false;
+	bool BORDERLESS = false;
+	bool RESIZABLE = false;
+	bool FULLSCREEN_DESKTOP = false;
 };
 
 #endif // !MODULEWINDOW_H

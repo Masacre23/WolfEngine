@@ -50,7 +50,7 @@ private:
 	JSON_Object* root_object = nullptr;
 	JSON_Object* loaded_object = nullptr;
 	JSON_Array* loaded_array = nullptr;
-	bool bparsing_success = true;
+	bool parsing_success = true;
 };
 
 #endif // !JSONHANDLER_H

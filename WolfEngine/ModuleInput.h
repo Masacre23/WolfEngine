@@ -26,18 +26,6 @@ enum KeyState
 	KEY_UP
 };
 
-enum PlayerOutput
-{
-	GO_UP = 0,
-	GO_DOWN,
-	GO_LEFT,
-	GO_RIGHT,
-	START,
-	PUNCH,
-	JUMP,
-	KICK
-};
-
 class ModuleInput : public Module
 {
 public:
@@ -53,26 +41,18 @@ public:
 	KeyState GetMouseButtonDown(int id) const { return mouse_buttons[id - 1]; }
 	bool GetWindowEvent(EventWindow code) const { return bwindowEvents[code]; }
 	const iPoint& GetMouseMotion() const { return mouse_motion; }
-	const iPoint& GetMousePosition() const { return mouse; }
-
-	bool GetPlayerOutput(int num_player, PlayerOutput input) const;
-	bool GetPlayerOutput_KeyDown(int num_player, PlayerOutput input) const;
+	const iPoint& GetMousePosition() const { return mouse_position; }
 
 private:
 	bool bwindowEvents[WE_COUNT];
 	KeyState* keyboard;
 	KeyState* mouse_buttons;
 	iPoint mouse_motion;
-	iPoint mouse;
+	iPoint mouse_position;
 
-	SDL_Scancode* keys_player;
-
-	int iMAX_KEYS;
-	int iNUM_BUTTONS;
-	int iSCREENSIZE;
-	int iNUMBERPLAYERS;
-	int iKEYS_PLAYER;
-	int icount = 0;
+	int MAX_KEYS;
+	int NUM_BUTTONS;
+	int SCREENSIZE;
 };
 
 #endif // !MODULEINPUT_H

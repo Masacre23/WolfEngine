@@ -5,29 +5,19 @@
 #include "SDL/include/SDL.h"
 #include "JsonHandler.h"
 
-ModuleInput::ModuleInput(JSONParser* parser) : Module(MODULE_INPUT), mouse({0,0}), mouse_motion({0,0})
+ModuleInput::ModuleInput(JSONParser* parser) : Module(MODULE_INPUT), mouse_position({0,0}), mouse_motion({0,0})
 {
 	assert(parser != nullptr);
 
 	if (parser->LoadObject(INPUT_SECTION))
 	{
-		iMAX_KEYS = parser->GetInt("KeyboardKeys");
-		keyboard = new KeyState[iMAX_KEYS];
-		memset(keyboard, KEY_IDLE, iMAX_KEYS * sizeof(KeyState));
+		MAX_KEYS = parser->GetInt("KeyboardKeys");
+		keyboard = new KeyState[MAX_KEYS];
+		memset(keyboard, KEY_IDLE, MAX_KEYS * sizeof(KeyState));
 
-		iNUM_BUTTONS = parser->GetInt("MouseButtons");
-		mouse_buttons = new KeyState[iNUM_BUTTONS];
-		memset(mouse_buttons, KEY_IDLE, iNUM_BUTTONS * sizeof(KeyState));
-
-		iNUMBERPLAYERS = parser->GetInt("NumberPlayers");
-		iKEYS_PLAYER = parser->GetInt("NumKeysPlayer");
-		keys_player = new SDL_Scancode[iNUMBERPLAYERS * iKEYS_PLAYER];
-		parser->LoadArrayInObject("KeysPlayer");
-		for (int i = 0; i < iNUMBERPLAYERS; i++)
-			for (int j = 0; j < iKEYS_PLAYER; j++)
-			{
-				keys_player[i*iKEYS_PLAYER + j] = SDL_GetScancodeFromName(parser->GetStringFromArrayInArray(i, j));
-			}
+		NUM_BUTTONS = parser->GetInt("MouseButtons");
+		mouse_buttons = new KeyState[NUM_BUTTONS];
+		memset(mouse_buttons, KEY_IDLE, NUM_BUTTONS * sizeof(KeyState));
 	}
 	parser->UnloadObject();
 
@@ -37,7 +27,6 @@ ModuleInput::~ModuleInput()
 {
 	RELEASE_ARRAY(keyboard);
 	RELEASE_ARRAY(mouse_buttons);
-	RELEASE_ARRAY(keys_player);
 }
 
 bool ModuleInput::Init()
@@ -57,7 +46,7 @@ bool ModuleInput::Init()
 
 bool ModuleInput::Start()
 {
-	iSCREENSIZE = App->window->GetScreenSize();
+	SCREENSIZE = App->window->GetScreenSize();
 
 	return true;
 }
@@ -71,7 +60,7 @@ update_status ModuleInput::PreUpdate()
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 
-	for (int i = 0; i < iMAX_KEYS; ++i)
+	for (int i = 0; i < MAX_KEYS; ++i)
 	{
 		if (keys[i] == 1)
 		{
@@ -89,7 +78,7 @@ update_status ModuleInput::PreUpdate()
 		}
 	}
 
-	for (int i = 0; i < iNUM_BUTTONS; ++i)
+	for (int i = 0; i < NUM_BUTTONS; ++i)
 	{
 		if (mouse_buttons[i] == KEY_DOWN)
 			mouse_buttons[i] = KEY_REPEAT;
@@ -131,10 +120,10 @@ update_status ModuleInput::PreUpdate()
 			break;
 
 		case SDL_MOUSEMOTION:
-			mouse_motion.x = event_general.motion.xrel / iSCREENSIZE;
-			mouse_motion.y = event_general.motion.yrel / iSCREENSIZE;
-			mouse.x = event_general.motion.x / iSCREENSIZE;
-			mouse.y = event_general.motion.y / iSCREENSIZE;
+			mouse_motion.x = event_general.motion.xrel / SCREENSIZE;
+			mouse_motion.y = event_general.motion.yrel / SCREENSIZE;
+			mouse_position.x = event_general.motion.x / SCREENSIZE;
+			mouse_position.y = event_general.motion.y / SCREENSIZE;
 			break;
 		}
 	}
@@ -150,20 +139,4 @@ bool ModuleInput::CleanUp()
 	LOG("Quitting SDL event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
-}
-
-bool ModuleInput::GetPlayerOutput(int num_player, PlayerOutput input) const
-{
-	if (keyboard[keys_player[(num_player - 1)*iKEYS_PLAYER + input]] == KEY_DOWN || keyboard[keys_player[(num_player - 1)*iKEYS_PLAYER + input]] == KEY_REPEAT)
-		return true;
-	else
-		return false;
-}
-
-bool ModuleInput::GetPlayerOutput_KeyDown(int num_player, PlayerOutput input) const
-{
-	if (keyboard[keys_player[(num_player - 1)*iKEYS_PLAYER + input]] == KEY_DOWN)
-		return true;
-	else
-		return false;
 }

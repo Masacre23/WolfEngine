@@ -1,0 +1,32 @@
+{"Config": {
+	"App" : { 
+		"Title" : "Double Dragon 3: The Rosetta Stone",
+		"Resolution" : { 
+			"Width" : 320, 
+			"Height" : 224, 
+			"Scale" : 3 
+			}
+	},
+	"Modules" : {
+		"Input" : {
+			"MouseButtons" : 5,
+			"KeyboardKeys" : 300
+		},
+		"Window" : {
+			"Fullscreen" : false,
+			"Borderless" : false,
+			"Resizable" : false,
+			"Fullscreen_Window" : false 
+		},
+		"Render" : { 
+			"Vsync" : true,
+			"DefaultBlitSpeed" : 1
+		},
+		"Audio" : {
+			"MusicDefaultFadeTime" : 2,
+			"EffectsVolume" : 15,
+			"MusicVolume" : 5
+		}
+	}
+	}
+}

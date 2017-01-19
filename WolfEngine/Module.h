@@ -6,27 +6,27 @@
 class Module
 {
 public:
-	Module(const char* name, bool active = true) : strname(name), bactive(active) {}
+	Module(const char* name, bool active = true) : name(name), active(active) {}
 	
 	virtual ~Module() {}
 
 	bool IsEnabled() const
 	{
-		return bactive;
+		return active;
 	}
 
 	bool Enable()
 	{
-		if (bactive == false)
+		if (active == false)
 		{
-			bactive = Start();
-			if (bactive == false)
-				LOG("Module unable to start correctly: %s ---", strname);
-			return bactive;
+			active = Start();
+			if (active == false)
+				LOG("Module unable to start correctly: %s ---", name);
+			return active;
 		}
 		else
 		{
-			LOG("Module already active: %s --------------", strname);
+			LOG("Module already active: %s --------------", name);
 			return true;
 		}
 
@@ -35,16 +35,16 @@ public:
 
 	bool Disable()
 	{
-		if (bactive == true)
+		if (active == true)
 		{
-			bactive = !CleanUp();
-			if (bactive == true)
-				LOG("Module unable to cleanup correctly: %s -", strname);
-			return !bactive;
+			active = !CleanUp();
+			if (active == true)
+				LOG("Module unable to cleanup correctly: %s -", name);
+			return !active;
 		}
 		else
 		{
-			LOG("Module already disabled: %s ------------", strname);
+			LOG("Module already disabled: %s ------------", name);
 			return true;
 		}
 
@@ -82,8 +82,8 @@ public:
 	}
 
 private:
-	const char* strname = "";
-	bool bactive = true;
+	const char* name = "";
+	bool active = true;
 };
 
 #endif // !MODULE_H

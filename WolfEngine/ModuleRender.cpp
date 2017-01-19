@@ -25,10 +25,10 @@ bool ModuleRender::Init()
 		ret = false;
 	}
 
-	camera.w = App->window->GetScreenWidth() * iSCREENSIZE;
-	camera.h = App->window->GetScreenHeight() * iSCREENSIZE;
+	camera.w = App->window->GetScreenWidth() * SCREENSIZE;
+	camera.h = App->window->GetScreenHeight() * SCREENSIZE;
 
-	if (bVSYNC)
+	if (VSYNC)
 		flags |= SDL_RENDERER_PRESENTVSYNC;
 
 	renderer = SDL_CreateRenderer(App->window->window, -1, flags);
@@ -74,14 +74,14 @@ bool ModuleRender::BlitScreenCentered(SDL_Texture* texture, SDL_Rect* section, f
 
 	if (section != nullptr)
 	{
-		draw_origin.x = (iSCREENWIDTH - section->w) / 2;
-		draw_origin.y = (iSCREENHEIGHT - section->h) / 2;
+		draw_origin.x = (SCREENWIDTH - section->w) / 2;
+		draw_origin.y = (SCREENHEIGHT - section->h) / 2;
 	}
 	else
 	{
 		SDL_QueryTexture(texture, NULL, NULL, &draw_origin.x, &draw_origin.y);
-		draw_origin.x = (iSCREENWIDTH - draw_origin.x) / 2;
-		draw_origin.y = (iSCREENHEIGHT - draw_origin.y) / 2;
+		draw_origin.x = (SCREENWIDTH - draw_origin.x) / 2;
+		draw_origin.y = (SCREENHEIGHT - draw_origin.y) / 2;
 	}
 
 	return Blit(texture, draw_origin, section, speed);
@@ -93,13 +93,13 @@ bool ModuleRender::BlitScreenXCentered(SDL_Texture * texture, int y, SDL_Rect * 
 
 	if (section != nullptr)
 	{
-		draw_origin.x = (iSCREENWIDTH - section->w) / 2;
+		draw_origin.x = (SCREENWIDTH - section->w) / 2;
 		draw_origin.y = y;
 	}
 	else
 	{
 		SDL_QueryTexture(texture, NULL, NULL, &draw_origin.x, &draw_origin.y);
-		draw_origin.x = (iSCREENWIDTH - draw_origin.x) / 2;
+		draw_origin.x = (SCREENWIDTH - draw_origin.x) / 2;
 		draw_origin.y = y;
 	}
 
@@ -110,8 +110,8 @@ bool ModuleRender::Blit(SDL_Texture* texture, const iPoint& position, SDL_Rect* 
 {
 	bool ret = true;
 	SDL_Rect rect;
-	rect.x = position.x * iSCREENSIZE + (int)(camera.x * speed);
-	rect.y = position.y * iSCREENSIZE + (int)(camera.y * speed);
+	rect.x = position.x * SCREENSIZE + (int)(camera.x * speed);
+	rect.y = position.y * SCREENSIZE + (int)(camera.y * speed);
 
 	if (section != nullptr)
 	{
@@ -121,8 +121,8 @@ bool ModuleRender::Blit(SDL_Texture* texture, const iPoint& position, SDL_Rect* 
 	else
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 
-	rect.w *= iSCREENSIZE;
-	rect.h *= iSCREENSIZE;
+	rect.w *= SCREENSIZE;
+	rect.h *= SCREENSIZE;
 
 	if (inverse == false)
 	{
@@ -155,10 +155,10 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	SDL_Rect rec(rect);
 	if (use_camera == true)
 	{
-		rec.x = (int)(camera.x + rect.x * iSCREENSIZE);
-		rec.y = (int)(camera.y + rect.y * iSCREENSIZE);
-		rec.w *= iSCREENSIZE;
-		rec.h *= iSCREENSIZE;
+		rec.x = (int)(camera.x + rect.x * SCREENSIZE);
+		rec.y = (int)(camera.y + rect.y * SCREENSIZE);
+		rec.w *= SCREENSIZE;
+		rec.h *= SCREENSIZE;
 	}
 
 	if (SDL_RenderFillRect(renderer,&rec) != 0)
@@ -176,20 +176,16 @@ bool ModuleRender::ConstantConfig()
 
 	if (App->parser->LoadObject(RENDER_SECTION) == true)
 	{
-		bVSYNC = App->parser->GetBoolMandatory("Vsync");
-		fDEFAULT_SPEED = App->parser->GetFloat("DefaultBlitSpeed");
-		fCAMERA_MARGIN = App->parser->GetFloat("CameraMargin");
+		VSYNC = App->parser->GetBoolMandatory("Vsync");
+		DEFAULT_SPEED = App->parser->GetFloat("DefaultBlitSpeed");
 		ret = App->parser->UnloadObject();
 	}
 	else
 		ret = false;
 
-	if (fCAMERA_MARGIN < 0.5f)
-		fCAMERA_MARGIN = 0.5f;
-
-	iSCREENSIZE = App->window->GetScreenSize();
-	iSCREENWIDTH = App->window->GetScreenWidth();
-	iSCREENHEIGHT = App->window->GetScreenHeight();
+	SCREENSIZE = App->window->GetScreenSize();
+	SCREENWIDTH = App->window->GetScreenWidth();
+	SCREENHEIGHT = App->window->GetScreenHeight();
 
 	return ret;
 }
