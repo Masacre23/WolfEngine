@@ -4,6 +4,7 @@
 #include <list>
 #include "Globals.h"
 #include "Module.h"
+#include "Timer.h"
 
 #define APP_SECTION "Config.App"
 
@@ -36,6 +37,13 @@ public:
 
 private:
 	std::list<Module*> modules;
+	Timer timer;
+	int total_frames;
+	int frames;
+	int time = 0;
+	int prev_time = 0;
+	int frames_last_sec = 0;
+	Uint32 fps;
 };
 
 extern Application* App;
