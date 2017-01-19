@@ -1,10 +1,10 @@
 {"Config": {
 	"App" : { 
-		"Title" : "Double Dragon 3: The Rosetta Stone",
+		"Title" : "Wolf Engine",
 		"Resolution" : { 
-			"Width" : 320, 
-			"Height" : 224, 
-			"Scale" : 3 
+			"Width" : 800, 
+			"Height" : 600, 
+			"Scale" : 1 
 			}
 	},
 	"Modules" : {
@@ -15,7 +15,7 @@
 		"Window" : {
 			"Fullscreen" : false,
 			"Borderless" : false,
-			"Resizable" : false,
+			"Resizable" : true,
 			"Fullscreen_Window" : false 
 		},
 		"Render" : { 
