@@ -15,6 +15,12 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
+
+	if (parser->LoadObject(APP_SECTION))
+	{
+		fps_cap = parser->GetInt("FpsCap");
+		parser->UnloadObject();
+	}
 }
 
 Application::~Application()
@@ -74,7 +80,6 @@ update_status Application::Update()
 	LOG("Time: %i s", time);
 
 	// Average FPS for the whole game life.
-	//fps = timer.GetTimeInMs() / total_frames;
 	if(time!=0)
 	LOG("Average FPS: %i", total_frames / time);
 

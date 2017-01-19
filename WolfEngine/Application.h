@@ -43,7 +43,8 @@ private:
 	int time = 0;
 	int prev_time = 0;
 	int frames_last_sec = 0;
-	Uint32 fps;
+	Uint32 fps_cap;
+
 };
 
 extern Application* App;
