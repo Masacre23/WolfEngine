@@ -1,4 +1,4 @@
-#ifndef TIMEERUS_H
+#ifndef TIMERUS_H
 #define TIMERUS_H
 
 #include "SDL/include/SDL_timer.h"
@@ -21,20 +21,22 @@ public:
 		start = false;
 	}
 
-	Uint32 GetTimeInUs() 
+	Uint64 GetTimeInUs() 
 	{ 
 		if (start)
 			actual = SDL_GetPerformanceCounter();
-		return (actual - start); 
+		return ((actual - start))/frecuency; 
 	}
 
+public:
+	static Uint64 frecuency;
 
 private:
-	static const Uint64 frecuency = 0;
-	Uint32 start_time;
-	Uint32 actual;
+	Uint64 start_time;
+	Uint64 actual;
 	bool start;
 };
 
+Uint64 TimerUs::frecuency = 0;
 
 #endif // !TIMERUS_H
