@@ -5,13 +5,9 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "JsonHandler.h"
-#include "TimerUs.h"
 
 Application::Application()
 {
-	TimerUs timer;
-	timer.Start();
-	
 	parser = new JSONParser(CONFIGJSON);
 
 	modules.push_back(input = new ModuleInput(parser));
@@ -19,9 +15,6 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
-	
-	timer.Stop();
-	LOG("App creation time (in us): %lu", timer.GetTimeInUs());
 }
 
 Application::~Application()
@@ -34,16 +27,10 @@ Application::~Application()
 
 bool Application::Init()
 {
-	TimerUs timer;
-	timer.Start();
-
 	bool ret = true;
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
-
-	LOG("App init time (in us): %lu", timer.GetTimeInUs());
-	timer.Start();
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 	{
@@ -51,14 +38,18 @@ bool Application::Init()
 			ret = (*it)->Start();
 	}
 
-	LOG("App start time (in us): %lu", timer.GetTimeInUs());
-
+	timer.Start();
+	frames = 0;
+	total_frames = 0;
 	return ret;
 }
 
 update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
+
+	Timer updateTimer;
+	updateTimer.Start();
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
@@ -71,6 +62,33 @@ update_status Application::Update()
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
 			ret = (*it)->PostUpdate();
+
+	// TODO 4
+	// Amount of frames since startup
+	total_frames++;
+	frames++;
+	LOG("Total frames: %i", total_frames);
+
+	// Amount of time since game start
+	time = timer.GetTimeInMs() / 1000;
+	LOG("Time: %i s", time);
+
+	// Average FPS for the whole game life.
+	//fps = timer.GetTimeInMs() / total_frames;
+	if(time!=0)
+	LOG("Average FPS: %i", total_frames / time);
+
+	// Amount of ms took the last update.
+	LOG("Update time: %i ms", updateTimer.GetTimeInMs());
+
+	// Amount of frames during the last second (the actual FPS)
+	if (time > prev_time)
+	{
+		frames_last_sec = frames;
+		frames = 0;
+		prev_time++;
+	}
+	LOG("Frames last second: %i", frames_last_sec);
 
 	return ret;
 }

@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include "Application.h"
 #include "Globals.h"
+#include "TimerUs.h"
 
 #include "SDL/include/SDL.h"
+
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
 
@@ -19,6 +21,9 @@ Application* App = nullptr;
 
 int main(int argc, char ** argv)
 {
+	// Set the timer frecuency
+	TimerUs::frecuency = (SDL_GetPerformanceFrequency() / 1000000);
+
 	int main_return = EXIT_FAILURE;
 	int update_return = NULL;
 	main_states state = MAIN_CREATION;
