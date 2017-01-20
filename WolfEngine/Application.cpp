@@ -63,7 +63,7 @@ update_status Application::Update()
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->Update();
+			ret = (*it)->Update(dt);
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
@@ -77,11 +77,11 @@ update_status Application::Update()
 
 	// Amount of time since game start
 	time = timer.GetTimeInMs() / 1000;
-	LOG("Time: %i s", time);
+	//LOG("Time: %i s", time);
 
 	// Average FPS for the whole game life.
 	if(time!=0)
-	LOG("Average FPS: %i", total_frames / time);
+		LOG("Average FPS: %i", total_frames / time);
 
 	// Amount of ms took the last update.
 	LOG("Update time: %i ms", updateTimer.GetTimeInMs());
@@ -94,6 +94,11 @@ update_status Application::Update()
 		prev_time++;
 	}
 	LOG("Frames last second: %i", frames_last_sec);
+
+	// TODO 6
+	//  differential time since last frame 
+	dt = (float)updateTimer.GetTimeInMs()/1000;
+	LOG("dt: %f", dt);
 
 	return ret;
 }
