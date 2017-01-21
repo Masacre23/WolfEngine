@@ -25,7 +25,7 @@ public:
 	{ 
 		if (start)
 			actual = SDL_GetPerformanceCounter();
-		return ((actual - start))/frecuency; 
+		return ((actual - start_time)*1000000/frecuency); 
 	}
 
 public:
@@ -36,7 +36,5 @@ private:
 	Uint64 actual;
 	bool start;
 };
-
-Uint64 TimerUs::frecuency = 0;
 
 #endif // !TIMERUS_H

@@ -153,6 +153,9 @@
     <ClCompile Include="MathGeoLib\src\Time\Clock.cpp">
       <Filter>3rd Party\MathGeoLib\Time</Filter>
     </ClCompile>
+    <ClCompile Include="TimerUs.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">

@@ -6,7 +6,7 @@
 			"Height" : 600, 
 			"Scale" : 1 
 			},
-		"FpsCap":20
+		"FpsCap":60
 	},
 	"Modules" : {
 		"Input" : {

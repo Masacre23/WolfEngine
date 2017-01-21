@@ -22,12 +22,10 @@ Application* App = nullptr;
 int main(int argc, char ** argv)
 {
 	// Set the timer frecuency
-	TimerUs::frecuency = (SDL_GetPerformanceFrequency() / 1000000);
-
+	TimerUs::frecuency = SDL_GetPerformanceFrequency();
 	int main_return = EXIT_FAILURE;
 	int update_return = NULL;
 	main_states state = MAIN_CREATION;
-
 	while (state != MAIN_EXIT)
 	{
 		switch (state)

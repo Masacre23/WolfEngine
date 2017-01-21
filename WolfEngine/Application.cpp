@@ -5,6 +5,7 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "JsonHandler.h"
+#include "TimerUs.h"
 
 Application::Application()
 {
@@ -18,7 +19,10 @@ Application::Application()
 
 	if (parser->LoadObject(APP_SECTION))
 	{
+		//Get fps. 
 		fps_cap = parser->GetInt("FpsCap");
+		//Change fps to mspf
+		fps_cap = 1000 / fps_cap;
 		parser->UnloadObject();
 	}
 }
@@ -55,6 +59,7 @@ update_status Application::Update()
 	update_status ret = UPDATE_CONTINUE;
 
 	Timer updateTimer;
+	TimerUs* delay_timer = new TimerUs();
 	updateTimer.Start();
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
@@ -94,7 +99,18 @@ update_status Application::Update()
 		prev_time++;
 	}
 	LOG("Frames last second: %i", frames_last_sec);
-
+	delay_timer->Start();
+	int i = 0;
+	Uint64 dt = delay_timer->GetTimeInUs();
+	//Calculate the time for the next frame.
+	if (updateTimer.GetTimeInMs() < fps_cap) {
+		Uint32 time_to_nframe = fps_cap - updateTimer.GetTimeInMs();
+		delay_timer->Start();
+		Timer::DelayInMs(time_to_nframe);
+		float real_delay_time = (float)delay_timer->GetTimeInUs() / 1000;
+		LOG("We wait for %i milliseconds and got back in %f", time_to_nframe, real_delay_time);
+	}
+	RELEASE(delay_timer);
 	return ret;
 }
 

@@ -38,6 +38,11 @@ public:
 		return ret; 
 	}
 
+	void static DelayInMs(Uint32 delay) 
+	{
+		SDL_Delay(delay);
+	}
+
 private:
 	Uint32 start_time = 0;
 	Uint32 final_time = 0;
