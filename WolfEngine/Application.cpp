@@ -5,6 +5,7 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "JsonHandler.h"
+#include "ModuleSceneIni.h"
 
 Application::Application()
 {
@@ -15,6 +16,9 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
+
+	modules.push_back(scene_ini = new ModuleSceneIni());
+	scene_ini->Enable();
 
 	if (parser->LoadObject(APP_SECTION))
 	{

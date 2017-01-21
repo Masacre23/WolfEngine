@@ -16,6 +16,8 @@ class ModuleRender;
 class ModuleTextures;
 class ModuleAudio;
 
+class ModuleSceneIni;
+
 class Application
 {
 public:
@@ -32,6 +34,8 @@ public:
 	ModuleRender* renderer;
 	ModuleTextures* textures;
 	ModuleAudio* audio;
+	
+	ModuleSceneIni* scene_ini;
 
 	JSONParser* parser;
 
