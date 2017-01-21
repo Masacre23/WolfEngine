@@ -3,11 +3,10 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 
-#include "SDL/include/SDL.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {
-	cat = new SDL_Rect({ 0, 0, 200, 200});
+	cat = new SDL_Rect({ 182, 100, 419, 380});
 }
 
 ModuleSceneIni::~ModuleSceneIni()
@@ -19,7 +18,7 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	LOG("Loading initial scene");
 
-	graphics = App->textures->Load("cat.png");
+	graphics = App->textures->Load("Resources/cat.png");
 
 	return res;
 }
@@ -35,14 +34,10 @@ bool ModuleSceneIni::CleanUp()
 }
 
 // Draw the elements of the scene
-update_status ModuleSceneIni::Update()
+update_status ModuleSceneIni::Update(float dt)
 {
 	// Draw everything
-	//App->renderer->BlitScreenCentered(graphics, cat);
-
-	// Draw a screen-size black rectangle with alpha
-	SDL_SetRenderDrawColor(App->renderer->renderer, 255.0f, 0, 0, 255.0f);
-	SDL_RenderFillRect(App->renderer->renderer, NULL);
+	App->renderer->BlitScreenCentered(graphics, cat);
 
 	return UPDATE_CONTINUE;
 }
