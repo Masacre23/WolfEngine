@@ -17,7 +17,10 @@ public:
 	~ModuleWindow();
 
 	bool Init();
+	bool Start();
 	bool CleanUp();
+
+	void SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps);
 
 	int GetScreenWidth() const { return SCREENWIDTH; }
 	int GetScreenHeight() const { return SCREENHEIGHT; }
@@ -31,6 +34,8 @@ public:
 	SDL_Surface* screen_surface = nullptr;
 
 private:
+	char* title_fps = nullptr;
+
 	const char* TITLE = "";
 	int SCREENWIDTH = 0;
 	int SCREENHEIGHT = 0;
@@ -40,6 +45,7 @@ private:
 	bool BORDERLESS = false;
 	bool RESIZABLE = false;
 	bool FULLSCREEN_DESKTOP = false;
+	int TITLE_INFO_LENGTH = 200;
 };
 
 #endif // !MODULEWINDOW_H

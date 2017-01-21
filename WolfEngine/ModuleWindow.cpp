@@ -63,6 +63,14 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 return ret;
  }
 
+ bool ModuleWindow::Start()
+ {
+	 title_fps = new char[TITLE_INFO_LENGTH];
+
+	 return true;
+ }
+
+
  bool ModuleWindow::CleanUp()
  {
 	 LOG("Destroying SDL window and quitting all SDL systems");
@@ -73,9 +81,20 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 		 SDL_DestroyWindow(window);
 	 }
 
+	 RELEASE_ARRAY(title_fps);
+
 	 //Quit SDL subsystems
 	 SDL_Quit();
 	 return true;
+ }
+
+ void ModuleWindow::SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps)
+ {
+	 int app_name_lenght = sprintf_s(title_fps, TITLE_INFO_LENGTH, TITLE);
+	 sprintf_s(title_fps + app_name_lenght, TITLE_INFO_LENGTH - app_name_lenght,
+		 ": Total frames: %i, Total time: %f s, Average FPS: %f, Update time: %u s, Current FPS: %i",
+		 total_frames, total_seconds, (float)total_frames / total_seconds, update_ms, current_fps);
+	 SDL_SetWindowTitle(window, title_fps);
  }
 
  bool ModuleWindow::ConstantConfig()
@@ -99,6 +118,7 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 		 BORDERLESS = App->parser->GetBoolMandatory("Borderless");
 		 RESIZABLE = App->parser->GetBoolMandatory("Resizable");
 		 FULLSCREEN_DESKTOP = App->parser->GetBoolMandatory("Fullscreen_Window");
+		 TITLE_INFO_LENGTH = App->parser->GetInt("TitleWithInfoLength");
 		 ret = ret && App->parser->UnloadObject();
 	 }
 	 else

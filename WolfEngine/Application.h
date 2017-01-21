@@ -42,12 +42,11 @@ public:
 private:
 	std::list<Module*> modules;
 	Timer timer;
-	int total_frames;
-	int frames;
-	int time = 0;
-	int prev_time = 0;
+	int total_frames = 0;
+	int frames_count = 0;
 	int frames_last_sec = 0;
-	Uint32 fps_cap;
+	float prev_time = 0;
+	Uint32 fps_cap = 60;
 	float dt;
 
 };

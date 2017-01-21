@@ -10,6 +10,11 @@
 
 Application::Application()
 {
+	Timer timer_function_ms;
+	TimerUs timer_function_us;
+	timer_function_ms.Start();
+	timer_function_us.Start();
+
 	parser = new JSONParser(CONFIGJSON);
 
 	modules.push_back(input = new ModuleInput(parser));
@@ -29,6 +34,10 @@ Application::Application()
 		fps_cap = 1000 / fps_cap;
 		parser->UnloadObject();
 	}
+
+	LOG("App construction time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
+	LOG("App construction time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
+	LOG("App construction time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
 }
 
 Application::~Application()
@@ -43,8 +52,20 @@ bool Application::Init()
 {
 	bool ret = true;
 
+	Timer timer_function_ms;
+	TimerUs timer_function_us;
+	timer_function_ms.Start();
+	timer_function_us.Start();
+
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
+
+	LOG("App initialization time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
+	LOG("App initialization time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
+	LOG("App initialization time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
+
+	timer_function_ms.Start();
+	timer_function_us.Start();
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 	{
@@ -52,9 +73,11 @@ bool Application::Init()
 			ret = (*it)->Start();
 	}
 
+	LOG("App starting time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
+	LOG("App starting time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
+	LOG("App starting time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
+
 	timer.Start();
-	frames = 0;
-	total_frames = 0;
 	return ret;
 }
 
@@ -78,31 +101,35 @@ update_status Application::Update()
 		if ((*it)->IsEnabled())
 			ret = (*it)->PostUpdate();
 
+	updateTimer.Stop();
+
 	// TODO 4
 	// Amount of frames since startup
 	total_frames++;
-	frames++;
 	LOG("Total frames: %i", total_frames);
+	frames_count++;
 
 	// Amount of time since game start
-	time = timer.GetTimeInMs() / 1000;
-	//LOG("Time: %i s", time);
+	float time_s = ((float)timer.GetTimeInMs()) / 1000.0f;
+	LOG("Time: %f s", time_s);
 
 	// Average FPS for the whole game life.
-	if(time!=0)
-		LOG("Average FPS: %i", total_frames / time);
+	LOG("Average FPS: %f", ((float)total_frames) / time_s);
 
 	// Amount of ms took the last update.
 	LOG("Update time: %i ms", updateTimer.GetTimeInMs());
 
 	// Amount of frames during the last second (the actual FPS)
-	if (time > prev_time)
+	if (time_s - prev_time > 1.0f)
 	{
-		frames_last_sec = frames;
-		frames = 0;
-		prev_time++;
+		frames_last_sec = frames_count;
+		frames_count = 0;
+		prev_time = time_s;
 	}
 	LOG("Frames last second: %i", frames_last_sec);
+
+	App->window->SetFPStoWindow(total_frames, time_s, updateTimer.GetTimeInMs(), frames_last_sec);
+
 	delay_timer->Start();
 	int i = 0;
 	Uint64 dt = delay_timer->GetTimeInUs();

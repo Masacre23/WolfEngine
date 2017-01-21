@@ -6,7 +6,7 @@
 			"Height" : 600, 
 			"Scale" : 1 
 			},
-		"FpsCap":60
+		"FpsCap": 60
 	},
 	"Modules" : {
 		"Input" : {
@@ -17,7 +17,8 @@
 			"Fullscreen" : false,
 			"Borderless" : false,
 			"Resizable" : true,
-			"Fullscreen_Window" : false 
+			"Fullscreen_Window" : false,
+			"TitleWithInfoLength" : 200		
 		},
 		"Render" : { 
 			"Vsync" : true,
