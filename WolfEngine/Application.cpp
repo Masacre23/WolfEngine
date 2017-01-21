@@ -6,6 +6,7 @@
 #include "ModuleAudio.h"
 #include "JsonHandler.h"
 #include "TimerUs.h"
+#include "ModuleSceneIni.h"
 
 Application::Application()
 {
@@ -16,6 +17,9 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
+
+	modules.push_back(scene_ini = new ModuleSceneIni());
+	scene_ini->Enable();
 
 	if (parser->LoadObject(APP_SECTION))
 	{
@@ -68,7 +72,7 @@ update_status Application::Update()
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->Update();
+			ret = (*it)->Update(dt);
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
@@ -82,11 +86,11 @@ update_status Application::Update()
 
 	// Amount of time since game start
 	time = timer.GetTimeInMs() / 1000;
-	LOG("Time: %i s", time);
+	//LOG("Time: %i s", time);
 
 	// Average FPS for the whole game life.
 	if(time!=0)
-	LOG("Average FPS: %i", total_frames / time);
+		LOG("Average FPS: %i", total_frames / time);
 
 	// Amount of ms took the last update.
 	LOG("Update time: %i ms", updateTimer.GetTimeInMs());
@@ -111,6 +115,12 @@ update_status Application::Update()
 		LOG("We wait for %i milliseconds and got back in %f", time_to_nframe, real_delay_time);
 	}
 	RELEASE(delay_timer);
+
+	// TODO 6
+	//  differential time since last frame 
+	dt = (float)updateTimer.GetTimeInMs()/1000;
+	LOG("dt: %f", dt);
+
 	return ret;
 }
 

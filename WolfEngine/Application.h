@@ -16,6 +16,8 @@ class ModuleRender;
 class ModuleTextures;
 class ModuleAudio;
 
+class ModuleSceneIni;
+
 class Application
 {
 public:
@@ -32,6 +34,8 @@ public:
 	ModuleRender* renderer;
 	ModuleTextures* textures;
 	ModuleAudio* audio;
+	
+	ModuleSceneIni* scene_ini;
 
 	JSONParser* parser;
 
@@ -44,6 +48,7 @@ private:
 	int prev_time = 0;
 	int frames_last_sec = 0;
 	Uint32 fps_cap;
+	float dt;
 
 };
 

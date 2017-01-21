@@ -31,6 +31,9 @@
     <Filter Include="3rd Party\MathGeoLib\Random Algorithm">
       <UniqueIdentifier>{d64964c7-5b05-44dc-b3dc-de77c04d3b01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Modules">
+      <UniqueIdentifier>{98cfa6b0-d679-4938-b81f-5c6b366e42b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -152,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="MathGeoLib\src\Time\Clock.cpp">
       <Filter>3rd Party\MathGeoLib\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleSceneIni.cpp">
+      <Filter>Engine Modules</Filter>
     </ClCompile>
     <ClCompile Include="TimerUs.cpp">
       <Filter>Utils</Filter>
@@ -376,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="TimerUs.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleSceneIni.h">
+      <Filter>Engine Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
