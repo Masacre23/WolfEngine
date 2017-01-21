@@ -13,19 +13,40 @@ public:
 	void Start()
 	{
 		start_time = SDL_GetPerformanceCounter();
-		start = true;
+		running = true;
 	}
 
 	void Stop()
 	{
-		start = false;
+		if (running)
+		{
+			final_time = SDL_GetPerformanceCounter();
+			running = false;
+		}
 	}
 
 	Uint64 GetTimeInUs() 
-	{ 
-		if (start)
-			actual = SDL_GetPerformanceCounter();
-		return ((actual - start_time)*1000000/frecuency); 
+	{
+		Uint64 ret;
+
+		if (running)
+			ret = SDL_GetPerformanceCounter() - start_time;
+		else
+			ret = final_time - start_time;
+
+		return (ret*1000000/frecuency); 
+	}
+
+	Uint64 GetTimeInMs()
+	{
+		Uint64 ret;
+
+		if (running)
+			ret = SDL_GetPerformanceCounter() - start_time;
+		else
+			ret = final_time - start_time;
+
+		return (ret * 1000 / frecuency);
 	}
 
 public:
@@ -33,8 +54,8 @@ public:
 
 private:
 	Uint64 start_time;
-	Uint64 actual;
-	bool start;
+	Uint64 final_time;
+	bool running = false;
 };
 
 #endif // !TIMERUS_H
