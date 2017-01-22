@@ -49,6 +49,13 @@ update_status ModuleRender::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
+update_status ModuleRender::Update(float dt)
+{
+	DebugCamera(dt);
+
+	return UPDATE_CONTINUE;
+}
+
 update_status ModuleRender::PostUpdate(float dt)
 {
 	SDL_RenderPresent(renderer);
@@ -190,20 +197,20 @@ bool ModuleRender::ConstantConfig()
 	return ret;
 }
 
-void ModuleRender::DebugCamera()
+void ModuleRender::DebugCamera(float dt)
 {
 	// debug camera
-	int speed = 5;
+	int speed = 300;
 	
 	if (App->input->GetKey(SDL_SCANCODE_KP_8) == KEY_REPEAT)
-		App->renderer->camera.y += speed;
+		App->renderer->camera.y += floor(speed*dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_KP_2) == KEY_REPEAT)
-		App->renderer->camera.y -= speed;
+		App->renderer->camera.y -= floor(speed*dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_KP_4) == KEY_REPEAT)
-		App->renderer->camera.x += speed;
+		App->renderer->camera.x += floor(speed*dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_KP_6) == KEY_REPEAT)
-		App->renderer->camera.x -= speed;
+		App->renderer->camera.x -= floor(speed*dt);
 }

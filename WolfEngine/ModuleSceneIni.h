@@ -1,5 +1,5 @@
-#ifndef __MODULESCENEINI_H__
-#define __MODULESCENEINI_H__
+#ifndef MODULESCENEINI_H
+#define MODULESCENEINI_H
 
 #include "Module.h"
 #include "Animation.h"
@@ -19,7 +19,7 @@ public:
 
 public:
 	SDL_Texture* graphics = nullptr;
-	SDL_Rect* cat;
+
 };
 
 #endif

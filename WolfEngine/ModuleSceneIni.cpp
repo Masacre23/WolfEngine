@@ -5,9 +5,7 @@
 
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
-{
-	cat = new SDL_Rect({ 182, 100, 419, 380});
-}
+{}
 
 ModuleSceneIni::~ModuleSceneIni()
 {}
@@ -18,7 +16,7 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	LOG("Loading initial scene");
 
-	//graphics = App->textures->Load("Resources/cat.png");
+	graphics = App->textures->Load("Resources/airou.png");
 
 	return res;
 }
@@ -37,7 +35,7 @@ bool ModuleSceneIni::CleanUp()
 update_status ModuleSceneIni::Update(float dt)
 {
 	// Draw everything
-	//App->renderer->BlitScreenCentered(graphics, cat);
+	App->renderer->BlitScreenCentered(graphics, NULL);
 
 	return UPDATE_CONTINUE;
 }

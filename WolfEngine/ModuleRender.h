@@ -20,6 +20,7 @@ public:
 
 	bool Init();
 	update_status PreUpdate(float dt);
+	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
@@ -33,7 +34,7 @@ public:
 	bool Blit(SDL_Texture* texture, const iPoint& position, SDL_Rect* section, float speed, bool inverse = false);
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
 
-	void DebugCamera();
+	void DebugCamera(float dt);
 
 private:
 	bool ConstantConfig();
