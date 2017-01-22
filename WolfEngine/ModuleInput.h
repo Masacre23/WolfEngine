@@ -34,7 +34,7 @@ public:
 
 	bool Init();
 	bool Start();
-	update_status PreUpdate();
+	update_status PreUpdate(float dt);
 	bool CleanUp();
 
 	KeyState GetKey(int id) const { return keyboard[id]; }

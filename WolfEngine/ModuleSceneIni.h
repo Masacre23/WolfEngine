@@ -10,7 +10,7 @@ struct SDL_Texture;
 class ModuleSceneIni : public Module
 {
 public:
-	ModuleSceneIni(bool start_enabled = true);
+	ModuleSceneIni(bool start_enabled = false);
 	~ModuleSceneIni();
 
 	bool Start();

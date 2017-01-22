@@ -19,8 +19,8 @@ public:
 	~ModuleRender();
 
 	bool Init();
-	update_status PreUpdate();
-	update_status PostUpdate();
+	update_status PreUpdate(float dt);
+	update_status PostUpdate(float dt);
 	bool CleanUp();
 
 	bool BlitScreenCentered(SDL_Texture* texture, SDL_Rect* section) { return BlitScreenCentered(texture, section, DEFAULT_SPEED); }

@@ -28,6 +28,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+private:
+	void EndUpdate();
+
 public:
 	ModuleInput* input;
 	ModuleWindow* window;
@@ -41,12 +44,14 @@ public:
 
 private:
 	std::list<Module*> modules;
-	Timer timer;
+	Timer app_timer;
+	Timer update_timer;
 	int total_frames = 0;
 	int frames_count = 0;
 	int frames_last_sec = 0;
 	float prev_time = 0;
 	Uint32 fps_cap = 60;
+	Uint32 cap_ms = 1000;
 	float dt;
 
 };

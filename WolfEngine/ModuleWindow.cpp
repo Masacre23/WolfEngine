@@ -92,7 +92,7 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
  {
 	 int app_name_lenght = sprintf_s(title_fps, TITLE_INFO_LENGTH, TITLE);
 	 sprintf_s(title_fps + app_name_lenght, TITLE_INFO_LENGTH - app_name_lenght,
-		 ": Total frames: %i, Total time: %f s, Average FPS: %f, Update time: %u s, Current FPS: %i",
+		 ": Total frames: %i, Total time: %f s, Average FPS: %f, Update time: %u ms, Current FPS: %i",
 		 total_frames, total_seconds, (float)total_frames / total_seconds, update_ms, current_fps);
 	 SDL_SetWindowTitle(window, title_fps);
  }

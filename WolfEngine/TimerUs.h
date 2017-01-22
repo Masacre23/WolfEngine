@@ -34,7 +34,7 @@ public:
 		else
 			ret = final_time - start_time;
 
-		return (ret*1000000/frecuency); 
+		return (ret * 1000000 / frecuency);
 	}
 
 	Uint64 GetTimeInMs()

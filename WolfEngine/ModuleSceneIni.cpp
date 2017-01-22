@@ -18,7 +18,7 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	LOG("Loading initial scene");
 
-	graphics = App->textures->Load("Resources/cat.png");
+	//graphics = App->textures->Load("Resources/cat.png");
 
 	return res;
 }
@@ -37,7 +37,7 @@ bool ModuleSceneIni::CleanUp()
 update_status ModuleSceneIni::Update(float dt)
 {
 	// Draw everything
-	App->renderer->BlitScreenCentered(graphics, cat);
+	//App->renderer->BlitScreenCentered(graphics, cat);
 
 	return UPDATE_CONTINUE;
 }
