@@ -4,6 +4,12 @@
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
 #include "SDL/include/SDL.h"
+
+#include "Glew/include/GL/glew.h"
+#include "SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
 #include "JsonHandler.h"
 
 ModuleRender::ModuleRender() : Module(MODULE_RENDER)
@@ -203,14 +209,14 @@ void ModuleRender::DebugCamera(float dt)
 	int speed = 300;
 	
 	if (App->input->GetKey(SDL_SCANCODE_KP_8) == KEY_REPEAT)
-		App->renderer->camera.y += floor(speed*dt);
+		App->renderer->camera.y += ceil(speed*dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_KP_2) == KEY_REPEAT)
-		App->renderer->camera.y -= floor(speed*dt);
+		App->renderer->camera.y -= ceil(speed*dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_KP_4) == KEY_REPEAT)
-		App->renderer->camera.x += floor(speed*dt);
+		App->renderer->camera.x += ceil(speed*dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_KP_6) == KEY_REPEAT)
-		App->renderer->camera.x -= floor(speed*dt);
+		App->renderer->camera.x -= ceil(speed*dt);
 }

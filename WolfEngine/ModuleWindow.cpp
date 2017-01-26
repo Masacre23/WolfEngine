@@ -2,6 +2,15 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
+
+#include "Glew/include/GL/glew.h"
+#include "SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
+#pragma comment( lib, "Glew/libx86/glew32.lib" )
+#pragma comment( lib, "Glew/libx86/glew32s.lib" )
+
 #include "JsonHandler.h"
 
 ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
@@ -47,7 +56,33 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 		 if (FULLSCREEN_DESKTOP)
 			 flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
+		 flags |= SDL_WINDOW_OPENGL;
+
+		 SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		 SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		 SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+		 SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+		 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
 		 window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+
+		 glcontext = SDL_GL_CreateContext(window);
+		 if (glcontext == NULL)
+		 {
+			 LOG("GL Context could not be created! SDL_Error: %s\n", SDL_GetError());
+			 ret = false;
+		 }
+
+		 GLenum err = glewInit();
+		 if (err != GL_NO_ERROR)
+		 {
+			 LOG("Error in glewInit: %d\n", err);
+		 }
+		 else
+		 {
+			 LOG("Using Glew %s", glewGetString(GLEW_VERSION));
+		 }
 
 		 if (window == nullptr)
 		 {
@@ -79,6 +114,11 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 if (window != nullptr)
 	 {
 		 SDL_DestroyWindow(window);
+	 }
+
+	 if (glcontext != NULL)
+	 {
+		 SDL_GL_DeleteContext(glcontext);
 	 }
 
 	 RELEASE_ARRAY(title_fps);

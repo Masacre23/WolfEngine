@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Point.h"
+#include "SDL/include/SDL_video.h"
 
 #define MODULE_WINDOW "ModuleWindow"
 #define WINDOW_SECTION "Config.Modules.Window"
@@ -32,6 +33,7 @@ private:
 public:
 	SDL_Window* window = nullptr;
 	SDL_Surface* screen_surface = nullptr;
+	SDL_GLContext glcontext;
 
 private:
 	char* title_fps = nullptr;
