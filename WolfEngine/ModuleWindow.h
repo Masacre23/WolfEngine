@@ -3,7 +3,6 @@
 
 #include "Module.h"
 #include "Point.h"
-#include "SDL/include/SDL_video.h"
 
 #define MODULE_WINDOW "ModuleWindow"
 #define WINDOW_SECTION "Config.Modules.Window"
@@ -23,6 +22,7 @@ public:
 
 	void SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps);
 
+	SDL_Window* GetWindow() const { return window; }
 	int GetScreenWidth() const { return SCREENWIDTH; }
 	int GetScreenHeight() const { return SCREENHEIGHT; }
 	int GetScreenSize() const { return SCREENSIZE; }
@@ -30,12 +30,10 @@ public:
 private:
 	bool ConstantConfig();
 
-public:
+private:
 	SDL_Window* window = nullptr;
 	SDL_Surface* screen_surface = nullptr;
-	SDL_GLContext glcontext;
 
-private:
 	char* title_fps = nullptr;
 
 	const char* TITLE = "";

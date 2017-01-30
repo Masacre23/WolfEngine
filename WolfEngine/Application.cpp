@@ -89,7 +89,7 @@ update_status Application::Update()
 	// TODO 6
 	//  differential time since last frame 
 	dt = (float)update_timer.GetTimeInMs() / 1000.0f;
-	LOG("dt: %f", dt);
+	//LOG("dt: %f", dt);
 
 	update_timer.Start();
 
@@ -117,18 +117,18 @@ void Application::EndUpdate()
 	// TODO 4
 	// Amount of frames since startup
 	total_frames++;
-	LOG("Total frames: %i", total_frames);
+	//LOG("Total frames: %i", total_frames);
 	frames_count++;
 
 	// Amount of time since game start
 	float time_s = ((float)app_timer.GetTimeInMs()) / 1000.0f;
-	LOG("Time: %f s", time_s);
+	//LOG("Time: %f s", time_s);
 
 	// Average FPS for the whole game life.
-	LOG("Average FPS: %f", ((float)total_frames) / time_s);
+	//LOG("Average FPS: %f", ((float)total_frames) / time_s);
 
 	// Amount of ms took the last update.
-	LOG("Update time: %u ms", last_frame_ms);
+	//LOG("Update time: %u ms", last_frame_ms);
 
 	// Amount of frames during the last second (the actual FPS)
 	if (time_s - prev_time > 1.0f)
@@ -137,7 +137,7 @@ void Application::EndUpdate()
 		frames_count = 0;
 		prev_time = time_s;
 	}
-	LOG("Frames last second: %i", frames_last_sec);
+	//LOG("Frames last second: %i", frames_last_sec);
 
 	App->window->SetFPStoWindow(total_frames, time_s, last_frame_ms, frames_last_sec);
 
@@ -148,7 +148,7 @@ void Application::EndUpdate()
 		delay_timer.Start();
 		Timer::DelayInMs(time_to_nframe);
 		float real_delay_time = (float)delay_timer.GetTimeInMs();
-		LOG("We wait for %i milliseconds and got back in %f", time_to_nframe, real_delay_time);
+		//LOG("We wait for %i milliseconds and got back in %f", time_to_nframe, real_delay_time);
 	}
 }
 

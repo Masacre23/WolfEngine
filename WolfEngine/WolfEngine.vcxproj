@@ -227,6 +227,7 @@
     <ClInclude Include="ModuleSceneIni.h" />
     <ClInclude Include="ModuleTextures.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="OpenGL.h" />
     <ClInclude Include="parson\parson.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Timer.h" />

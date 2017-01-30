@@ -35,7 +35,6 @@ bool ModuleSceneIni::CleanUp()
 update_status ModuleSceneIni::Update(float dt)
 {
 	// Draw everything
-	App->renderer->BlitScreenCentered(graphics, NULL);
 
 	return UPDATE_CONTINUE;
 }

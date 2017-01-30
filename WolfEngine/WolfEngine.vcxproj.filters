@@ -386,6 +386,9 @@
     <ClInclude Include="ModuleSceneIni.h">
       <Filter>Engine Modules</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGL.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\src\Geometry\KDTree.inl">
