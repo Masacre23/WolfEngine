@@ -2,8 +2,6 @@
 #define MODULERENDER_H
 
 #include "Module.h"
-#include "SDL/include/SDL_rect.h"
-#include "Point.h"
 #include "SDL/include/SDL_video.h"
 
 #define MODULE_RENDER "ModuleRender"
@@ -28,11 +26,10 @@ public:
 private:
 	bool ConstantConfig();
 	bool GetGLError() const;
-	void DebugCamera(float dt);
+	void DebugTriangle();
 
 public:
 	SDL_Renderer* renderer = nullptr;
-	SDL_Rect camera = { 0,0,0,0 };
 
 private:
 	SDL_GLContext glcontext = NULL;

@@ -79,9 +79,6 @@ bool ModuleRender::Init()
 		ret = ret && GetGLError();
 	}
 
-	camera.w = App->window->GetScreenWidth() * SCREENSIZE;
-	camera.h = App->window->GetScreenHeight() * SCREENSIZE;
-
 	return ret;
 }
 
@@ -94,20 +91,16 @@ update_status ModuleRender::PreUpdate(float dt)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glMatrixMode(GL_PROJECTION);
-	glOrtho(-1.0, 1.0, -1.0, 1.0, 0.0, 5.0);
+	glLoadIdentity();
+	//glOrtho(-1.0, 1.0, -1.0, 1.0, 0.0, 5.0);
+	glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 5.0);
 
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleRender::Update(float dt)
 {
-	DebugCamera(dt);
-
-	glBegin(GL_TRIANGLES);
-	glVertex3f(-1.0f, -0.5f, -4.0f); // lower left vertex
-	glVertex3f(1.0f, -0.5f, -4.0f); // lower right vertex
-	glVertex3f(0.0f, 0.5f, -4.0f); // upper vertex
-	glEnd();
+	DebugTriangle();
 
 	return UPDATE_CONTINUE;
 }
@@ -163,20 +156,11 @@ bool ModuleRender::GetGLError() const
 	return ret;
 }
 
-void ModuleRender::DebugCamera(float dt)
+void ModuleRender::DebugTriangle()
 {
-	// debug camera
-	int speed = 300;
-	
-	if (App->input->GetKey(SDL_SCANCODE_KP_8) == KEY_REPEAT)
-		App->renderer->camera.y += ceil(speed*dt);
-
-	if (App->input->GetKey(SDL_SCANCODE_KP_2) == KEY_REPEAT)
-		App->renderer->camera.y -= ceil(speed*dt);
-
-	if (App->input->GetKey(SDL_SCANCODE_KP_4) == KEY_REPEAT)
-		App->renderer->camera.x += ceil(speed*dt);
-
-	if (App->input->GetKey(SDL_SCANCODE_KP_6) == KEY_REPEAT)
-		App->renderer->camera.x -= ceil(speed*dt);
+	glBegin(GL_TRIANGLES);
+	glVertex3f(-1.0f, -0.5f, -4.0f); // lower left vertex
+	glVertex3f(1.0f, -0.5f, -4.0f); // lower right vertex
+	glVertex3f(0.0f, 0.5f, -4.0f); // upper vertex
+	glEnd();
 }
