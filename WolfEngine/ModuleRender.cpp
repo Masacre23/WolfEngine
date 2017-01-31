@@ -11,6 +11,18 @@
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "glu32.lib")
 
+Point3df ModuleRender::A = { -0.5f, -0.5f, -0.5f };
+Point3df ModuleRender::B = { 0.5f, -0.5f, -0.5f };
+Point3df ModuleRender::C = { -0.5f, 0.5f, -0.5f };
+Point3df ModuleRender::D = { 0.5f, 0.5f, -0.5f };
+Point3df ModuleRender::E = { -0.5f, -0.5f, 0.5f };
+Point3df ModuleRender::F = { 0.5f, -0.5f, 0.5f };
+Point3df ModuleRender::G = { -0.5f, 0.5f, 0.5f };
+Point3df ModuleRender::H = { 0.5f, 0.5f, 0.5f };
+
+int ModuleRender::indices[] = { 0, 1, 2,  2, 1, 3,  3, 1, 5,  3, 5, 7,  6, 4, 0,  6, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
+float ModuleRender::vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z };
+
 ModuleRender::ModuleRender() : Module(MODULE_RENDER)
 {
 }
@@ -106,7 +118,10 @@ update_status ModuleRender::PreUpdate(float dt)
 
 update_status ModuleRender::Update(float dt)
 {
-	DebugCube();
+	//DebugCube();
+	static float angle = 0;
+	angle++;
+	DrawCube({ 0, 0, -3 }, { 1, 1, 1 }, angle, {0, 1, 1});
 	
 	return UPDATE_CONTINUE;
 }
@@ -164,20 +179,8 @@ bool ModuleRender::GetGLError() const
 
 void ModuleRender::DebugCubeVertices()
 {
-	Point3df A = { -0.5f, -0.5f, -0.5f };
-	Point3df B = { 0.5f, -0.5f, -0.5f };
-	Point3df C = { -0.5f, 0.5f, -0.5f };
-	Point3df D = { 0.5f, 0.5f, -0.5f };
-	Point3df E = { -0.5f, -0.5f, 0.5f };
-	Point3df F = { 0.5f, -0.5f, 0.5f };
-	Point3df G = { -0.5f, 0.5f, 0.5f };
-	Point3df H = { 0.5f, 0.5f, 0.5f };
-
 	debug_num_indices = 36;
-	int indices[36] = { 0, 1, 2,  2, 1, 3,  3, 1, 5,  3, 5, 7,  6, 4, 0,  6, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
-
 	debug_num_vertices = 8;
-	float vertices[24] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z };
 
 	glGenBuffers(1, (GLuint*) &(debug_id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
@@ -193,6 +196,21 @@ void ModuleRender::DebugCube()
 	glTranslatef(0.0f, 0.0f, -3.0f);
 	glRotatef(angle, 0.0, 1.0, 0.0);
 	angle += 0.2f;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, debug_id_indices);
+	glDrawElements(GL_TRIANGLES, debug_num_indices, GL_UNSIGNED_INT, NULL);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void ModuleRender::DrawCube(Point3df translate, Point3df scale, float angle, Point3df rotation)
+{
+	glMatrixMode(GL_PROJECTION);
+	glTranslatef(translate.x, translate.y, translate.z);
+	glScalef(scale.x, scale.y, scale.z);
+	glRotatef(angle, rotation.x, rotation.y, rotation.z);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
