@@ -139,7 +139,7 @@ void Application::EndUpdate()
 	}
 	//LOG("Frames last second: %i", frames_last_sec);
 
-	App->window->SetFPStoWindow(total_frames, time_s, last_frame_ms, frames_last_sec);
+	App->window->SetFPStoWindow(total_frames, time_s, last_frame_ms, frames_last_sec, dt);
 
 	//Calculate the time for the next frame.
 	TimerUs delay_timer;

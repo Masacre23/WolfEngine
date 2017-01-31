@@ -20,7 +20,7 @@ public:
 	bool Start();
 	bool CleanUp();
 
-	void SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps);
+	void SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps, float dt);
 
 	SDL_Window* GetWindow() const { return window; }
 	int GetScreenWidth() const { return SCREENWIDTH; }

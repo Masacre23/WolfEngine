@@ -82,6 +82,13 @@ bool ModuleRender::Init()
 	return ret;
 }
 
+bool ModuleRender::Start()
+{
+	DebugCubeVertices();
+
+	return true;
+}
+
 update_status ModuleRender::PreUpdate(float dt)
 {
 	glViewport(0, 0, App->window->GetScreenWidth(), App->window->GetScreenHeight());
@@ -92,7 +99,6 @@ update_status ModuleRender::PreUpdate(float dt)
 	glLoadIdentity();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glOrtho(-1.0, 1.0, -1.0, 1.0, 0.0, 5.0);
 	glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 5.0);
 
 	return UPDATE_CONTINUE;
@@ -100,8 +106,8 @@ update_status ModuleRender::PreUpdate(float dt)
 
 update_status ModuleRender::Update(float dt)
 {
-	DebugTriangle();
-
+	DebugCube();
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -156,11 +162,42 @@ bool ModuleRender::GetGLError() const
 	return ret;
 }
 
-void ModuleRender::DebugTriangle()
+void ModuleRender::DebugCubeVertices()
 {
-	glBegin(GL_TRIANGLES);
-	glVertex3f(-1.0f, -0.5f, -4.0f); // lower left vertex
-	glVertex3f(1.0f, -0.5f, -4.0f); // lower right vertex
-	glVertex3f(0.0f, 0.5f, -4.0f); // upper vertex
-	glEnd();
+	Point3df A = { -0.5f, -0.5f, -0.5f };
+	Point3df B = { 0.5f, -0.5f, -0.5f };
+	Point3df C = { -0.5f, 0.5f, -0.5f };
+	Point3df D = { 0.5f, 0.5f, -0.5f };
+	Point3df E = { -0.5f, -0.5f, 0.5f };
+	Point3df F = { 0.5f, -0.5f, 0.5f };
+	Point3df G = { -0.5f, 0.5f, 0.5f };
+	Point3df H = { 0.5f, 0.5f, 0.5f };
+
+	debug_num_indices = 36;
+	int indices[36] = { 0, 1, 2,  2, 1, 3,  3, 1, 5,  3, 5, 7,  6, 4, 0,  6, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
+
+	debug_num_vertices = 8;
+	float vertices[24] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z };
+
+	glGenBuffers(1, (GLuint*) &(debug_id_vertices));
+	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * debug_num_vertices, vertices, GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*) &(debug_id_indices));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, debug_id_indices);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * debug_num_indices, indices, GL_STATIC_DRAW);
+}
+
+void ModuleRender::DebugCube()
+{
+	glMatrixMode(GL_PROJECTION);
+	glTranslatef(0.0f, 0.0f, -3.0f);
+	glRotatef(angle, 0.0, 1.0, 0.0);
+	angle += 0.2f;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, debug_id_indices);
+	glDrawElements(GL_TRIANGLES, debug_num_indices, GL_UNSIGNED_INT, NULL);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }

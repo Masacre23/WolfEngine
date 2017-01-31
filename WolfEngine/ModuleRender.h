@@ -18,6 +18,7 @@ public:
 	~ModuleRender();
 
 	bool Init();
+	bool Start();
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
@@ -26,7 +27,8 @@ public:
 private:
 	bool ConstantConfig();
 	bool GetGLError() const;
-	void DebugTriangle();
+	void DebugCubeVertices();
+	void DebugCube();
 
 public:
 	SDL_Renderer* renderer = nullptr;
@@ -38,6 +40,12 @@ private:
 	int SCREENHEIGHT = 0;
 	float DEFAULT_SPEED = 1.0f;
 	bool VSYNC = true;
+
+	unsigned int debug_id_vertices;
+	unsigned int debug_num_vertices; 
+	unsigned int debug_id_indices;
+	unsigned int debug_num_indices;
+	float angle = 0.0f;
 };
 
 #endif // !MODULERENDER_H

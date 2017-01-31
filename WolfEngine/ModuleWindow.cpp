@@ -96,12 +96,12 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 return true;
  }
 
- void ModuleWindow::SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps)
+ void ModuleWindow::SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps, float dt)
  {
 	 int app_name_lenght = sprintf_s(title_fps, TITLE_INFO_LENGTH, TITLE);
 	 sprintf_s(title_fps + app_name_lenght, TITLE_INFO_LENGTH - app_name_lenght,
-		 ": Total frames: %i, Total time: %f s, Average FPS: %f, Update time: %u ms, Current FPS: %i",
-		 total_frames, total_seconds, (float)total_frames / total_seconds, update_ms, current_fps);
+		 ": Total frames: %i, Total time: %f s, Average FPS: %f, Update time: %u ms, Current FPS: %i, dt: %f s",
+		 total_frames, total_seconds, (float)total_frames / total_seconds, update_ms, current_fps, dt);
 	 SDL_SetWindowTitle(window, title_fps);
  }
 
