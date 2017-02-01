@@ -5,23 +5,12 @@
 #include "ModuleRender.h"
 #include "SDL/include/SDL.h"
 #include "OpenGL.h"
+#include "Math.h"
 #include "JsonHandler.h"
 
 #pragma comment( lib, "Glew/libx86/glew32.lib" )
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "glu32.lib")
-
-Point3df ModuleRender::A = { -0.5f, -0.5f, -0.5f };
-Point3df ModuleRender::B = { 0.5f, -0.5f, -0.5f };
-Point3df ModuleRender::C = { -0.5f, 0.5f, -0.5f };
-Point3df ModuleRender::D = { 0.5f, 0.5f, -0.5f };
-Point3df ModuleRender::E = { -0.5f, -0.5f, 0.5f };
-Point3df ModuleRender::F = { 0.5f, -0.5f, 0.5f };
-Point3df ModuleRender::G = { -0.5f, 0.5f, 0.5f };
-Point3df ModuleRender::H = { 0.5f, 0.5f, 0.5f };
-
-int ModuleRender::indices[] = { 0, 1, 2,  2, 1, 3,  3, 1, 5,  3, 5, 7,  6, 4, 0,  6, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
-float ModuleRender::vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z };
 
 ModuleRender::ModuleRender() : Module(MODULE_RENDER)
 {
@@ -96,7 +85,7 @@ bool ModuleRender::Init()
 
 bool ModuleRender::Start()
 {
-	DebugCubeVertices();
+	LoadCubeGeometry();
 
 	return true;
 }
@@ -111,7 +100,7 @@ update_status ModuleRender::PreUpdate(float dt)
 	glLoadIdentity();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 5.0);
+	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
 
 	return UPDATE_CONTINUE;
 }
@@ -121,7 +110,13 @@ update_status ModuleRender::Update(float dt)
 	//DebugCube();
 	static float angle = 0;
 	angle++;
-	DrawCube({ 0, 0, -3 }, { 1, 1, 1 }, angle, {0, 1, 1});
+	glTranslatef(0.0, -1.0, -5.0);
+	glRotatef(20.0, 1.0, 0.0, 0.0);
+	glRotatef(30.0, 0.0, -1.0, 0.0);
+
+	DrawBasePlane();
+	DrawAxis();
+	DrawCube();
 	
 	return UPDATE_CONTINUE;
 }
@@ -141,6 +136,139 @@ bool ModuleRender::CleanUp()
 		SDL_GL_DeleteContext(glcontext);
 
 	return true;
+}
+
+void ModuleRender::LoadCubeGeometry()
+{
+	float3 A = { -0.5f, -0.5f, -0.5f };
+	float3 B = { 0.5f, -0.5f, -0.5f };
+	float3 C = { -0.5f, 0.5f, -0.5f };
+	float3 D = { 0.5f, 0.5f, -0.5f };
+	float3 E = { -0.5f, -0.5f, 0.5f };
+	float3 F = { 0.5f, -0.5f, 0.5f };
+	float3 G = { -0.5f, 0.5f, 0.5f };
+	float3 H = { 0.5f, 0.5f, 0.5f };
+
+	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z };
+	num_vertices = 8;
+	float colors_edges[] = { 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0 };
+	float colors_faces[] = { 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3 };
+	float colors_diagonals[] = { 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0 };
+	num_colors = 8;
+
+	int triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 1, 5,  3, 5, 7,  6, 4, 0,  6, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
+	num_indices_triangles = 36;
+	int lines_indices[] = { 0,1, 1,3, 3,2, 2,0, 1,5, 5,7, 7,3, 0,4, 4,6, 6,2, 6,7, 5,4 };
+	num_indices_edges = 24;
+	int diagonals_indices[] = { 1,2, 0,6, 5,3, 3,6, 5,0, 7,4 };
+	num_indices_diagonals = 12;
+
+	glGenBuffers(1, (GLuint*) &(id_vertices));
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*) &(id_colors_edges));
+	glBindBuffer(GL_ARRAY_BUFFER, id_colors_edges);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_colors, colors_edges, GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*) &(id_colors_faces));
+	glBindBuffer(GL_ARRAY_BUFFER, id_colors_faces);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_colors, colors_faces, GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*) &(id_colors_diagonals));
+	glBindBuffer(GL_ARRAY_BUFFER, id_colors_diagonals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_colors, colors_diagonals, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*) &(id_indices_triangles));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_triangles, triangles_indices, GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*) &(id_indices_edges));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_edges);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_edges, lines_indices, GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*) &(id_indices_diagonals));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_diagonals);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_diagonals, diagonals_indices, GL_STATIC_DRAW);
+}
+
+void ModuleRender::DrawCube(float3 translate, float3 scale, float angle, float3 rotation)
+{
+	glMatrixMode(GL_PROJECTION);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	glTranslatef(translate.x, translate.y, translate.z);
+	glScalef(scale.x, scale.y, scale.z);
+	glRotatef(angle, rotation.x, rotation.y, rotation.z);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDepthRange(0.1, 0.9);
+	glBindBuffer(GL_ARRAY_BUFFER, id_colors_faces);
+	glColorPointer(3, GL_FLOAT, 0, NULL);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
+	glDrawElements(GL_TRIANGLES, num_indices_triangles, GL_UNSIGNED_INT, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, id_colors_edges);
+	glColorPointer(3, GL_FLOAT, 0, NULL);
+	glLineWidth(2.0f);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_edges);
+	glDrawElements(GL_LINES, num_indices_edges, GL_UNSIGNED_INT, NULL);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, id_colors_diagonals);
+	//glColorPointer(3, GL_FLOAT, 0, NULL);
+	//glLineWidth(2.0f);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_diagonals);
+	//glDrawElements(GL_LINES, num_indices_diagonals, GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void ModuleRender::DrawBasePlane()
+{
+	float distance_between_lines = 1.0f;
+	float min_distance = -100.f;
+	float max_distance = 100.f;
+	int num_lines = ((int)((max_distance - min_distance) / distance_between_lines)) + 1;
+
+	glLineWidth(2.0f);
+	glDepthRange(0.9, 1.0);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glBegin(GL_LINES);
+	for (int i = 0; i < num_lines; i++)
+	{
+		glVertex3f(min_distance + i*distance_between_lines, 0.0, min_distance);
+		glVertex3f(min_distance + i*distance_between_lines, 0.0, max_distance);
+	}
+	for (int i = 0; i < num_lines; i++)
+	{
+		glVertex3f(min_distance, 0.0, min_distance + i*distance_between_lines);
+		glVertex3f(max_distance, 0.0, min_distance + i*distance_between_lines);
+	}
+	glEnd();
+}
+
+void ModuleRender::DrawAxis()
+{
+	float axis_length = 1.5f;
+
+	glLineWidth(2.0f);
+	glDepthRange(0.0, 0.1);
+	glBegin(GL_LINES);
+
+	glColor3f(3.0, 0.0f, 0.0f);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(axis_length, 0.0, 0.0);
+	
+	glColor3f(0.0f, 3.0, 0.0f);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, axis_length, 0.0);
+
+	glColor3f(0.0f, 0.0f, 3.0f);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, axis_length);
+
+	glEnd();
 }
 
 bool ModuleRender::ConstantConfig()
@@ -175,47 +303,4 @@ bool ModuleRender::GetGLError() const
 	}
 
 	return ret;
-}
-
-void ModuleRender::DebugCubeVertices()
-{
-	debug_num_indices = 36;
-	debug_num_vertices = 8;
-
-	glGenBuffers(1, (GLuint*) &(debug_id_vertices));
-	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * debug_num_vertices, vertices, GL_STATIC_DRAW);
-	glGenBuffers(1, (GLuint*) &(debug_id_indices));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, debug_id_indices);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * debug_num_indices, indices, GL_STATIC_DRAW);
-}
-
-void ModuleRender::DebugCube()
-{
-	glMatrixMode(GL_PROJECTION);
-	glTranslatef(0.0f, 0.0f, -3.0f);
-	glRotatef(angle, 0.0, 1.0, 0.0);
-	angle += 0.2f;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, debug_id_indices);
-	glDrawElements(GL_TRIANGLES, debug_num_indices, GL_UNSIGNED_INT, NULL);
-	glDisableClientState(GL_VERTEX_ARRAY);
-}
-
-void ModuleRender::DrawCube(Point3df translate, Point3df scale, float angle, Point3df rotation)
-{
-	glMatrixMode(GL_PROJECTION);
-	glTranslatef(translate.x, translate.y, translate.z);
-	glScalef(scale.x, scale.y, scale.z);
-	glRotatef(angle, rotation.x, rotation.y, rotation.z);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, debug_id_vertices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, debug_id_indices);
-	glDrawElements(GL_TRIANGLES, debug_num_indices, GL_UNSIGNED_INT, NULL);
-	glDisableClientState(GL_VERTEX_ARRAY);
 }

@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "SDL/include/SDL_video.h"
+#include "MathGeoLib/src/Math/float3.h"
 
 #define MODULE_RENDER "ModuleRender"
 #define RENDER_SECTION "Config.Modules.Render"
@@ -25,11 +26,14 @@ public:
 	bool CleanUp();
 
 private:
+	void LoadCubeGeometry();
+
+	void DrawCube(float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
+	void DrawBasePlane();
+	void DrawAxis();
+
 	bool ConstantConfig();
 	bool GetGLError() const;
-	void DebugCubeVertices();
-	void DebugCube();
-	void DrawCube(Point3df transform = { 0, 0, 0 }, Point3df scale = { 1, 1, 1 }, float angle = 0, Point3df rotation = { 0, 0, 0 });
 
 public:
 	SDL_Renderer* renderer = nullptr;
@@ -42,24 +46,20 @@ private:
 	float DEFAULT_SPEED = 1.0f;
 	bool VSYNC = true;
 
-	unsigned int debug_id_vertices;
-	unsigned int debug_num_vertices; 
-	unsigned int debug_id_indices;
-	unsigned int debug_num_indices;
+	unsigned int id_vertices;
+	unsigned int num_vertices; 
+	unsigned int id_colors_edges;
+	unsigned int id_colors_faces;
+	unsigned int id_colors_diagonals;
+	unsigned int num_colors;
+
+	unsigned int id_indices_triangles;
+	unsigned int num_indices_triangles;
+	unsigned int id_indices_edges;
+	unsigned int num_indices_edges;
+	unsigned int id_indices_diagonals;
+	unsigned int num_indices_diagonals;
 	float angle = 0.0f;
-
-	//Cube
-	static Point3df A;
-	static Point3df B;
-	static Point3df C;
-	static Point3df D;
-	static Point3df E;
-	static Point3df F;
-	static Point3df G;
-	static Point3df H;
-
-	static int indices[36];
-	static float vertices[24];
 };
 
 #endif // !MODULERENDER_H
