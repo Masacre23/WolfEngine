@@ -33,6 +33,7 @@ private:
 	void SetFOH(float fov, float r);
 
 private:
+	int speed = 1;
 	Frustum* frustum;
 };
 
