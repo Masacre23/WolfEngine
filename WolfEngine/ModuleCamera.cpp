@@ -3,18 +3,25 @@
 
 ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
+	frustrum = new Frustum();
 }
 
 ModuleCamera::~ModuleCamera()
 {
+	RELEASE(frustrum);
 }
 
-void ModuleCamera::SetFOV()
+void ModuleCamera::SetFOV(float fov)
 {
+	float r = frustrum->AspectRatio();
+	frustrum->verticalFov = fov;
+	SetFOH(fov, r);
 }
 
-void ModuleCamera::SetAspectRatio()
+void ModuleCamera::SetAspectRatio(float r)
 {
+	float fov = frustrum->verticalFov;
+	SetFOH(fov, r);
 }
 
 void ModuleCamera::SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance)
@@ -50,6 +57,12 @@ float4x4 ModuleCamera::GetViewMatrix()
 	float4x4 ret;
 
 	return ret;
+}
+
+void ModuleCamera::SetFOH(float fov, float r)
+{
+	float foh = 2 * Atan(r * tan(fov / 2));
+	frustrum->horizontalFov = foh;
 }
 
 
