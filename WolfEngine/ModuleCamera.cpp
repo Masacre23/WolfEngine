@@ -1,5 +1,7 @@
 #include "Math.h"
 #include "ModuleCamera.h"
+#include "ModuleInput.h"
+#include "Application.h"
 
 ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
@@ -16,6 +18,21 @@ bool ModuleCamera::Start()
 	frustum = new Frustum();
 
 	return true;
+}
+
+update_status ModuleCamera::Update(float dt)
+{
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+	{
+		SetPosition(speed * dt * frustum->front);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	{
+		SetPosition(-speed * dt * frustum->front);
+	}
+
+	return UPDATE_CONTINUE;
 }
 
 bool ModuleCamera::CleanUp()
