@@ -13,6 +13,7 @@ public:
 	~ModuleCamera();
 
 	bool Start();
+	update_status Update(float dt);
 	bool CleanUp();
 
 	void SetFOV(float fov);
@@ -32,6 +33,7 @@ private:
 	void SetFOH(float fov, float r);
 
 private:
+	int speed = 1;
 	Frustum* frustum;
 };
 
