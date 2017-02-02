@@ -162,6 +162,9 @@
     <ClCompile Include="TimerUs.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleCamera.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -388,6 +391,9 @@
     </ClInclude>
     <ClInclude Include="OpenGL.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleCamera.h">
+      <Filter>Core Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
