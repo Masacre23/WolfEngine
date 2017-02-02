@@ -25,22 +25,22 @@ update_status ModuleCamera::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 	{
-		SetPosition(speed * dt * frustum->front);
+		SetPosition(frustum->pos + speed * dt * frustum->front);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
-		SetPosition(-speed * dt * frustum->front);
+		SetPosition(frustum->pos -speed * dt * frustum->front);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		SetPosition(-speed * dt * frustum->WorldRight());
+		SetPosition(frustum->pos -speed * dt * frustum->WorldRight());
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		SetPosition(speed * dt * frustum->WorldRight());
+		SetPosition(frustum->pos + speed * dt * frustum->WorldRight());
 	}
 
 	return UPDATE_CONTINUE;
