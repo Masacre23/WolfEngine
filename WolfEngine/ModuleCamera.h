@@ -14,9 +14,9 @@ public:
 
 	void SetFOV(float fov);
 	void SetAspectRatio(float r);
-	void SetPlaneDistances();
-	void SetPosition();
-	void SetOrientation();
+	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
+	void SetPosition(float3 position);
+	void SetOrientation(float3 rotation);
 
 	void LookAt(float3 position);
 
