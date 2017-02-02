@@ -12,11 +12,11 @@ public:
 	ModuleCamera();
 	~ModuleCamera();
 
-	void SetFOV();
-	void SetAspectRatio();
-	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
-	void SetPosition(float3 position);
-	void SetOrientation(float3 rotation);
+	void SetFOV(float fov);
+	void SetAspectRatio(float r);
+	void SetPlaneDistances();
+	void SetPosition();
+	void SetOrientation();
 
 	void LookAt(float3 position);
 
@@ -24,7 +24,10 @@ public:
 	float4x4 GetViewMatrix();
 
 private:
-	Frustum* frustum;
+	void SetFOH(float fov, float r);
+
+private:
+	Frustum* frustrum;
 };
 
 #endif // !MODULECAMERA_H
