@@ -3,24 +3,24 @@
 
 ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
-	frustrum = new Frustum();
+	frustum = new Frustum();
 }
 
 ModuleCamera::~ModuleCamera()
 {
-	RELEASE(frustrum);
+	RELEASE(frustum);
 }
 
 void ModuleCamera::SetFOV(float fov)
 {
-	float r = frustrum->AspectRatio();
-	frustrum->verticalFov = fov;
+	float r = frustum->AspectRatio();
+	frustum->verticalFov = fov;
 	SetFOH(fov, r);
 }
 
 void ModuleCamera::SetAspectRatio(float r)
 {
-	float fov = frustrum->verticalFov;
+	float fov = frustum->verticalFov;
 	SetFOH(fov, r);
 }
 
@@ -62,7 +62,7 @@ float4x4 ModuleCamera::GetViewMatrix()
 void ModuleCamera::SetFOH(float fov, float r)
 {
 	float foh = 2 * Atan(r * tan(fov / 2));
-	frustrum->horizontalFov = foh;
+	frustum->horizontalFov = foh;
 }
 
 
