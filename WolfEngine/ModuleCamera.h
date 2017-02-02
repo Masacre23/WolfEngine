@@ -15,20 +15,24 @@ public:
 	bool Start();
 	bool CleanUp();
 
-	void SetFOV();
-	void SetAspectRatio();
-	void SetPlaneDistances();
-	void SetPosition();
-	void SetOrientation();
+	void SetFOV(float fov);
+	void SetAspectRatio(float r);
+	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
+	void SetPosition(float3 position);
+	void SetOrientation(float3 rotation);
 
 	void LookAt(float3 position);
 
 	float* GetProjectionMatrix();
 	float* GetViewMatrix();
 
+	void WindowResize(int width, int height);
+
+private:
+	void SetFOH(float fov, float r);
+
 private:
 	Frustum* frustum;
-
 };
 
 #endif // !MODULECAMERA_H
