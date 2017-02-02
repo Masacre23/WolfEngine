@@ -23,11 +23,13 @@ public:
 	float4x4 GetProjectionMatrix();
 	float4x4 GetViewMatrix();
 
+	void WindowResize(int width, int height);
+
 private:
 	void SetFOH(float fov, float r);
 
 private:
-	Frustum* frustrum;
+	Frustum* frustum;
 };
 
 #endif // !MODULECAMERA_H

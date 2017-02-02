@@ -13,6 +13,7 @@ class JSONParser;
 class ModuleInput;
 class ModuleWindow;
 class ModuleRender;
+class ModuleCamera;
 class ModuleTextures;
 class ModuleAudio;
 
@@ -35,6 +36,7 @@ public:
 	ModuleInput* input;
 	ModuleWindow* window;
 	ModuleRender* renderer;
+	ModuleCamera* camera;
 	ModuleTextures* textures;
 	ModuleAudio* audio;
 	

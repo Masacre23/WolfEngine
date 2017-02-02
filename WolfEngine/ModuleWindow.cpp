@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera.h"
 #include "SDL/include/SDL.h"
 #include "JsonHandler.h"
 
@@ -31,8 +32,9 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 }
 	 else
 	 {
-		 int width = SCREENWIDTH * SCREENSIZE;
-		 int height = SCREENHEIGHT * SCREENSIZE;
+		 width = SCREENWIDTH * SCREENSIZE;
+		 height = SCREENHEIGHT * SCREENSIZE;
+		 App->camera->WindowResize(width, height);
 		 Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 
 		 // Set OpenGL Attributes
@@ -76,6 +78,30 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 title_fps = new char[TITLE_INFO_LENGTH];
 
 	 return true;
+ }
+
+ update_status ModuleWindow::PreUpdate(float dt)
+ {
+	 SDL_Event event;
+	 Uint32 windowID = SDL_GetWindowID(window);
+	 while (SDL_PollEvent(&event)) {
+		 switch (event.type) {
+
+		 case SDL_WINDOWEVENT: 
+			 if (event.window.windowID == windowID) {
+				 switch (event.window.event) {
+
+				 case SDL_WINDOWEVENT_SIZE_CHANGED: 
+					 width = event.window.data1;
+					 height = event.window.data2;
+					 App->camera->WindowResize(width, height);
+					 break;
+				 }
+			 }
+			 break;
+		 }
+	 }
+	 return UPDATE_CONTINUE;
  }
 
 
