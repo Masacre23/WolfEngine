@@ -1,5 +1,7 @@
 #include "Math.h"
 #include "ModuleCamera.h"
+#include "ModuleInput.h"
+#include "Application.h"
 
 ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
@@ -16,6 +18,17 @@ bool ModuleCamera::Start()
 	frustum = new Frustum();
 
 	return true;
+}
+
+update_status ModuleCamera::Update(float dt)
+{
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		frustum->pos.y += dt;
+
+	if(App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+		frustum->pos.y -= dt;
+
+	return UPDATE_CONTINUE;
 }
 
 bool ModuleCamera::CleanUp()
@@ -73,14 +86,15 @@ float* ModuleCamera::GetViewMatrix()
 
 void ModuleCamera::WindowResize(int width, int height)
 {
-	float r = width / height;
-	float fov = frustum->verticalFov;
-	SetFOH(fov, r);
+	float fov = 2 * Atan(width);
+	float foh = 2 * Atan(height);
+	frustum->verticalFov = fov;
+	frustum->horizontalFov = foh;
 }
 
 void ModuleCamera::SetFOH(float fov, float r)
 {
-	float foh = 2 * Atan(r * tan(fov / 2));
+	float foh = r * fov;
 	frustum->horizontalFov = foh;
 }
 
