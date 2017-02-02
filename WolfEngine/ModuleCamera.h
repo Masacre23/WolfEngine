@@ -2,7 +2,7 @@
 #define MODULECAMERA_H
 
 #include "Module.h"
-#include "MathGeoLib/src/Math/float3.h"
+#include "Math.h"
 
 #define MODULE_CAMERA "ModuleCamera"
 
@@ -12,6 +12,9 @@ public:
 	ModuleCamera();
 	~ModuleCamera();
 
+	bool Start();
+	bool CleanUp();
+
 	void SetFOV();
 	void SetAspectRatio();
 	void SetPlaneDistances();
@@ -20,10 +23,11 @@ public:
 
 	void LookAt(float3 position);
 
-	float4x4 GetProjectionMatrix();
-	float4x4 GetViewMatrix();
+	float* GetProjectionMatrix();
+	float* GetViewMatrix();
 
 private:
+	Frustum* frustum;
 
 };
 

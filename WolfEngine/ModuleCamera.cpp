@@ -9,6 +9,20 @@ ModuleCamera::~ModuleCamera()
 {
 }
 
+bool ModuleCamera::Start()
+{
+	frustum = new Frustum();
+
+	return true;
+}
+
+bool ModuleCamera::CleanUp()
+{
+	RELEASE(frustum);
+
+	return true;
+}
+
 void ModuleCamera::SetFOV()
 {
 }
@@ -33,17 +47,15 @@ void ModuleCamera::LookAt(float3 position)
 {
 }
 
-float4x4 ModuleCamera::GetProjectionMatrix()
+float* ModuleCamera::GetProjectionMatrix()
 {
-	float4x4 ret;
-
+	float* ret = &(frustum->ProjectionMatrix().v[0][0]);
 	return ret;
 }
 
-float4x4 ModuleCamera::GetViewMatrix()
+float* ModuleCamera::GetViewMatrix()
 {
-	float4x4 ret;
-
+	float* ret = &(frustum->ViewMatrix().v[0][0]);
 	return ret;
 }
 
