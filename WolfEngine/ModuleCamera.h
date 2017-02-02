@@ -13,6 +13,7 @@ public:
 	~ModuleCamera();
 
 	bool Start();
+	update_status Update(float dt);
 	bool CleanUp();
 
 	void SetFOV(float fov);
