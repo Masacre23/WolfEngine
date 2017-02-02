@@ -34,7 +34,6 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 {
 		 width = SCREENWIDTH * SCREENSIZE;
 		 height = SCREENHEIGHT * SCREENSIZE;
-		 App->camera->WindowResize(width, height);
 		 Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 
 		 // Set OpenGL Attributes

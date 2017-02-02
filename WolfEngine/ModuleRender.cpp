@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
+#include "ModuleCamera.h"
 #include "SDL/include/SDL.h"
 #include "OpenGL.h"
 #include "Math.h"
@@ -97,10 +98,11 @@ update_status ModuleRender::PreUpdate(float dt)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glLoadMatrixf(App->camera->GetViewMatrix());
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
+	glLoadMatrixf(App->camera->GetProjectionMatrix());
+	
+	//glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
 
 	return UPDATE_CONTINUE;
 }
@@ -110,9 +112,9 @@ update_status ModuleRender::Update(float dt)
 	//DebugCube();
 	static float angle = 0;
 	angle++;
-	glTranslatef(0.0, -1.0, -5.0);
-	glRotatef(20.0, 1.0, 0.0, 0.0);
-	glRotatef(30.0, 0.0, -1.0, 0.0);
+	//glTranslatef(0.0, -3.0, -20.0);
+	/*glRotatef(20.0, 1.0, 0.0, 0.0);
+	glRotatef(30.0, 0.0, -1.0, 0.0);*/
 
 	DrawBasePlane();
 	DrawAxis();

@@ -15,7 +15,14 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Start()
 {
-	frustum = new Frustum();
+	frustum->type = FrustumType::PerspectiveFrustum;
+	SetPosition({ 2.0f, 4.0f, 5.0f });
+	frustum->front = float3(0, 0, -1);
+	frustum->up = float3(0, 1, 0);
+	SetPlaneDistances(0.1f, 5000.0f);
+	
+	frustum->verticalFov = 59.0f;
+	frustum->horizontalFov = 90.0f;
 
 	return true;
 }
@@ -54,8 +61,6 @@ update_status ModuleCamera::Update(float dt)
 
 bool ModuleCamera::CleanUp()
 {
-	RELEASE(frustum);
-
 	return true;
 }
 
@@ -85,7 +90,8 @@ void ModuleCamera::SetPosition(float3 position)
 
 void ModuleCamera::SetOrientation(float3 rotation)
 {
-	
+	frustum->front = float3(0, 0, 1);
+	frustum->up = float3(0, 1, 0);
 }
 
 void ModuleCamera::LookAt(float3 position)
@@ -95,13 +101,14 @@ void ModuleCamera::LookAt(float3 position)
 
 float* ModuleCamera::GetProjectionMatrix()
 {
-	float* ret = &(frustum->ProjectionMatrix().v[0][0]);
+	float* ret = &(frustum->ProjectionMatrix().Transposed().v[0][0]);
 	return ret;
 }
 
 float* ModuleCamera::GetViewMatrix()
 {
-	float* ret = &(frustum->ViewMatrix().v[0][0]);
+	float4x4 view_matrix = frustum->ViewMatrix();
+	float* ret = &(view_matrix.Transposed().v[0][0]);
 	return ret;
 }
 
