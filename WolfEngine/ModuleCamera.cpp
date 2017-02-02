@@ -44,10 +44,10 @@ update_status ModuleCamera::Update(float dt)
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
-		frustum->pos.y += dt;
+		frustum->pos.y += speed * dt;
 
 	if(App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
-		frustum->pos.y -= dt;
+		frustum->pos.y -= speed * dt;
 
 	return UPDATE_CONTINUE;
 }
