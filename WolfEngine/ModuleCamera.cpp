@@ -56,6 +56,43 @@ update_status ModuleCamera::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
 		frustum->pos.y -= speed * dt;
 
+	// Camera rotation
+
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	{
+		Quat q = { 0,-0.008726535498373935f,0,0.9999619230641713f }; // 1 degree
+		float3 u = {q.x, q.y, q.z};
+		float s = q.w;
+		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
+		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	{
+		Quat q = { 0,0.008726535498373935f,0,0.9999619230641713f }; // 1 degree
+		float3 u = { q.x, q.y, q.z };
+		float s = q.w;
+		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
+		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	{
+		Quat q = { -0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
+		float3 u = { q.x, q.y, q.z };
+		float s = q.w;
+		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
+		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	{
+		Quat q = { 0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
+		float3 u = { q.x, q.y, q.z };
+		float s = q.w;
+		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
+		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
+	}
 	return UPDATE_CONTINUE;
 }
 
