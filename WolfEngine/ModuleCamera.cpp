@@ -78,7 +78,17 @@ update_status ModuleCamera::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 	{
+		float module = Sqrt(frustum->front.x * frustum->front.x + frustum->front.y * frustum->front.y + frustum->front.z* frustum->front.z);
+		float alfa = frustum->WorldRight().x / module;
+		float beta = frustum->WorldRight().y / module;
+		float tecta = frustum->WorldRight().z / module;
+
 		Quat q = { -0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
+		q.w = Cos((pi / 360)/2);
+		q.x = Sin((pi / 360) / 2)*alfa;
+		q.y = Sin((pi / 360) / 2)*beta;
+		q.z = Sin((pi / 360) / 2) * tecta;
+
 		float3 u = { q.x, q.y, q.z };
 		float s = q.w;
 		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
@@ -87,7 +97,16 @@ update_status ModuleCamera::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
+		float module = Sqrt(frustum->front.x * frustum->front.x + frustum->front.y * frustum->front.y + frustum->front.z* frustum->front.z);
+		float alfa = frustum->WorldRight().x / module;
+		float beta = frustum->WorldRight().y / module;
+		float tecta = frustum->WorldRight().z / module;
+
 		Quat q = { 0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
+		q.w = Cos((pi / 360) / 2);
+		q.x = -Sin((pi / 360) / 2)*alfa;
+		q.y = -Sin((pi / 360) / 2)*beta;
+		q.z = -Sin((pi / 360) / 2) * tecta;
 		float3 u = { q.x, q.y, q.z };
 		float s = q.w;
 		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
