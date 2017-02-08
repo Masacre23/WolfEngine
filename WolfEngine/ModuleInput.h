@@ -43,13 +43,14 @@ public:
 	const iPoint& GetMouseMotion() const { return mouse_motion; }
 	const iPoint& GetMousePosition() const { return mouse_position; }
 
+public:
+	iPoint mouse_motion;
+	iPoint mouse_position;
+
 private:
 	bool bwindowEvents[WE_COUNT];
 	KeyState* keyboard;
 	KeyState* mouse_buttons;
-	iPoint mouse_motion;
-	iPoint mouse_position;
-
 	int MAX_KEYS;
 	int NUM_BUTTONS;
 	int SCREENSIZE;
