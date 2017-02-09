@@ -75,56 +75,57 @@ update_status ModuleCamera::Update(float dt)
 	//int dy = y - App->window->GetScreenHeight()/2;
 	int dx = App->input->mouse_motion.x;
 	int dy = App->input->mouse_motion.y;
-
-	if (dx != 0)
-	{
-		Quat q;
-		static float last_positionX;
-		
-		if(App->input->mouse_position.x > last_positionX)
-		    q = { 0,-0.008726535498373935f,0,0.9999619230641713f}; // 1 degree
-		else
-			q = { 0,0.008726535498373935f,0,0.9999619230641713f};
-
-		last_positionX = App->input->mouse_position.x;
-
-		float3 u = { q.x, q.y, q.z };
-		float s = q.w;
-		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
-	}
-
-	if (dy != 0)
-	{
-		static float last_positionY;
-
-		float module = Sqrt(frustum->front.x * frustum->front.x + frustum->front.y * frustum->front.y + frustum->front.z* frustum->front.z);
-		float alfa = frustum->WorldRight().x / module;
-		float beta = frustum->WorldRight().y / module;
-		float tecta = frustum->WorldRight().z / module;
-
-		Quat q = { -0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
-		if (App->input->mouse_position.y < last_positionY)
+	if (App->input->GetMouseButtonDown(1) == KEY_REPEAT) {
+		if (dx != 0)
 		{
-			q.w = Cos((pi / 360) / 2);
-			q.x = Sin((pi / 360) / 2)*alfa;
-			q.y = Sin((pi / 360) / 2)*beta;
-			q.z = Sin((pi / 360) / 2) * tecta;
-		}
-		else
-		{
-			q.w = Cos((pi / 360) / 2);
-			q.x = -Sin((pi / 360) / 2)*alfa;
-			q.y = -Sin((pi / 360) / 2)*beta;
-			q.z = -Sin((pi / 360) / 2) * tecta;
+			Quat q;
+			static float last_positionX;
+
+			if (App->input->mouse_position.x > last_positionX)
+				q = { 0,-0.008726535498373935f,0,0.9999619230641713f }; // 1 degree
+			else
+				q = { 0,0.008726535498373935f,0,0.9999619230641713f };
+	
+			last_positionX = App->input->mouse_position.x;
+
+			float3 u = { q.x, q.y, q.z };
+			float s = q.w;
+			frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
+			frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
 		}
 
-		last_positionY = App->input->mouse_position.y;
+		if (dy != 0)
+		{
+			static float last_positionY;
 
-		float3 u = { q.x, q.y, q.z };
-		float s = q.w;
-		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
+			float module = Sqrt(frustum->front.x * frustum->front.x + frustum->front.y * frustum->front.y + frustum->front.z* frustum->front.z);
+			float alfa = frustum->WorldRight().x / module;
+			float beta = frustum->WorldRight().y / module;
+			float tecta = frustum->WorldRight().z / module;
+
+			Quat q = { -0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
+			if (App->input->mouse_position.y < last_positionY)
+			{
+				q.w = Cos((pi / 360) / 2);
+				q.x = Sin((pi / 360) / 2)*alfa;
+				q.y = Sin((pi / 360) / 2)*beta;
+				q.z = Sin((pi / 360) / 2) * tecta;
+			}
+			else
+			{
+				q.w = Cos((pi / 360) / 2);
+				q.x = -Sin((pi / 360) / 2)*alfa;
+				q.y = -Sin((pi / 360) / 2)*beta;
+				q.z = -Sin((pi / 360) / 2) * tecta;
+			}
+
+			last_positionY = App->input->mouse_position.y;
+
+			float3 u = { q.x, q.y, q.z };
+			float s = q.w;
+			frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
+			frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
+		}
 	}
 	/*if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
