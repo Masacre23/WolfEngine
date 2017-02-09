@@ -31,6 +31,7 @@ private:
 	void ResetProjection();
 
 	void LoadCubeGeometry();
+	void LoadCheckers();
 
 	void DrawCube(float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
 	void DrawBasePlane();
@@ -48,7 +49,8 @@ private:
 	bool VSYNC = true;
 
 	unsigned int id_vertices;
-	unsigned int num_vertices; 
+	unsigned int num_vertices;
+	unsigned int id_texture;
 	unsigned int id_colors_edges;
 	unsigned int id_colors_faces;
 	unsigned int id_colors_diagonals;
@@ -61,6 +63,8 @@ private:
 	unsigned int id_indices_diagonals;
 	unsigned int num_indices_diagonals;
 	float angle = 0.0f;
+
+	unsigned int checkers_id;
 };
 
 #endif // !MODULERENDER_H

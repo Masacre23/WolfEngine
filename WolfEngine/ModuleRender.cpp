@@ -88,6 +88,8 @@ bool ModuleRender::Start()
 {
 	LoadCubeGeometry();
 
+	LoadCheckers();
+
 	return true;
 }
 
@@ -163,8 +165,9 @@ void ModuleRender::LoadCubeGeometry()
 	float colors_faces[] = { 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3 };
 	float colors_diagonals[] = { 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0 };
 	num_colors = 8;
+	float check_coord[] = { 0,0, 1,0, 0,1, 1,1, 1,1, 0,1, 0,0, 1,0 };
 
-	int triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 1, 5,  3, 5, 7,  6, 4, 0,  6, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
+	int triangles_indices[] = { 2, 1, 0,  3, 1, 2,  5, 1, 3,  7, 5, 3,  0, 4, 6,  2, 0, 6,  6, 3, 2,  7, 3, 6,  4, 7, 6,  5, 7, 4,  0, 5, 4,  1, 5, 0 };
 	num_indices_triangles = 36;
 	int lines_indices[] = { 0,1, 1,3, 3,2, 2,0, 1,5, 5,7, 7,3, 0,4, 4,6, 6,2, 6,7, 5,4 };
 	num_indices_edges = 24;
@@ -184,6 +187,10 @@ void ModuleRender::LoadCubeGeometry()
 	glBindBuffer(GL_ARRAY_BUFFER, id_colors_diagonals);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_colors, colors_diagonals, GL_STATIC_DRAW);
 
+	glGenBuffers(1, (GLuint*) &(id_texture));
+	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, check_coord, GL_STATIC_DRAW);
+
 	glGenBuffers(1, (GLuint*) &(id_indices_triangles));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_triangles, triangles_indices, GL_STATIC_DRAW);
@@ -195,41 +202,60 @@ void ModuleRender::LoadCubeGeometry()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_diagonals, diagonals_indices, GL_STATIC_DRAW);
 }
 
+void ModuleRender::LoadCheckers()
+{
+	const int CHECKERS_HEIGHT = 16;
+	const int CHECKERS_WIDTH = 16;
+
+	GLubyte checkImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
+	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
+		for (int j = 0; j < CHECKERS_WIDTH; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkImage[i][j][0] = (GLubyte)c;
+			checkImage[i][j][1] = (GLubyte)c;
+			checkImage[i][j][2] = (GLubyte)c;
+			checkImage[i][j][3] = (GLubyte)255;
+		}
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &checkers_id);
+	glBindTexture(GL_TEXTURE_2D, checkers_id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void ModuleRender::DrawCube(float3 translate, float3 scale, float angle, float3 rotation)
 {
 	glMatrixMode(GL_PROJECTION);
-	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glBindTexture(GL_TEXTURE_2D, checkers_id);
 
 	glTranslatef(translate.x, translate.y, translate.z);
 	glScalef(scale.x, scale.y, scale.z);
 	glRotatef(angle, rotation.x, rotation.y, rotation.z);
+	
+	glDepthRange(0.1, 0.9);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	glDepthRange(0.1, 0.9);
-	glBindBuffer(GL_ARRAY_BUFFER, id_colors_faces);
-	glColorPointer(3, GL_FLOAT, 0, NULL);
+	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
 	glDrawElements(GL_TRIANGLES, num_indices_triangles, GL_UNSIGNED_INT, NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, id_colors_edges);
-	glColorPointer(3, GL_FLOAT, 0, NULL);
-	glLineWidth(2.0f);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_edges);
-	glDrawElements(GL_LINES, num_indices_edges, GL_UNSIGNED_INT, NULL);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, id_colors_diagonals);
-	//glColorPointer(3, GL_FLOAT, 0, NULL);
-	//glLineWidth(2.0f);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_diagonals);
-	//glDrawElements(GL_LINES, num_indices_diagonals, GL_UNSIGNED_INT, NULL);
-
-	glDisableClientState(GL_COLOR_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+
 }
 
 void ModuleRender::DrawBasePlane()
@@ -275,6 +301,8 @@ void ModuleRender::DrawAxis()
 	glColor3f(0.0f, 0.0f, 3.0f);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, 0.0, axis_length);
+
+	glColor3f(1.0f, 1.0f, 1.0f);
 
 	glEnd();
 }
