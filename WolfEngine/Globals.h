@@ -4,6 +4,9 @@
 #include "MemLeaks.h"
 #include <cassert>
 
+#define DEG_TO_RAD 0.017453292519943295769236907684886127134428718885417254560f
+#define RAD_TO_DEG 57.29577951308232087679815481410517033240547246656432155235f
+
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
 void log(const char file[], int line, const char* format, ...);

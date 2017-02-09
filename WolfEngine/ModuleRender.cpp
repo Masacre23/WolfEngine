@@ -97,10 +97,10 @@ update_status ModuleRender::PreUpdate(float dt)
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	ResetProjection();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(App->camera->GetViewMatrix());
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(App->camera->GetProjectionMatrix());
 	
 	//glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
 
@@ -109,13 +109,6 @@ update_status ModuleRender::PreUpdate(float dt)
 
 update_status ModuleRender::Update(float dt)
 {
-	//DebugCube();
-	static float angle = 0;
-	angle++;
-	//glTranslatef(0.0, -3.0, -20.0);
-	/*glRotatef(20.0, 1.0, 0.0, 0.0);
-	glRotatef(30.0, 0.0, -1.0, 0.0);*/
-
 	DrawBasePlane();
 	DrawAxis();
 	DrawCube();
@@ -138,6 +131,19 @@ bool ModuleRender::CleanUp()
 		SDL_GL_DeleteContext(glcontext);
 
 	return true;
+}
+
+void ModuleRender::WindowResize(int width, int height)
+{
+	App->camera->SetAspectRatio((float)width / (float)height);
+}
+
+void ModuleRender::ResetProjection()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(App->camera->GetProjectionMatrix());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 void ModuleRender::LoadCubeGeometry()
@@ -285,10 +291,6 @@ bool ModuleRender::ConstantConfig()
 	}
 	else
 		ret = false;
-
-	SCREENSIZE = App->window->GetScreenSize();
-	SCREENWIDTH = App->window->GetScreenWidth();
-	SCREENHEIGHT = App->window->GetScreenHeight();
 
 	return ret;
 }
