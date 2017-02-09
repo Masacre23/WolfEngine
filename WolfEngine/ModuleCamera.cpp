@@ -2,6 +2,7 @@
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
 #include "Application.h"
+#include "Globals.h"
 
 #include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
@@ -9,6 +10,17 @@
 ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
 	frustum = new Frustum();
+
+	frustum->type = FrustumType::PerspectiveFrustum;
+	frustum->pos = float3::zero;
+	frustum->front = float3::unitZ;
+	frustum->up = float3::unitY;
+
+	frustum->nearPlaneDistance = 0.1f;
+	frustum->farPlaneDistance = 5000.0f;
+	frustum->verticalFov = DEG_TO_RAD * 59.0f;
+	SetAspectRatio(1.5f);
+
 }
 
 ModuleCamera::~ModuleCamera()
@@ -18,14 +30,8 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Start()
 {
-	frustum->type = FrustumType::PerspectiveFrustum;
-	SetPosition({ 2.0f, 4.0f, 5.0f });
-	frustum->front = float3(0, 0, -1);
-	frustum->up = float3(0, 1, 0);
-	SetPlaneDistances(0.1f, 5000.0f);
-	
-	frustum->verticalFov = 59.0f;
-	frustum->horizontalFov = 90.0f;
+	SetPosition({ -1.0f, 1.0f, -4.0f });
+	LookAt(float3::zero);
 
 	return true;
 }
@@ -185,14 +191,14 @@ bool ModuleCamera::CleanUp()
 void ModuleCamera::SetFOV(float fov)
 {
 	float r = frustum->AspectRatio();
-	frustum->verticalFov = fov;
-	SetFOH(fov, r);
+	frustum->verticalFov = DEG_TO_RAD * fov;
+	SetAspectRatio(r);
 }
 
-void ModuleCamera::SetAspectRatio(float r)
+void ModuleCamera::SetAspectRatio(float aspect_ratio)
 {
 	float fov = frustum->verticalFov;
-	SetFOH(fov, r);
+	frustum->horizontalFov = 2.0f * atanf(tanf(fov / 2.0f) * aspect_ratio);
 }
 
 void ModuleCamera::SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance)
@@ -201,47 +207,39 @@ void ModuleCamera::SetPlaneDistances(float nearPlaneDistance, float farPlaneDist
 	frustum->farPlaneDistance = farPlaneDistance;
 }
 
-void ModuleCamera::SetPosition(float3 position)
+void ModuleCamera::SetPosition(const float3& position)
 {
 	frustum->pos = position;
 }
 
-void ModuleCamera::SetOrientation(float3 rotation)
+void ModuleCamera::SetOrientation(const float3& rotation)
 {
-	frustum->front = float3(0, 0, 1);
-	frustum->up = float3(0, 1, 0);
+	frustum->front = float3::unitZ;
+	frustum->up = float3::unitY;
 }
 
-void ModuleCamera::LookAt(float3 position)
+void ModuleCamera::LookAt(const float3& position)
 {
-	frustum->front = frustum->pos - position;
+	float3 direction = position - frustum->pos;
+
+	float3x3 matrix = float3x3::LookAt(frustum->front, direction.Normalized(), frustum->up, float3::unitY);
+
+	frustum->front = matrix.MulDir(frustum->front).Normalized();
+	frustum->up = matrix.MulDir(frustum->up).Normalized();
 }
 
-float* ModuleCamera::GetProjectionMatrix()
+float* ModuleCamera::GetProjectionMatrix() const
 {
-	float* ret = &(frustum->ProjectionMatrix().Transposed().v[0][0]);
-	return ret;
+	float4x4 matrix = frustum->ProjectionMatrix();
+
+	return (float*)matrix.Transposed().v;
 }
 
-float* ModuleCamera::GetViewMatrix()
+float* ModuleCamera::GetViewMatrix() const 
 {
-	float4x4 view_matrix = frustum->ViewMatrix();
-	float* ret = &(view_matrix.Transposed().v[0][0]);
-	return ret;
-}
+	float4x4 matrix = (float4x4)frustum->ViewMatrix();
 
-void ModuleCamera::WindowResize(int width, int height)
-{
-	float fov = 2 * Atan(width);
-	float foh = 2 * Atan(height);
-	frustum->verticalFov = fov;
-	frustum->horizontalFov = foh;
-}
-
-void ModuleCamera::SetFOH(float fov, float r)
-{
-	float foh = r * fov;
-	frustum->horizontalFov = foh;
+	return (float*)matrix.Transposed().v;
 }
 
 

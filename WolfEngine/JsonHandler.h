@@ -20,11 +20,6 @@ public:
 	bool UnloadObject();
 	bool LoadArrayInObject(const char* name);
 
-	bool GetRect(SDL_Rect& rect, const char* name);
-	bool GetPoint(iPoint& point, const char* name);
-	bool GetPoint3D(Point3d& point, const char* name);
-	bool GetPoint(fPoint& point, const char* name);
-	bool GetAnimation(Animation& anim, const char* name);
 	bool GetIntArray(const char* name, int* int_array);
 
 	const char* GetString(const char* name);
@@ -35,16 +30,8 @@ public:
 
 	int GetIntFromArray(size_t index_array);
 	const char* GetStringFromArray(size_t index_array);
-	bool GetRectFromArray(SDL_Rect& rect, size_t index_array);
-	bool GetPointFromArray(iPoint& point, size_t index_array);
 	int GetIntFromArrayInArray(size_t array_element, size_t index_array);
 	const char* GetStringFromArrayInArray(size_t array_element, size_t index_array);
-
-private:
-	bool ArrayToRect(SDL_Rect& rect, JSON_Array* rect_array);
-	bool ArrayToPoint(iPoint& point, JSON_Array* point_array);
-	bool ArrayToPoint(fPoint& point, JSON_Array* point_array);
-	bool ArrayToPoint3d(Point3d& point, JSON_Array* point_array);
 
 private:
 	JSON_Object* root_object = nullptr;
