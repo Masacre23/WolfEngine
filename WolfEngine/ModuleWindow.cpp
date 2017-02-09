@@ -1,7 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
-#include "ModuleRender.h"
+#include "ModuleCamera.h"
 #include "SDL/include/SDL.h"
 #include "JsonHandler.h"
 
@@ -32,6 +32,8 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 }
 	 else
 	 {
+		 width = SCREENWIDTH * SCREENSIZE;
+		 height = SCREENHEIGHT * SCREENSIZE;
 		 Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 
 		 // Set OpenGL Attributes
@@ -54,7 +56,7 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 		 if (FULLSCREEN_DESKTOP)
 			 flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-		 window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, flags);
+		 window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 		 if (window == nullptr)
 		 {
@@ -77,6 +79,31 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 return true;
  }
 
+ update_status ModuleWindow::PreUpdate(float dt)
+ {
+	 SDL_Event event;
+	 Uint32 windowID = SDL_GetWindowID(window);
+	 while (SDL_PollEvent(&event)) {
+		 switch (event.type) {
+
+		 case SDL_WINDOWEVENT: 
+			 if (event.window.windowID == windowID) {
+				 switch (event.window.event) {
+
+				 case SDL_WINDOWEVENT_SIZE_CHANGED: 
+					 width = event.window.data1;
+					 height = event.window.data2;
+					 App->camera->WindowResize(width, height);
+					 break;
+				 }
+			 }
+			 break;
+		 }
+	 }
+	 return UPDATE_CONTINUE;
+ }
+
+
  bool ModuleWindow::CleanUp()
  {
 	 LOG("Destroying SDL window and quitting all SDL systems");
@@ -92,14 +119,6 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 //Quit SDL subsystems
 	 SDL_Quit();
 	 return true;
- }
-
- void ModuleWindow::WindowResize(int width, int height)
- {
-	 screen_width = width;
-	 screen_height = height;
-
-	 App->renderer->WindowResize(width, height);
  }
 
  void ModuleWindow::SetFPStoWindow(int total_frames, float total_seconds, Uint32 update_ms, int current_fps, float dt)
@@ -118,8 +137,9 @@ ModuleWindow::ModuleWindow() : Module(MODULE_WINDOW)
 	 if (App->parser->LoadObject(APP_SECTION) == true)
 	 {
 		 TITLE = App->parser->GetString("Title");
-		 screen_width = App->parser->GetInt("Resolution.Width");
-		 screen_height = App->parser->GetInt("Resolution.Height");
+		 SCREENWIDTH = App->parser->GetInt("Resolution.Width");
+		 SCREENHEIGHT = App->parser->GetInt("Resolution.Height");
+		 SCREENSIZE = App->parser->GetInt("Resolution.Scale");
 		 ret = App->parser->UnloadObject();
 	 }
 	 else

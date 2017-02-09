@@ -3,7 +3,8 @@
 		"Title" : "Wolf Engine",
 		"Resolution" : { 
 			"Width" : 800, 
-			"Height" : 600
+			"Height" : 600, 
+			"Scale" : 1 
 			},
 		"FpsCap": 60
 	},

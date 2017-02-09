@@ -46,6 +46,8 @@ bool ModuleInput::Init()
 
 bool ModuleInput::Start()
 {
+	SCREENSIZE = App->window->GetScreenSize();
+
 	return true;
 }
 
@@ -107,10 +109,6 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_WINDOWEVENT_RESTORED:
 				bwindowEvents[WE_SHOW] = true;
 				break;
-
-			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				App->window->WindowResize(event_general.window.data1, event_general.window.data2);
-				break;
 			}
 			
 		case SDL_MOUSEBUTTONDOWN:
@@ -122,10 +120,10 @@ update_status ModuleInput::PreUpdate(float dt)
 			break;
 
 		case SDL_MOUSEMOTION:
-			mouse_motion.x = event_general.motion.xrel;
-			mouse_motion.y = event_general.motion.yrel;
-			mouse_position.x = event_general.motion.x;
-			mouse_position.y = event_general.motion.y;
+			mouse_motion.x = event_general.motion.xrel / SCREENSIZE;
+			mouse_motion.y = event_general.motion.yrel / SCREENSIZE;
+			mouse_position.x = event_general.motion.x / SCREENSIZE;
+			mouse_position.y = event_general.motion.y / SCREENSIZE;
 			break;
 		}
 	}
