@@ -53,7 +53,6 @@ private:
 	KeyState* mouse_buttons;
 	int MAX_KEYS;
 	int NUM_BUTTONS;
-	int SCREENSIZE;
 };
 
 #endif // !MODULEINPUT_H
