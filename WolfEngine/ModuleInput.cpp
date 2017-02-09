@@ -54,6 +54,7 @@ update_status ModuleInput::PreUpdate(float dt)
 	static SDL_Event event_general;
 
 	mouse_motion = { 0, 0 };
+	mouse_wheel = { 0, 0 };
 	memset(bwindowEvents, false, WE_COUNT * sizeof(bool));
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
@@ -126,6 +127,9 @@ update_status ModuleInput::PreUpdate(float dt)
 			mouse_motion.y = event_general.motion.yrel;
 			mouse_position.x = event_general.motion.x;
 			mouse_position.y = event_general.motion.y;
+			break;
+		case SDL_MOUSEWHEEL:
+			mouse_wheel.y = event_general.wheel.y;
 			break;
 		}
 	}

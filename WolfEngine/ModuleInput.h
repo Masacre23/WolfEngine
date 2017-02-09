@@ -42,10 +42,12 @@ public:
 	bool GetWindowEvent(EventWindow code) const { return bwindowEvents[code]; }
 	const iPoint& GetMouseMotion() const { return mouse_motion; }
 	const iPoint& GetMousePosition() const { return mouse_position; }
+	const iPoint& GetMouseWheel() const { return mouse_wheel; }
 
 public:
 	iPoint mouse_motion;
 	iPoint mouse_position;
+	iPoint mouse_wheel;
 
 private:
 	bool bwindowEvents[WE_COUNT];
