@@ -43,6 +43,7 @@ update_status ModuleCamera::Update(float dt)
 	float3 direction_forward = frustum->front;
 	float3 direction_right = frustum->WorldRight();
 	float3 direction_up = float3::unitY;
+	bool shift_pressed = (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT);
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) movement += direction_forward;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) movement -= direction_forward;
@@ -50,8 +51,10 @@ update_status ModuleCamera::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) movement += direction_right;
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) movement += direction_up;
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) movement -= direction_up;
+	
+	movement += direction_forward * App->input->mouse_wheel.y * 5.0f;
 
-	frustum->Translate(movement * translation_speed * dt);
+	frustum->Translate(movement * translation_speed * (shift_pressed ? 2 : 1) * dt);
 
 	// Camera rotation
 	//SDL_WarpMouseGlobal(App->window->GetScreenWidth() / 2, App->window->GetScreenHeight() / 2);
@@ -63,7 +66,7 @@ update_status ModuleCamera::Update(float dt)
 	//int dy = y - App->window->GetScreenHeight()/2;
 	int dx = App->input->mouse_motion.x;
 	int dy = App->input->mouse_motion.y;
-	if (App->input->GetMouseButtonDown(1) == KEY_REPEAT) {
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
 		if (dx != 0)
 		{
 			Quat q;
