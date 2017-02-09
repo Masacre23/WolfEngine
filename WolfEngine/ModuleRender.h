@@ -25,11 +25,7 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
-	void WindowResize(int width, int height);
-
 private:
-	void ResetProjection();
-
 	void LoadCubeGeometry();
 
 	void DrawCube(float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
@@ -44,6 +40,9 @@ public:
 
 private:
 	SDL_GLContext glcontext = NULL;
+	int SCREENSIZE = 0;
+	int SCREENWIDTH = 0;
+	int SCREENHEIGHT = 0;
 	float DEFAULT_SPEED = 1.0f;
 	bool VSYNC = true;
 

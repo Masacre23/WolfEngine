@@ -17,15 +17,20 @@ public:
 	bool CleanUp();
 
 	void SetFOV(float fov);
-	void SetAspectRatio(float aspect_ratio);
+	void SetAspectRatio(float r);
 	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
-	void SetPosition(const float3& position);
-	void SetOrientation(const float3& rotation);
+	void SetPosition(float3 position);
+	void SetOrientation(float3 rotation);
 
-	void LookAt(const float3& position);
+	void LookAt(float3 position);
 
-	float* GetProjectionMatrix() const;
-	float* GetViewMatrix() const;
+	float* GetProjectionMatrix();
+	float* GetViewMatrix();
+
+	void WindowResize(int width, int height);
+
+private:
+	void SetFOH(float fov, float r);
 
 private:
 	int speed = 1;
