@@ -28,7 +28,8 @@ public:
 	float* GetViewMatrix() const;
 
 private:
-	int speed = 1;
+	float translation_speed = 1.0f;
+	float rotation_speed = 40.0f;
 	Frustum* frustum;
 };
 
