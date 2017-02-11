@@ -150,42 +150,29 @@ void ModuleRender::ResetProjection()
 
 void ModuleRender::LoadCubeGeometry()
 {
-	float3 A = { -0.5f, -0.5f, -0.5f };
-	float3 B = { 0.5f, -0.5f, -0.5f };
-	float3 C = { -0.5f, 0.5f, -0.5f };
-	float3 D = { 0.5f, 0.5f, -0.5f };
-	float3 E = { -0.5f, -0.5f, 0.5f };
-	float3 F = { 0.5f, -0.5f, 0.5f };
-	float3 G = { -0.5f, 0.5f, 0.5f };
-	float3 H = { 0.5f, 0.5f, 0.5f };
+	float3 A = { -0.5f, -0.5f, 0.5f };
+	float3 B = { 0.5f, -0.5f, 0.5f };
+	float3 C = { -0.5f, 0.5f, 0.5f };
+	float3 D = { 0.5f, 0.5f, 0.5f };
+	float3 E = { -0.5f, -0.5f, -0.5f };
+	float3 F = { 0.5f, -0.5f, -0.5f };
+	float3 G = { -0.5f, 0.5f, -0.5f };
+	float3 H = { 0.5f, 0.5f, -0.5f };
+	float3 F2 = { 0.5f, -0.5f, -0.5f };
+	float3 G2 = { -0.5f, 0.5f, -0.5f };
 
-	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z };
-	num_vertices = 8;
-	float colors_edges[] = { 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0, 0,3,0 };
-	float colors_faces[] = { 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3, 3,3,3 };
-	float colors_diagonals[] = { 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0, 3,3,0 };
-	num_colors = 8;
-	float check_coord[] = { 0,0, 1,0, 0,1, 1,1, 1,1, 0,1, 0,0, 1,0 };
+	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z, F2.x, F2.y, F2.z, G2.x, G2.y, G2.z };
+	num_vertices = 10;
+	float check_coord[] = { 0,0, 4,0, 0,4, 4,4, 0,4, 4,4, 0,0, 4,0, 0,0, 4,4 };
 
-	int triangles_indices[] = { 2, 1, 0,  3, 1, 2,  5, 1, 3,  7, 5, 3,  0, 4, 6,  2, 0, 6,  6, 3, 2,  7, 3, 6,  4, 7, 6,  5, 7, 4,  0, 5, 4,  1, 5, 0 };
+	int triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 1, 8,  3, 8, 7,  9, 4, 0,  9, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
 	num_indices_triangles = 36;
 	int lines_indices[] = { 0,1, 1,3, 3,2, 2,0, 1,5, 5,7, 7,3, 0,4, 4,6, 6,2, 6,7, 5,4 };
 	num_indices_edges = 24;
-	int diagonals_indices[] = { 1,2, 0,6, 5,3, 3,6, 5,0, 7,4 };
-	num_indices_diagonals = 12;
 
 	glGenBuffers(1, (GLuint*) &(id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
-	glGenBuffers(1, (GLuint*) &(id_colors_edges));
-	glBindBuffer(GL_ARRAY_BUFFER, id_colors_edges);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_colors, colors_edges, GL_STATIC_DRAW);
-	glGenBuffers(1, (GLuint*) &(id_colors_faces));
-	glBindBuffer(GL_ARRAY_BUFFER, id_colors_faces);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_colors, colors_faces, GL_STATIC_DRAW);
-	glGenBuffers(1, (GLuint*) &(id_colors_diagonals));
-	glBindBuffer(GL_ARRAY_BUFFER, id_colors_diagonals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_colors, colors_diagonals, GL_STATIC_DRAW);
 
 	glGenBuffers(1, (GLuint*) &(id_texture));
 	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
@@ -194,12 +181,6 @@ void ModuleRender::LoadCubeGeometry()
 	glGenBuffers(1, (GLuint*) &(id_indices_triangles));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_triangles, triangles_indices, GL_STATIC_DRAW);
-	glGenBuffers(1, (GLuint*) &(id_indices_edges));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_edges);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_edges, lines_indices, GL_STATIC_DRAW);
-	glGenBuffers(1, (GLuint*) &(id_indices_diagonals));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_diagonals);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_diagonals, diagonals_indices, GL_STATIC_DRAW);
 }
 
 void ModuleRender::LoadCheckers()

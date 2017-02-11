@@ -53,15 +53,12 @@ private:
 	unsigned int id_texture;
 	unsigned int id_colors_edges;
 	unsigned int id_colors_faces;
-	unsigned int id_colors_diagonals;
 	unsigned int num_colors;
 
 	unsigned int id_indices_triangles;
 	unsigned int num_indices_triangles;
 	unsigned int id_indices_edges;
 	unsigned int num_indices_edges;
-	unsigned int id_indices_diagonals;
-	unsigned int num_indices_diagonals;
 	float angle = 0.0f;
 
 	unsigned int checkers_id;
