@@ -28,8 +28,8 @@ bool ModuleTextures::Init()
 	iluInit();
 	ilutRenderer(ILUT_OPENGL);
 
-	LoadDebugImage();
 	LoadCheckers();
+	texture_debug = LoadTexture("Resources/Lenna.png");
 
 	return ret;
 }
@@ -43,23 +43,27 @@ bool ModuleTextures::CleanUp()
 	return true;
 }
 
-void ModuleTextures::LoadDebugImage()
+unsigned int ModuleTextures::LoadTexture(const char * path)
 {
+	unsigned int ret = 0;
+
 	ILuint debug_image = ilGenImage();
 	ilBindImage(debug_image);
-	ilLoadImage("Resources/Lenna.png");
+	ilLoadImage(path);
 
 	ILenum Error = ilGetError();
 	if (Error != IL_NO_ERROR)
 		LOG("Error %d: %s/n", Error, iluErrorString(Error));
 
-	texture_debug = ilutGLBindTexImage();
+	ret = ilutGLBindTexImage();
 
 	Error = ilGetError();
 	if (Error != IL_NO_ERROR)
 		LOG("Error %d: %s/n", Error, iluErrorString(Error));
 
 	ilDeleteImage(debug_image);
+
+	return ret;
 }
 
 void ModuleTextures::LoadCheckers()
