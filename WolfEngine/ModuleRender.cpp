@@ -150,21 +150,12 @@ void ModuleRender::LoadCubeGeometry()
 {
 	float3 A = { -0.5f, -0.5f, 0.5f };
 	float3 B = { 0.5f, -0.5f, 0.5f };
-	
 	float3 C = { -0.5f, 0.5f, 0.5f };
 	float3 D = { 0.5f, 0.5f, 0.5f };
-	
 	float3 E = { -0.5f, -0.5f, -0.5f };
 	float3 F = { 0.5f, -0.5f, -0.5f };
-	
 	float3 G = { -0.5f, 0.5f, -0.5f };
 	float3 H = { 0.5f, 0.5f, -0.5f };
-
-	float3 A2 = { -0.5f, -0.5f, 0.5f };
-	float3 B2 = { 0.5f, -0.5f, 0.5f };
-
-	float3 G2 = { -0.5f, 0.5f, -0.5f };
-	float3 H2 = { 0.5f, 0.5f, -0.5f };
 
 	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z, A.x, A.y, A.z,  B.x, B.y, B.z, G.x, G.y, G.z, H.x, H.y, H.z };
 	num_vertices = 12;

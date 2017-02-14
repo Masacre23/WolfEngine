@@ -17,7 +17,6 @@ ModuleTextures::ModuleTextures() : Module(MODULE_TEXTURES)
 
 ModuleTextures::~ModuleTextures()
 {
-	
 }
 
 bool ModuleTextures::Init()
@@ -38,6 +37,8 @@ bool ModuleTextures::Init()
 bool ModuleTextures::CleanUp()
 {
 	LOG("Freeing textures and Image library");
+
+	ilShutDown();
 
 	return true;
 }
