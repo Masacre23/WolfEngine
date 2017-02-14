@@ -1,12 +1,10 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <assimp/scene.h>
+class aiScene;
 
 class Model
 {
-	const aiScene* scene = nullptr;
-
 public:
 	Model();
 	~Model();
@@ -14,6 +12,9 @@ public:
 	void Load(const char* file);
 	void Clear();
 	void Draw();
+
+private:
+	const aiScene* scene = nullptr;
 
 };
 

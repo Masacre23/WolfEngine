@@ -1,9 +1,10 @@
 #include "Model.h"
+#include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
 
-#pragma comment(lib, "assimp/libx86/assimp.lib")
+#pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
 
 Model::Model()
 {
@@ -21,7 +22,7 @@ void Model::Load(const char * file)
 
 void Model::Clear()
 {
-	scene = nullptr;
+	aiReleaseImport(scene);
 }
 
 void Model::Draw()
@@ -37,4 +38,5 @@ void Model::Draw()
 			}
 		}
 	}
+	glEnd();
 }

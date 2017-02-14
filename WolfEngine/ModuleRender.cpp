@@ -192,6 +192,8 @@ void ModuleRender::LoadCubeGeometry()
 void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale, float angle, float3 rotation)
 {
 	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -223,6 +225,7 @@ void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	glPopMatrix();
 }
 
 void ModuleRender::DrawBasePlane()
