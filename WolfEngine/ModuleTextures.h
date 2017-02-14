@@ -17,8 +17,9 @@ public:
 	bool Init();
 	bool CleanUp();
 
+	unsigned int LoadTexture(const char* path);
+
 private:
-	void LoadDebugImage();
 	void LoadCheckers();
 
 public:
