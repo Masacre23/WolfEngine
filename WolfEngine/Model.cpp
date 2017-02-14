@@ -1,4 +1,5 @@
 #include "Model.h"
+#include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -22,7 +23,7 @@ void Model::Load(const char * file)
 
 void Model::Clear()
 {
-	scene = nullptr;
+	aiReleaseImport(scene);
 }
 
 void Model::Draw()
