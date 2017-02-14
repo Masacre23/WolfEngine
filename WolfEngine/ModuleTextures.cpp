@@ -3,9 +3,9 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "OpenGL.h"
-#include "DevIL\include\IL\il.h"
-#include "DevIL\include\IL\ilu.h"
-#include "DevIL\include\IL\ilut.h"
+#include <IL\il.h>
+#include <IL\ilu.h>
+#include <IL\ilut.h>
 
 #pragma comment( lib, "DevIL/libx86/DevIL.lib" )
 #pragma comment( lib, "DevIL/libx86/ILU.lib" )
