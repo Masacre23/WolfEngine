@@ -34,6 +34,9 @@
     <Filter Include="Engine Modules">
       <UniqueIdentifier>{98cfa6b0-d679-4938-b81f-5c6b366e42b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Clases">
+      <UniqueIdentifier>{d3f4f139-a3c9-4e1e-b4fd-0a36a5039496}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -165,6 +168,7 @@
     <ClCompile Include="ModuleCamera.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -395,6 +399,7 @@
     <ClInclude Include="ModuleCamera.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Model.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\src\Geometry\KDTree.inl">
