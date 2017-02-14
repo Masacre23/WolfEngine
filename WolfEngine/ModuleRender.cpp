@@ -89,6 +89,7 @@ bool ModuleRender::Init()
 		GLfloat light_position[] = { 0.25f, 1.0f, 1.0f, 1.0f };
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+		ret = ret && GetGLError();
 	}
 
 	return ret;
