@@ -27,13 +27,13 @@ public:
 
 	void WindowResize(int width, int height);
 
+	void DrawCube(unsigned int texture, float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
+
 private:
 	void ResetProjection();
 
 	void LoadCubeGeometry();
-	void LoadCubeCheckersGeometry();
 
-	void DrawCube(unsigned int texture, float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
 	void DrawBasePlane();
 	void DrawAxis();
 

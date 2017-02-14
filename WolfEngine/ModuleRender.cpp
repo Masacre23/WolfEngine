@@ -76,10 +76,19 @@ bool ModuleRender::Init()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 		ret = ret && GetGLError();
+
+		glFrontFace(GL_CCW);
+		glCullFace(GL_BACK);
+
+		GLfloat light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		GLfloat light_position[] = { 0.25f, 1.0f, 1.0f, 1.0f };
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	}
 
 	return ret;
@@ -110,8 +119,6 @@ update_status ModuleRender::Update(float dt)
 {
 	DrawBasePlane();
 	DrawAxis();
-	DrawCube(App->textures->texture_debug);
-	DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 	
 	return UPDATE_CONTINUE;
 }
@@ -196,7 +203,7 @@ void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	glColor3f(3.0f, 3.0f, 3.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
 
 	glTranslatef(translate.x, translate.y, translate.z);
 	glScalef(scale.x, scale.y, scale.z);

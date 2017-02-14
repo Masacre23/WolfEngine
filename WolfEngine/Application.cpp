@@ -25,7 +25,7 @@ Application::Application()
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
 
-	modules.push_back(scene_ini = new ModuleSceneIni());
+	modules.push_back(scene_ini = new ModuleSceneIni(true));
 
 	LOG("App construction time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
 	LOG("App construction time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());

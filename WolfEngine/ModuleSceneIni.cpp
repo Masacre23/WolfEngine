@@ -29,7 +29,8 @@ bool ModuleSceneIni::CleanUp()
 // Draw the elements of the scene
 update_status ModuleSceneIni::Update(float dt)
 {
-	// Draw everything
+	App->renderer->DrawCube(App->textures->texture_debug);
+	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 
 	return UPDATE_CONTINUE;
 }
