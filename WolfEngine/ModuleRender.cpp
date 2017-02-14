@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
 #include "ModuleCamera.h"
+#include "ModuleTextures.h"
 #include "SDL/include/SDL.h"
 #include "OpenGL.h"
 #include "Math.h"
@@ -88,8 +89,6 @@ bool ModuleRender::Start()
 {
 	LoadCubeGeometry();
 
-	LoadCheckers();
-
 	return true;
 }
 
@@ -103,8 +102,6 @@ update_status ModuleRender::PreUpdate(float dt)
 	ResetProjection();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(App->camera->GetViewMatrix());
-	
-	//glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
 
 	return UPDATE_CONTINUE;
 }
@@ -113,7 +110,8 @@ update_status ModuleRender::Update(float dt)
 {
 	DrawBasePlane();
 	DrawAxis();
-	DrawCube();
+	DrawCube(App->textures->texture_debug);
+	DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 	
 	return UPDATE_CONTINUE;
 }
@@ -152,72 +150,62 @@ void ModuleRender::LoadCubeGeometry()
 {
 	float3 A = { -0.5f, -0.5f, 0.5f };
 	float3 B = { 0.5f, -0.5f, 0.5f };
+	
 	float3 C = { -0.5f, 0.5f, 0.5f };
 	float3 D = { 0.5f, 0.5f, 0.5f };
+	
 	float3 E = { -0.5f, -0.5f, -0.5f };
 	float3 F = { 0.5f, -0.5f, -0.5f };
+	
 	float3 G = { -0.5f, 0.5f, -0.5f };
 	float3 H = { 0.5f, 0.5f, -0.5f };
-	float3 F2 = { 0.5f, -0.5f, -0.5f };
+
+	float3 A2 = { -0.5f, -0.5f, 0.5f };
+	float3 B2 = { 0.5f, -0.5f, 0.5f };
+
 	float3 G2 = { -0.5f, 0.5f, -0.5f };
+	float3 H2 = { 0.5f, 0.5f, -0.5f };
 
-	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z, F2.x, F2.y, F2.z, G2.x, G2.y, G2.z };
-	num_vertices = 10;
-	float check_coord[] = { 0,0, 4,0, 0,4, 4,4, 0,4, 4,4, 0,0, 4,0, 0,0, 4,4 };
+	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z, A.x, A.y, A.z,  B.x, B.y, B.z, G.x, G.y, G.z, H.x, H.y, H.z };
+	num_vertices = 12;
+	float texture_coord[] = { 0,0, 1,0, 0,1, 1,1, 1,0, 0,0, 1,1, 0,1, 1,1, 0,1, 0,0, 1,0 };
+	float check_coord[] = { 0,0, 4,0, 0,4, 4,4, 4,0, 0,0, 4,4, 0,4, 4,4, 0,4, 0,0, 4,0 };
 
-	int triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 1, 8,  3, 8, 7,  9, 4, 0,  9, 0, 2,  2, 3, 6,  6, 3, 7,  6, 7, 4,  4, 7, 5,  4, 5, 0,  0, 5, 1 };
+	int triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 9, 5,  3, 5, 11,  10, 4, 8,  10, 8, 2,  2, 3, 10,  10, 3, 11,  6, 7, 4,  4, 7, 5,  4, 5, 8,  8, 5, 9 };
 	num_indices_triangles = 36;
-	int lines_indices[] = { 0,1, 1,3, 3,2, 2,0, 1,5, 5,7, 7,3, 0,4, 4,6, 6,2, 6,7, 5,4 };
-	num_indices_edges = 24;
 
 	glGenBuffers(1, (GLuint*) &(id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
 
+	glGenBuffers(1, (GLuint*) &(id_texture_check));
+	glBindBuffer(GL_ARRAY_BUFFER, id_texture_check);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, check_coord, GL_STATIC_DRAW);
+
 	glGenBuffers(1, (GLuint*) &(id_texture));
 	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, check_coord, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, texture_coord, GL_STATIC_DRAW);
 
 	glGenBuffers(1, (GLuint*) &(id_indices_triangles));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_triangles, triangles_indices, GL_STATIC_DRAW);
 }
 
-void ModuleRender::LoadCheckers()
+void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale, float angle, float3 rotation)
 {
-	const int CHECKERS_HEIGHT = 16;
-	const int CHECKERS_WIDTH = 16;
-
-	GLubyte checkImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
-	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
-		for (int j = 0; j < CHECKERS_WIDTH; j++) {
-			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
-			checkImage[i][j][0] = (GLubyte)c;
-			checkImage[i][j][1] = (GLubyte)c;
-			checkImage[i][j][2] = (GLubyte)c;
-			checkImage[i][j][3] = (GLubyte)255;
-		}
-	}
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &checkers_id);
-	glBindTexture(GL_TEXTURE_2D, checkers_id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void ModuleRender::DrawCube(float3 translate, float3 scale, float angle, float3 rotation)
-{
-	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_MODELVIEW);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glBindTexture(GL_TEXTURE_2D, checkers_id);
+	GLuint id_texture;
+	if (texture == App->textures->texture_checkers)
+		id_texture = id_texture_check;
+	else
+		id_texture = this->id_texture;
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glColor3f(3.0f, 3.0f, 3.0f);
 
 	glTranslatef(translate.x, translate.y, translate.z);
 	glScalef(scale.x, scale.y, scale.z);

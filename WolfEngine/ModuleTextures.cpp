@@ -2,10 +2,14 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
-#include "SDL/include/SDL.h"
+#include "OpenGL.h"
+#include "DevIL\include\IL\il.h"
+#include "DevIL\include\IL\ilu.h"
+#include "DevIL\include\IL\ilut.h"
 
-#include "SDL_image/include/SDL_image.h"
-#pragma comment( lib, "SDL_image/libx86/SDL2_image.lib" )
+#pragma comment( lib, "DevIL/libx86/DevIL.lib" )
+#pragma comment( lib, "DevIL/libx86/ILU.lib" )
+#pragma comment( lib, "DevIL/libx86/ILUT.lib" )
 
 ModuleTextures::ModuleTextures() : Module(MODULE_TEXTURES)
 {
@@ -13,23 +17,20 @@ ModuleTextures::ModuleTextures() : Module(MODULE_TEXTURES)
 
 ModuleTextures::~ModuleTextures()
 {
-	IMG_Quit();
+	
 }
 
 bool ModuleTextures::Init()
 {
-	LOG("Init Image library");
+	LOG("Init Image library via DevIL library");
 	bool ret = true;
 
-	// load support for the PNG image format
-	int flags = IMG_INIT_PNG;
-	int init = IMG_Init(flags);
+	ilInit();
+	iluInit();
+	ilutRenderer(ILUT_OPENGL);
 
-	if ((init & flags) != flags)
-	{
-		LOG("Could not initialize Image lib. IMG_Init: %s", IMG_GetError());
-		ret = false;
-	}
+	LoadDebugImage();
+	LoadCheckers();
 
 	return ret;
 }
@@ -38,56 +39,53 @@ bool ModuleTextures::CleanUp()
 {
 	LOG("Freeing textures and Image library");
 
-	for (std::list<SDL_Texture*>::iterator it = textures.begin(); it != textures.end(); ++it)
-		SDL_DestroyTexture(*it);
-
-	textures.clear();
 	return true;
 }
 
-SDL_Texture* const ModuleTextures::Load(const char* path)
+void ModuleTextures::LoadDebugImage()
 {
-	SDL_Texture* texture = nullptr;
-	SDL_Surface* surface;
+	ILuint debug_image = ilGenImage();
+	ilBindImage(debug_image);
+	ilLoadImage("Resources/Lenna.png");
 
-	if (path != nullptr)
-	{
-		surface = IMG_Load(path);
-		if (surface == nullptr)
-		{
-			LOG("Could not load surface with path: %s. IMG_Load: %s", path, IMG_GetError());
-		}
-		else
-		{
-			texture = SDL_CreateTextureFromSurface(App->renderer->renderer, surface);
+	ILenum Error = ilGetError();
+	if (Error != IL_NO_ERROR)
+		LOG("Error %d: %s/n", Error, iluErrorString(Error));
 
-			if (texture == nullptr)
-			{
-				LOG("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
-			}
-			else
-			{
-				textures.push_back(texture);
-			}
+	texture_debug = ilutGLBindTexImage();
 
-			SDL_FreeSurface(surface);
-		}
-	}
-	else
-		LOG("Texture path is NULL");
+	Error = ilGetError();
+	if (Error != IL_NO_ERROR)
+		LOG("Error %d: %s/n", Error, iluErrorString(Error));
 
-	return texture;
+	ilDeleteImage(debug_image);
 }
 
-void ModuleTextures::Unload(SDL_Texture* texture)
+void ModuleTextures::LoadCheckers()
 {
-	for (std::list<SDL_Texture*>::iterator it = textures.begin(); it != textures.end(); ++it)
-	{
-		if (*it == texture)
-		{
-			SDL_DestroyTexture(*it);
-			textures.erase(it);
-			break;
+	const int CHECKERS_HEIGHT = 16;
+	const int CHECKERS_WIDTH = 16;
+
+	GLubyte checkImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
+	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
+		for (int j = 0; j < CHECKERS_WIDTH; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkImage[i][j][0] = (GLubyte)c;
+			checkImage[i][j][1] = (GLubyte)c;
+			checkImage[i][j][2] = (GLubyte)c;
+			checkImage[i][j][3] = (GLubyte)255;
 		}
 	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &texture_checkers);
+	glBindTexture(GL_TEXTURE_2D, texture_checkers);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
+

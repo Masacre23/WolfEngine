@@ -31,9 +31,9 @@ private:
 	void ResetProjection();
 
 	void LoadCubeGeometry();
-	void LoadCheckers();
+	void LoadCubeCheckersGeometry();
 
-	void DrawCube(float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
+	void DrawCube(unsigned int texture, float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
 	void DrawBasePlane();
 	void DrawAxis();
 
@@ -49,19 +49,14 @@ private:
 	bool VSYNC = true;
 
 	unsigned int id_vertices;
-	unsigned int num_vertices;
 	unsigned int id_texture;
-	unsigned int id_colors_edges;
-	unsigned int id_colors_faces;
-	unsigned int num_colors;
-
+	unsigned int num_vertices;
 	unsigned int id_indices_triangles;
-	unsigned int num_indices_triangles;
-	unsigned int id_indices_edges;
-	unsigned int num_indices_edges;
-	float angle = 0.0f;
 
-	unsigned int checkers_id;
+	unsigned int id_texture_check;
+
+	unsigned int num_indices_triangles;
+	float angle = 0.0f;
 };
 
 #endif // !MODULERENDER_H

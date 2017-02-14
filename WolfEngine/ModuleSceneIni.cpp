@@ -3,7 +3,6 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 
-
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
 
@@ -16,8 +15,6 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	LOG("Loading initial scene");
 
-	graphics = App->textures->Load("Resources/airou.png");
-
 	return res;
 }
 
@@ -25,8 +22,6 @@ bool ModuleSceneIni::Start()
 bool ModuleSceneIni::CleanUp()
 {
 	LOG("Unloading initial scene");
-
-	App->textures->Unload(graphics);
 
 	return true;
 }
