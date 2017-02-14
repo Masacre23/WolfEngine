@@ -50,8 +50,8 @@ private:
 
 	unsigned int id_vertices;
 	unsigned int id_texture;
-	unsigned int num_vertices;
 	unsigned int id_indices_triangles;
+	unsigned int id_normals;
 
 	unsigned int id_texture_check;
 
