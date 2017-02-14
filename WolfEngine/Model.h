@@ -5,8 +5,6 @@ class aiScene;
 
 class Model
 {
-	const aiScene* scene = nullptr;
-
 public:
 	Model();
 	~Model();
@@ -14,6 +12,9 @@ public:
 	void Load(const char* file);
 	void Clear();
 	void Draw();
+
+private:
+	const aiScene* scene = nullptr;
 
 };
 
