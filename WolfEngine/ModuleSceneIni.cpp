@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
+#include "Model.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -14,6 +15,9 @@ bool ModuleSceneIni::Start()
 {
 	bool res = true;
 	LOG("Loading initial scene");
+
+	batman = new Model();
+	batman->Load("Resources/Models/Batman/Batman.obj");
 
 	return res;
 }
@@ -31,6 +35,8 @@ update_status ModuleSceneIni::Update(float dt)
 {
 	App->renderer->DrawCube(App->textures->texture_debug);
 	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
+
+	batman->Draw();
 
 	return UPDATE_CONTINUE;
 }
