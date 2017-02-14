@@ -5,6 +5,8 @@
 #include "Animation.h"
 #include "Globals.h"
 
+class Model;
+
 class ModuleSceneIni : public Module
 {
 public:
@@ -16,7 +18,7 @@ public:
 	bool CleanUp();
 
 public:
-
+	Model* batman;
 };
 
 #endif
