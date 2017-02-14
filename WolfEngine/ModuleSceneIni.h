@@ -5,8 +5,6 @@
 #include "Animation.h"
 #include "Globals.h"
 
-struct SDL_Texture;
-
 class ModuleSceneIni : public Module
 {
 public:
@@ -18,7 +16,6 @@ public:
 	bool CleanUp();
 
 public:
-	SDL_Texture* graphics = nullptr;
 
 };
 

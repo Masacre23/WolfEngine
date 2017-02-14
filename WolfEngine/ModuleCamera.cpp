@@ -30,7 +30,7 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Start()
 {
-	SetPosition({ -1.0f, 1.0f, -4.0f });
+	SetPosition({ -1.0f, 2.0f, 4.0f });
 	LookAt(float3::zero);
 
 	return true;

@@ -17,11 +17,16 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	SDL_Texture* const Load(const char* path);
-	void Unload(SDL_Texture* texture);
+private:
+	void LoadDebugImage();
+	void LoadCheckers();
+
+public:
+	unsigned int texture_checkers;
+	unsigned int texture_debug;
 
 private:
-	std::list<SDL_Texture*> textures;
+	
 };
 
 
