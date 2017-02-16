@@ -37,6 +37,9 @@
     <Filter Include="Clases">
       <UniqueIdentifier>{d3f4f139-a3c9-4e1e-b4fd-0a36a5039496}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3rd Party\Imgui">
+      <UniqueIdentifier>{9ac9812d-2ae4-4bc5-b009-b054920a9394}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -170,6 +173,21 @@
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleEditor.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui.cpp">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_demo.cpp">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_draw.cpp">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_impl_sdl_gl3.cpp">
+      <Filter>3rd Party\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +421,30 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleEditor.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imconfig.h">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui.h">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_impl_sdl_gl3.h">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_internal.h">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\stb_rect_pack.h">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\stb_textedit.h">
+      <Filter>3rd Party\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\stb_truetype.h">
+      <Filter>3rd Party\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

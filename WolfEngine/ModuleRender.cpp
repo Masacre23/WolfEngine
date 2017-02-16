@@ -120,12 +120,13 @@ update_status ModuleRender::Update(float dt)
 {
 	DrawBasePlane();
 	DrawAxis();
-	
+
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleRender::PostUpdate(float dt)
 {
+	
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
 	return UPDATE_CONTINUE;
