@@ -1,6 +1,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <vector>
+
 class aiScene;
 
 class Model
@@ -15,6 +17,7 @@ public:
 
 private:
 	const aiScene* scene = nullptr;
+	std::vector<std::vector<unsigned int>> indices;
 
 };
 
