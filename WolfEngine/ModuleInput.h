@@ -9,6 +9,7 @@
 #define INPUT_SECTION "Config.Modules.Input"
 
 class JSONParser;
+class SDL_KeyboardEvent;
 
 enum EventWindow
 {
@@ -43,6 +44,9 @@ public:
 	const iPoint& GetMouseMotion() const { return mouse_motion; }
 	const iPoint& GetMousePosition() const { return mouse_position; }
 	const iPoint& GetMouseWheel() const { return mouse_wheel; }
+
+	void PrintKeyInfo(SDL_KeyboardEvent *key);
+	//void ModuleInput::PrintModifiers(SDLMod mod);
 
 public:
 	iPoint mouse_motion;
