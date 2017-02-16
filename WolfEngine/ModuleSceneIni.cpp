@@ -17,7 +17,7 @@ bool ModuleSceneIni::Start()
 	LOG("Loading initial scene");
 
 	batman = new Model();
-	batman->Load("Resources/Models/Batman/Batman.obj");
+	batman->Load("Resources/Models/Batman/","Batman.obj");
 
 	return res;
 }
