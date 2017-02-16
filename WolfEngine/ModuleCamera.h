@@ -5,6 +5,7 @@
 #include "Math.h"
 
 #define MODULE_CAMERA "ModuleCamera"
+#define CAMERA_SECTION "Config.Modules.EditorCamera"
 
 class ModuleCamera : public Module
 {
@@ -28,8 +29,9 @@ public:
 	float* GetViewMatrix() const;
 
 private:
-	float translation_speed = 1.0f;
-	float rotation_speed = 40.0f;
+	float speed_rotation = 0.5f;
+	float speed_translation = 1.0f;
+	float extra_speed_zoom = 10.0f;
 	Frustum* frustum;
 };
 

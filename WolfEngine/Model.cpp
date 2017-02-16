@@ -7,7 +7,6 @@
 
 #include "Application.h"
 #include "ModuleTextures.h"
-#include <vector>
 
 #pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
 
@@ -25,19 +24,13 @@ void Model::Load(const char * file)
 	scene = aiImportFile(file, aiProcess_PreTransformVertices | aiProcess_FlipUVs);
 	 
 	indices = new unsigned int *[scene->mNumMeshes];
-	indices_size = new  int [scene->mNumMeshes];
 	for (int i = 0; i < scene->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[i];
-		int cant_indicies = 0;
-		for (int j = 0; j < mesh->mNumFaces; ++j)
-		{
-			cant_indicies += mesh->mFaces[j].mNumIndices;
-		}
-		indices[i] = new unsigned int[cant_indicies];
-		indices_size[i] = cant_indicies;
+		indices[i] = new unsigned int[3.0f * mesh->mNumFaces];
 		int c = 0;
-		for (int j = 0; j < mesh->mNumFaces; ++j) {
+		for (int j = 0; j < mesh->mNumFaces; ++j) 
+		{
 			for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k)
 			{
 				indices[i][c++] = mesh->mFaces[j].mIndices[k];
@@ -48,34 +41,17 @@ void Model::Load(const char * file)
 
 void Model::Clear()
 {
+	for (int i = 0;  i < scene->mNumMeshes;  i++)
+	{
+		RELEASE_ARRAY(indices[i]);
+	}
+	RELEASE_ARRAY(indices);
+
 	aiReleaseImport(scene);
 }
 
 void Model::Draw()
 {
-	////CVertexBufferObject vboModelData;
-	//glBegin(GL_TRIANGLES);
-	//for (int i = 0; i < scene->mNumMeshes; ++i)
-	//{
-	//	aiMesh* mesh = scene->mMeshes[i];
-	//	for (int j = 0; j < mesh->mNumFaces; ++j) 
-	//	{
-	//		aiFace face = mesh->mFaces[j];
-	//		for (int k = 0; k < face.mNumIndices; ++k) 
-	//		{
-	//			aiVector3D pos = mesh->mVertices[face.mIndices[k]];
-	//			//aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[k]];
-	//			aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
-	//			glNormal3f(normal.x, normal.y, normal.z);
-	//			glVertex3f(pos.x, pos.y, pos.z);
-	//			const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
-	//			const aiVector3D pTexCoord = mesh->mTextureCoords[0][k];
-
-	//			//glTexCoord2f(uv.x, uv.y);
-	//		}
-	//	}
-	//}
-
 	//for (int i = 0; i < scene->mNumMaterials; ++i)
 	//{
 	//	const aiMaterial* material = scene->mMaterials[i];
@@ -108,24 +84,22 @@ void Model::Draw()
 	//		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	//	}
 	//}
-	/*glEnd();*/
 
 	for (int i = 0; i < scene->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[i];
 		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		glVertexPointer(3, GL_FLOAT, 0, mesh->mVertices);
+		glNormalPointer(GL_FLOAT, 0, mesh->mNormals);
+		glTexCoordPointer(mesh->mNumUVComponents[0], GL_FLOAT, 0, mesh->mTextureCoords[0]);
 		
-		/*glEnableClientState(GL_NORMAL_ARRAY);
-		glNormalPointer(GL_FLOAT, 0, mesh->mNormals);*/
+		glDrawElements(GL_TRIANGLES, 3.0f * mesh->mNumFaces, GL_UNSIGNED_INT,  indices[i]);
 		
-		/*glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(mesh->mNumUVComponents[0], GL_FLOAT, 0, mesh->mTextureCoords[0]);*/
-		
-		glDrawElements(GL_TRIANGLES, indices_size[i], GL_UNSIGNED_INT,  indices[i]);
-		
-	/*	glDisableClientState(GL_TEXTURE_COORD_ARRAY);*/
-		/*glDisableClientState(GL_NORMAL_ARRAY);*/
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 

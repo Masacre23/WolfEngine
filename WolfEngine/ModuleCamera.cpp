@@ -6,6 +6,7 @@
 
 #include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
+#include "JsonHandler.h"
 
 ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
@@ -30,7 +31,18 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Start()
 {
-	SetPosition({ -1.0f, 2.0f, 4.0f });
+	float3 initial_pos = float3::zero;
+	if (App->parser->LoadObject(CAMERA_SECTION))
+	{
+		speed_rotation = App->parser->GetFloat("RotationSpeed");
+		speed_translation = App->parser->GetFloat("TranslationSpeed");
+		extra_speed_zoom = App->parser->GetFloat("ZoomSpeedFactor");
+		App->parser->GetVector3("InitialPosition", &initial_pos);
+
+		App->parser->UnloadObject();
+	}
+
+	SetPosition(initial_pos);
 	LookAt(float3::zero);
 
 	return true;
@@ -38,7 +50,6 @@ bool ModuleCamera::Start()
 
 update_status ModuleCamera::Update(float dt)
 {
-
 	float3 movement = float3::zero;
 	float3 direction_forward = frustum->front;
 	float3 direction_right = frustum->WorldRight();
@@ -52,126 +63,27 @@ update_status ModuleCamera::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) movement += direction_up;
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) movement -= direction_up;
 	
-	movement += direction_forward * App->input->mouse_wheel.y * 5.0f;
+	movement += direction_forward * App->input->mouse_wheel.y * extra_speed_zoom;
 
-	frustum->Translate(movement * translation_speed * (shift_pressed ? 2 : 1) * dt);
+	frustum->Translate(movement * speed_translation * (shift_pressed ? 2 : 1) * dt);
 
 	// Camera rotation
-	//SDL_WarpMouseGlobal(App->window->GetScreenWidth() / 2, App->window->GetScreenHeight() / 2);
-
-	SDL_ShowCursor(0);
-	int x = 0, y = 0;
-	//SDL_GetMouseState(&x, &y);
-	//int dx = x - App->window->GetScreenWidth()/2;
-	//int dy = y - App->window->GetScreenHeight()/2;
 	int dx = App->input->mouse_motion.x;
 	int dy = App->input->mouse_motion.y;
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-		if (dx != 0)
-		{
-			Quat q;
-			static float last_positionX;
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) 
+	{
+		float angle = -dy * speed_rotation * dt;
+		Quat q = Quat::RotateAxisAngle(direction_right, angle);
+		frustum->up = q.Mul(frustum->up);
+		frustum->front = q.Mul(frustum->front);
 
-			if (App->input->mouse_position.x > last_positionX)
-				q = { 0,-0.008726535498373935f,0,0.9999619230641713f }; // 1 degree
-			else
-				q = { 0,0.008726535498373935f,0,0.9999619230641713f };
-	
-			last_positionX = App->input->mouse_position.x;
+		angle = - dx * speed_rotation * dt;
+		q = Quat::RotateY(angle);
+		frustum->up = q.Mul(frustum->up);
+		frustum->front = q.Mul(frustum->front);
 
-			float3 u = { q.x, q.y, q.z };
-			float s = q.w;
-			frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-			frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
-		}
-
-		if (dy != 0)
-		{
-			static float last_positionY;
-
-			float module = Sqrt(frustum->front.x * frustum->front.x + frustum->front.y * frustum->front.y + frustum->front.z* frustum->front.z);
-			float alfa = frustum->WorldRight().x / module;
-			float beta = frustum->WorldRight().y / module;
-			float tecta = frustum->WorldRight().z / module;
-
-			Quat q = { -0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
-			if (App->input->mouse_position.y < last_positionY)
-			{
-				q.w = Cos((pi / 360) / 2);
-				q.x = Sin((pi / 360) / 2)*alfa;
-				q.y = Sin((pi / 360) / 2)*beta;
-				q.z = Sin((pi / 360) / 2) * tecta;
-			}
-			else
-			{
-				q.w = Cos((pi / 360) / 2);
-				q.x = -Sin((pi / 360) / 2)*alfa;
-				q.y = -Sin((pi / 360) / 2)*beta;
-				q.z = -Sin((pi / 360) / 2) * tecta;
-			}
-
-			last_positionY = App->input->mouse_position.y;
-
-			float3 u = { q.x, q.y, q.z };
-			float s = q.w;
-			frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-			frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
-		}
+		
 	}
-	/*if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	{
-		Quat q = { 0,-0.008726535498373935f,0,0.9999619230641713f }; // 1 degree
-		float3 u = {q.x, q.y, q.z};
-		float s = q.w;
-		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-	{
-		Quat q = { 0,0.008726535498373935f,0,0.9999619230641713f }; // 1 degree
-		float3 u = { q.x, q.y, q.z };
-		float s = q.w;
-		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
-	}*/
-
-	/*if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-	{
-		float module = Sqrt(frustum->front.x * frustum->front.x + frustum->front.y * frustum->front.y + frustum->front.z* frustum->front.z);
-		float alfa = frustum->WorldRight().x / module;
-		float beta = frustum->WorldRight().y / module;
-		float tecta = frustum->WorldRight().z / module;
-
-		Quat q = { -0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
-		q.w = Cos((pi / 360)/2);
-		q.x = Sin((pi / 360) / 2)*alfa;
-		q.y = Sin((pi / 360) / 2)*beta;
-		q.z = Sin((pi / 360) / 2) * tecta;
-
-		float3 u = { q.x, q.y, q.z };
-		float s = q.w;
-		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-	{
-		float module = Sqrt(frustum->front.x * frustum->front.x + frustum->front.y * frustum->front.y + frustum->front.z* frustum->front.z);
-		float alfa = frustum->WorldRight().x / module;
-		float beta = frustum->WorldRight().y / module;
-		float tecta = frustum->WorldRight().z / module;
-
-		Quat q = { 0.008726535498373935f,0,0,0.9999619230641713f }; // 1 degree
-		q.w = Cos((pi / 360) / 2);
-		q.x = -Sin((pi / 360) / 2)*alfa;
-		q.y = -Sin((pi / 360) / 2)*beta;
-		q.z = -Sin((pi / 360) / 2) * tecta;
-		float3 u = { q.x, q.y, q.z };
-		float s = q.w;
-		frustum->up = 2.0f * Dot(u, frustum->up) * u + (s * s - Dot(u, u)) * frustum->up + 2.0f * s * Cross(u, frustum->up);
-		frustum->front = 2.0f * Dot(u, frustum->front) * u + (s * s - Dot(u, u)) * frustum->front + 2.0f * s * Cross(u, frustum->front);
-	}*/
 	return UPDATE_CONTINUE;
 }
 
