@@ -3,6 +3,7 @@
 
 #include "Point.h"
 #include "Globals.h"
+#include "MathGeoLib/src/Math/float3.h"
 
 typedef struct json_object_t JSON_Object;
 typedef struct json_array_t  JSON_Array;
@@ -32,6 +33,8 @@ public:
 	const char* GetStringFromArray(size_t index_array);
 	int GetIntFromArrayInArray(size_t array_element, size_t index_array);
 	const char* GetStringFromArrayInArray(size_t array_element, size_t index_array);
+
+	void GetVector3(const char* name, float3* vector);
 
 private:
 	JSON_Object* root_object = nullptr;
