@@ -19,9 +19,15 @@ Model::~Model()
 {
 }
 
-void Model::Load(const char * file)
+void Model::Load(const char* folder, const char* file)
 {
-	scene = aiImportFile(file, aiProcess_PreTransformVertices | aiProcess_FlipUVs);
+	aiString folder_path = aiString();
+	folder_path.Append(folder);
+
+	aiString file_path = aiString(folder_path);
+	file_path.Append(file);
+
+	scene = aiImportFile(file_path.data, aiProcess_PreTransformVertices);
 	 
 	indices = new unsigned int *[scene->mNumMeshes];
 	for (int i = 0; i < scene->mNumMeshes; ++i)
@@ -37,6 +43,30 @@ void Model::Load(const char * file)
 			}
 		}
 	}
+
+	textures = new unsigned int *[scene->mNumMaterials];
+	for (int i = 0; i < scene->mNumMaterials; i++)
+	{
+		aiMaterial* material = scene->mMaterials[i];
+
+		unsigned int texIndex = 0;
+		aiString path;
+		aiTextureType type_texture = aiTextureType_DIFFUSE;
+
+		textures[i] = new unsigned int[material->GetTextureCount(type_texture)];
+
+		for (int j = 0; j < material->GetTextureCount(type_texture); j++)
+		{
+			if (material->GetTexture(type_texture, j, &path) == AI_SUCCESS)
+			{
+				aiString sFullPath = aiString(folder_path);
+				sFullPath.Append(path.data);
+
+				textures[i][j] = App->textures->LoadTexture(sFullPath.data);
+			}
+		}
+		
+	}
 }
 
 void Model::Clear()
@@ -46,44 +76,13 @@ void Model::Clear()
 		RELEASE_ARRAY(indices[i]);
 	}
 	RELEASE_ARRAY(indices);
+	RELEASE_ARRAY(textures);
 
 	aiReleaseImport(scene);
 }
 
 void Model::Draw()
 {
-	//for (int i = 0; i < scene->mNumMaterials; ++i)
-	//{
-	//	const aiMaterial* material = scene->mMaterials[i];
-	//	//int a = 5;
-	//	int texIndex = 0;
-	//	aiString path;
-
-	//	if (material->GetTexture(aiTextureType_DIFFUSE, texIndex, &path) == AI_SUCCESS)
-	//	{
-	//		//aiString sDir = aiString("Resources/Models/Batman/Batman_Cape_D");
-	//		//aiString sTextureName = aiString(path.data);
-	//		aiString sFullPath = aiString("Resources/Models/Batman/");
-	//		sFullPath.Append(path.data);
-	//		int iTexFound = -1;
-
-	//		unsigned int texture = App->textures->LoadTexture(sFullPath.data);
-
-	//		glBindTexture(GL_TEXTURE_2D, texture);
-	//		//m_Textures[i] = NULL;
-	//		
-	//		//glTexCoord2f();
-
-	//		GLuint id_texture = 0;
-	//		/*if (texture == App->textures->texture_checkers)
-	//			id_texture = id_texture_check;
-	//		else
-	//			id_texture = this->id_texture;*/
-
-	//		glBindBuffer(GL_ARRAY_BUFFER, id_texture);
-	//		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-	//	}
-	//}
 
 	for (int i = 0; i < scene->mNumMeshes; ++i)
 	{
@@ -94,10 +93,14 @@ void Model::Draw()
 
 		glVertexPointer(3, GL_FLOAT, 0, mesh->mVertices);
 		glNormalPointer(GL_FLOAT, 0, mesh->mNormals);
-		glTexCoordPointer(mesh->mNumUVComponents[0], GL_FLOAT, 0, mesh->mTextureCoords[0]);
+
+		glBindTexture(GL_TEXTURE_2D, textures[mesh->mMaterialIndex][0]);
+		glTexCoordPointer(2, GL_FLOAT, sizeof(aiVector3D), mesh->mTextureCoords[0]);
 		
 		glDrawElements(GL_TRIANGLES, 3.0f * mesh->mNumFaces, GL_UNSIGNED_INT,  indices[i]);
 		
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
