@@ -17,8 +17,8 @@ public:
 
 private:
 	const aiScene* scene = nullptr;
-	std::vector<std::vector<unsigned int>> indices;
-
+	unsigned int** indices;
+	int* indices_size;
 };
 
 #endif // !MODEL_H
