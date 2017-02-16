@@ -3,8 +3,7 @@
 #include "parson\parson.h"
 #include "SDL/include/SDL_rect.h"
 #include "Animation.h"
-
-
+#include "Math.h"
 
 JSONParser::JSONParser(const char* file)
 {
@@ -337,4 +336,27 @@ const char* JSONParser::GetStringFromArrayInArray(size_t array_element, size_t i
 	}
 
 	return ret;
+}
+
+void JSONParser::GetVector3(const char* name, float3* vector)
+{
+	if (LoadArrayInObject(name))
+	{
+		if (json_array_get_count(loaded_array) == 3 )
+		{
+			vector->x = (float)json_array_get_number(loaded_array, 0);
+			vector->y = (float)json_array_get_number(loaded_array, 1);
+			vector->z = (float)json_array_get_number(loaded_array, 2);
+		}
+		else
+		{
+			LOG("JSONParser: Error loading element in loaded array. Incorrect number of elements in array for float3.");
+			parsing_success = false;
+		}
+	}
+	else
+	{
+		LOG("JSONParser: No array loaded to extract value.");
+		parsing_success = false;
+	}
 }

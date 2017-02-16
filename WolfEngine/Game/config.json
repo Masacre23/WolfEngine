@@ -23,6 +23,12 @@
 			"Vsync" : true,
 			"DefaultBlitSpeed" : 1
 		},
+		"EditorCamera" : {
+			"RotationSpeed" : 0.5,
+			"TranslationSpeed" : 1.0,
+			"ZoomSpeedFactor" : 10,
+			"InitialPosition" : [-1.0, 2.0, 4.0]
+		},
 		"Audio" : {
 			"MusicDefaultFadeTime" : 2,
 			"EffectsVolume" : 15,
