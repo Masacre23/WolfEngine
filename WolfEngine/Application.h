@@ -17,6 +17,7 @@ class ModuleCamera;
 class ModuleTextures;
 class ModuleAudio;
 
+class ModuleEditor;
 class ModuleSceneIni;
 
 class Application
@@ -40,6 +41,7 @@ public:
 	ModuleTextures* textures;
 	ModuleAudio* audio;
 	
+	ModuleEditor* editor;
 	ModuleSceneIni* scene_ini;
 
 	JSONParser* parser;
