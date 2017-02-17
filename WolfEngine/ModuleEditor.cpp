@@ -1,13 +1,11 @@
 #include "ModuleEditor.h"
 #include "Application.h"
 
-
 #include <stdio.h>
 #include "Glew/include/GL/glew.h"   
 #include "SDL\include\SDL.h"
 
 #include "ModuleWindow.h"
-//#include "ModuleInput.h"
 
 ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
 {
@@ -20,27 +18,20 @@ ModuleEditor::~ModuleEditor()
 
 bool ModuleEditor::Init()
 {
-	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
-	return true;
-}
-
-bool ModuleEditor::Start()
-{
 	return true;
 }
 
 update_status ModuleEditor::PreUpdate(float dt)
 {
+	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
+
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleEditor::Update(float dt)
 {
-	
 	//bool show_another_window = false;
-	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
-
 	Draw("Console");
 
 	ImGui::BeginMainMenuBar();
@@ -64,13 +55,6 @@ update_status ModuleEditor::Update(float dt)
 	if(show_test_window)
 		ImGui::ShowTestWindow();
 
-	ImGui::Render();
-
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleEditor::PostUpdate(float dt)
-{
 	return UPDATE_CONTINUE;
 }
 
@@ -78,6 +62,16 @@ bool ModuleEditor::CleanUp()
 {
 	ImGui_ImplSdlGL3_Shutdown();
 	return true;
+}
+
+void ModuleEditor::HandleInput(SDL_Event* event)
+{
+	ImGui_ImplSdlGL3_ProcessEvent(event);
+}
+
+void ModuleEditor::DrawEditor()
+{
+	ImGui::Render();
 }
 
 void ModuleEditor::Draw(const char* title, bool* p_opened)

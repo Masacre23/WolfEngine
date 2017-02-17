@@ -89,6 +89,7 @@ update_status ModuleInput::PreUpdate(float dt)
 
 	while (SDL_PollEvent(&event_general) != 0)
 	{
+		App->editor->HandleInput(&event_general);
 		switch (event_general.type)
 		{
 		case SDL_QUIT:

@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleCamera.h"
 #include "ModuleTextures.h"
+#include "ModuleEditor.h"
 #include "SDL/include/SDL.h"
 #include "OpenGL.h"
 #include "Math.h"
@@ -126,7 +127,7 @@ update_status ModuleRender::Update(float dt)
 
 update_status ModuleRender::PostUpdate(float dt)
 {
-	
+	App->editor->DrawEditor();
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
 	return UPDATE_CONTINUE;
