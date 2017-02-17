@@ -2,7 +2,6 @@
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
-#include <assimp/scene.h>
 #include "OpenGL.h"
 
 #include "Application.h"
@@ -59,10 +58,10 @@ void Model::Load(const char* folder, const char* file)
 		{
 			if (material->GetTexture(type_texture, j, &path) == AI_SUCCESS)
 			{
-				aiString sFullPath = aiString(folder_path);
-				sFullPath.Append(path.data);
+				aiString full_path = aiString(folder_path);
+				full_path.Append(path.data);
 
-				textures[i][j] = App->textures->LoadTexture(sFullPath.data);
+				textures[i][j] = App->textures->LoadTexture(full_path.data);
 			}
 		}
 		
