@@ -37,24 +37,32 @@ update_status ModuleEditor::PreUpdate(float dt)
 
 update_status ModuleEditor::Update(float dt)
 {
-	//bool show_test_window = true;
-	bool show_another_window = false;
+	
+	//bool show_another_window = false;
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 
-	static float f = 0.0f;
-	//ImGui::Text("Hello, world!");
-	/*ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-	if (ImGui::Button("Test Window")) show_test_window ^= 1;
-	if (ImGui::Button("Another Window")) show_another_window ^= 1;
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);*/
-
-	//ImGui::ShowTestWindow();
-	/*for (int i = 0; i <= 100; ++i)
-	{
-		if (App->input->GetKey(i) == KEY_DOWN)
-			AddLog("");
-	}*/
 	Draw("Console");
+
+	ImGui::BeginMainMenuBar();
+	if (ImGui::BeginMenu("Configuration"))
+	{
+		ImGui::Text("Options");
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Help"))
+	{
+		if (ImGui::MenuItem("Gui Demo"))
+			show_test_window = !show_test_window;
+		//if(ImGui::MenuItem("Documentation"))
+		
+
+		ImGui::EndMenu();
+	}
+	ImGui::EndMainMenuBar();
+
+	if(show_test_window)
+		ImGui::ShowTestWindow();
 
 	ImGui::Render();
 

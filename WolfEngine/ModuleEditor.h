@@ -23,6 +23,8 @@ public:
 public:
 	ImGuiTextBuffer Buf;
 	bool ScrollToBottom = false;
+	bool show_test_window = false;
+	bool show_configuration = false;
 };
 
 #endif
