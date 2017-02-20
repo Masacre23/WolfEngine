@@ -12,12 +12,13 @@ public:
 	~ModuleEditor();
 
 	bool Init();
-	bool Start();
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
-	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+	void HandleInput(SDL_Event* event);
+	void DrawEditor();
+	
 	void Draw(const char* title, bool* p_opened = NULL);
 	void AddLog(const char* fmt, ...);
 public:
