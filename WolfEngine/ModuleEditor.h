@@ -20,6 +20,9 @@ public:
 	void DrawEditor();
 	
 	void Draw(const char* title, bool* p_opened = NULL);
+	void Console();
+	void MenuBar();
+	void FPSgraph();
 	void AddLog(const char* fmt, ...);
 public:
 	ImGuiTextBuffer Buf;
