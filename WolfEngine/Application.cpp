@@ -22,12 +22,12 @@ Application::Application()
 	modules.push_back(input = new ModuleInput(parser));
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(renderer = new ModuleRender());
+	modules.push_back(editor = new ModuleEditor());
 	modules.push_back(camera = new ModuleCamera());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
 
-	modules.push_back(scene_ini = new ModuleSceneIni(true));
-	modules.push_back(editor = new ModuleEditor());
+	modules.push_back(scene_ini = new ModuleSceneIni());
 
 	LOG("App construction time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
 	LOG("App construction time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
