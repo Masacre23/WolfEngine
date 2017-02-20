@@ -7,7 +7,6 @@
 #include "SDL\include\SDL.h"
 
 #include "ModuleWindow.h"
-//#include "ModuleInput.h"
 
 ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
 {
@@ -20,7 +19,6 @@ ModuleEditor::~ModuleEditor()
 
 bool ModuleEditor::Init()
 {
-	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
 	return true;
 }
@@ -54,8 +52,6 @@ update_status ModuleEditor::Update(float dt)
 	{
 		if (ImGui::MenuItem("Gui Demo"))
 			show_test_window = !show_test_window;
-		//if(ImGui::MenuItem("Documentation"))
-		
 
 		ImGui::EndMenu();
 	}
