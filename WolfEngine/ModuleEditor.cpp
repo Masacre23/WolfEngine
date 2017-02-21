@@ -33,14 +33,14 @@ update_status ModuleEditor::Update(float dt)
 {
 	//bool show_another_window = false;
 
-	Console();
+	//Console();
 
-	MenuBar();
+	//MenuBar();
 	
-	FPSgraph();
+	//FPSgraph();
 
-	if(show_test_window)
-		ImGui::ShowTestWindow();
+	/*if(show_test_window)
+		ImGui::ShowTestWindow();*/
 
 	return UPDATE_CONTINUE;
 }

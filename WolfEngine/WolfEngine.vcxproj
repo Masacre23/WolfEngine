@@ -190,6 +190,7 @@
     <ClInclude Include="Imgui\stb_textedit.h" />
     <ClInclude Include="Imgui\stb_truetype.h" />
     <ClInclude Include="JsonHandler.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MathGeoLib\src\Algorithm\Random\LCG.h" />
     <ClInclude Include="MathGeoLib\src\Geometry\AABB.h" />

@@ -18,7 +18,8 @@ public:
 	bool CleanUp();
 
 private:
-	Model* batman;
+	Model* batman = nullptr;
+	Model* magnetto = nullptr;
 };
 
 #endif
