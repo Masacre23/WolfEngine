@@ -5,6 +5,7 @@
 #include "OpenGL.h"
 #include "Application.h"
 #include "ModuleTextures.h"
+#include "Material.h"
 #include <string>
 
 #pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
@@ -43,7 +44,9 @@ void Model::Load(const char* folder, const char* file)
 		}
 	}
 
+	// Load texture and materials.
 	textures = new unsigned int *[scene->mNumMaterials];
+	materials = new Material [scene->mNumMaterials];
 	for (int i = 0; i < scene->mNumMaterials; i++)
 	{
 		aiMaterial* material = scene->mMaterials[i];
@@ -64,8 +67,24 @@ void Model::Load(const char* folder, const char* file)
 				textures[i][j] = App->textures->LoadTexture(full_path);
 			}
 		}
-		
+
+		float shine_strength = 1.0f;
+		materials[i].has_ambient = material->Get(AI_MATKEY_COLOR_AMBIENT, materials[i].ambient);
+		materials[i].has_diffuse = material->Get(AI_MATKEY_COLOR_DIFFUSE, materials[i].diffuse);
+		materials[i].has_specular = material->Get(AI_MATKEY_COLOR_SPECULAR, materials[i].specular);
+		materials[i].has_ambient = material->Get(AI_MATKEY_COLOR_AMBIENT, materials[i].ambient);
+		materials[i].has_shiness = material->Get(AI_MATKEY_SHININESS, materials[i].shiness);
+		bool has_strength = material->Get(AI_MATKEY_SHININESS_STRENGTH, shine_strength);
+
+		for (int j = 0; j < 4; j++) {
+			materials[i].specular[j] *= shine_strength;
+		}
+		materials[i].shiness *= 128.0f;
+
 	}
+
+
+
 }
 
 void Model::Clear()
@@ -76,6 +95,7 @@ void Model::Clear()
 	}
 	RELEASE_ARRAY(indices);
 	RELEASE_ARRAY(textures);
+	RELEASE_ARRAY(materials);
 
 	aiReleaseImport(scene);
 }
@@ -95,6 +115,12 @@ void Model::Draw()
 
 		glBindTexture(GL_TEXTURE_2D, textures[mesh->mMaterialIndex][0]);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(aiVector3D), mesh->mTextureCoords[0]);
+
+
+		glMaterialfv(GL_FRONT, GL_AMBIENT, materials[mesh->mMaterialIndex].ambient);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, materials[mesh->mMaterialIndex].diffuse);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, materials[mesh->mMaterialIndex].specular);
+		glMaterialf(GL_FRONT, GL_SHININESS, materials[mesh->mMaterialIndex].shiness);
 		
 		glDrawElements(GL_TRIANGLES, 3.0f * mesh->mNumFaces, GL_UNSIGNED_INT,  indices[i]);
 		

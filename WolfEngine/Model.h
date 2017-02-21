@@ -1,6 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+class Material;
 class aiScene;
 
 class Model
@@ -17,6 +18,7 @@ private:
 	const aiScene* scene = nullptr;
 	unsigned int** indices;
 	unsigned int** textures;
+	Material* materials;
 };
 
 #endif // !MODEL_H
