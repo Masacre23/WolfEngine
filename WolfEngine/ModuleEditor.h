@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
+#include <vector>
 
 class ModuleEditor : public Module
 {
@@ -22,13 +23,21 @@ public:
 	void Draw(const char* title, bool* p_opened = NULL);
 	void Console();
 	void MenuBar();
-	void FPSgraph();
+	void Configuration();
 	void AddLog(const char* fmt, ...);
 public:
 	ImGuiTextBuffer Buf;
 	bool ScrollToBottom = false;
 	bool show_test_window = false;
-	bool show_configuration = false;
+	bool* show_configuration;
+	std::vector<float> fps_log;
+	std::vector<float> ms_log;
+	int size_vector = 100;
+
+	bool fullscreen;
+	bool resizable;
+	bool borderless;
+	bool full_desktop;
 };
 
 #endif
