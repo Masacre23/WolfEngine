@@ -116,7 +116,7 @@ update_status Application::Update()
 
 void Application::EndUpdate()
 {
-	Uint32 last_frame_ms = update_timer.GetTimeInMs();
+	last_frame_ms = update_timer.GetTimeInMs();
 
 	// TODO 4
 	// Amount of frames since startup
