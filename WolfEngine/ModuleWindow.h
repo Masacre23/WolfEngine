@@ -31,8 +31,14 @@ public:
 private:
 	bool ConstantConfig();
 
-private:
+public:
+	bool FULLSCREEN = false;
+	bool BORDERLESS = false;
+	bool RESIZABLE = false;
+	bool FULLSCREEN_DESKTOP = false;
 	SDL_Window* window = nullptr;
+
+private:
 	SDL_Surface* screen_surface = nullptr;
 
 	char* title_fps = nullptr;
@@ -41,10 +47,6 @@ private:
 
 	const char* TITLE = "";
 
-	bool FULLSCREEN = false;
-	bool BORDERLESS = false;
-	bool RESIZABLE = false;
-	bool FULLSCREEN_DESKTOP = false;
 	int TITLE_INFO_LENGTH = 200;
 };
 
