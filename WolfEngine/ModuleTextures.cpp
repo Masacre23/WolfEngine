@@ -29,7 +29,8 @@ bool ModuleTextures::Init()
 	ilutRenderer(ILUT_OPENGL);
 
 	LoadCheckers();
-	texture_debug = LoadTexture("Resources/Lenna.png");
+	texture_debug = LoadTexture(aiString("Resources/Lenna.png"));
+	texture_debug = LoadTexture(aiString("Resources/Lenna.png"));
 
 	return ret;
 }
@@ -43,25 +44,39 @@ bool ModuleTextures::CleanUp()
 	return true;
 }
 
-unsigned int ModuleTextures::LoadTexture(const char * path)
+unsigned int ModuleTextures::LoadTexture(const aiString& path)
 {
 	unsigned int ret = 0;
 
-	ILuint debug_image = ilGenImage();
-	ilBindImage(debug_image);
-	ilLoadImage(path);
+	TextureList::iterator it = textures.find(path);
 
-	ILenum Error = ilGetError();
-	if (Error != IL_NO_ERROR)
-		LOG("Error %d: %s/n", Error, iluErrorString(Error));
+	if (it == textures.end())
+	{
+		ILuint debug_image = ilGenImage();
+		ilBindImage(debug_image);
+		ilLoadImage(path.data);
 
-	ret = ilutGLBindTexImage();
+		ILenum Error = ilGetError();
+		if (Error != IL_NO_ERROR)
+			LOG("Error %d: %s", Error, iluErrorString(Error));
 
-	Error = ilGetError();
-	if (Error != IL_NO_ERROR)
-		LOG("Error %d: %s/n", Error, iluErrorString(Error));
+		ret = ilutGLBindTexImage();
 
-	ilDeleteImage(debug_image);
+		textures[path] = ret;
+
+		Error = ilGetError();
+		if (Error != IL_NO_ERROR)
+			LOG("Error %d: %s", Error, iluErrorString(Error));
+
+		LOG("Load texture key %s with value %d", path.data, ret);
+
+		ilDeleteImage(debug_image);
+	}
+	else
+	{
+		ret = textures[path];
+		LOG("Texture key %s already loaded with value %d", path.data, ret);
+	}
 
 	return ret;
 }
