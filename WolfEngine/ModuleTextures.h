@@ -1,15 +1,22 @@
 #ifndef MODULETEXTURES_H
 #define MODULETEXTURES_H
 
-#include <list>
 #include "Module.h"
+#include <assimp/types.h>
+#include <map>
 
 #define MODULE_TEXTURES "ModuleTextures"
 
-struct SDL_Texture;
-
 class ModuleTextures : public Module
 {
+	struct LessString
+	{
+		bool operator()(const aiString& left, const aiString& right) const
+		{
+			return ::strcmp(left.data, right.data) < 0;
+		}
+	};
+
 public:
 	ModuleTextures();
 	~ModuleTextures();
@@ -17,7 +24,7 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	unsigned int LoadTexture(const char* path);
+	unsigned int LoadTexture(const aiString& path);
 
 private:
 	void LoadCheckers();
@@ -27,7 +34,8 @@ public:
 	unsigned int texture_debug;
 
 private:
-	
+	typedef std::map<aiString, unsigned int, LessString> TextureList;
+	TextureList textures;
 };
 
 
