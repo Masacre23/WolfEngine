@@ -3,9 +3,9 @@
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
-
 #include "Application.h"
 #include "ModuleTextures.h"
+#include <string>
 
 #pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
 
@@ -61,7 +61,7 @@ void Model::Load(const char* folder, const char* file)
 				aiString full_path = aiString(folder_path);
 				full_path.Append(path.data);
 
-				textures[i][j] = App->textures->LoadTexture(full_path.data);
+				textures[i][j] = App->textures->LoadTexture(full_path);
 			}
 		}
 		

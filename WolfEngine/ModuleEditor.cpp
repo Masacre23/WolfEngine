@@ -33,7 +33,7 @@ update_status ModuleEditor::Update(float dt)
 {
 	//bool show_another_window = false;
 
-	//Console();
+	Console();
 
 	MenuBar();
 	
