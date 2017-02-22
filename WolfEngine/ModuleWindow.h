@@ -37,6 +37,7 @@ public:
 	bool RESIZABLE = false;
 	bool FULLSCREEN_DESKTOP = false;
 	SDL_Window* window = nullptr;
+	const char* TITLE = "";
 
 private:
 	SDL_Surface* screen_surface = nullptr;
@@ -44,8 +45,6 @@ private:
 	char* title_fps = nullptr;
 	int screen_width = 800;
 	int screen_height = 600;
-
-	const char* TITLE = "";
 
 	int TITLE_INFO_LENGTH = 200;
 };

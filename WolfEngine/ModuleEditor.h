@@ -24,12 +24,15 @@ public:
 	void Console();
 	void MenuBar();
 	void Configuration();
+	void About();
+	void Interface();
 	void AddLog(const char* fmt, ...);
 public:
 	ImGuiTextBuffer Buf;
 	bool ScrollToBottom = false;
 	bool show_test_window = false;
 	bool* show_configuration;
+	bool* show_about;
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 	int size_vector = 100;
@@ -38,6 +41,8 @@ public:
 	bool resizable;
 	bool borderless;
 	bool full_desktop;
+
+	ImVec4 yellow = ImVec4(255, 255, 0, 255);
 };
 
 #endif

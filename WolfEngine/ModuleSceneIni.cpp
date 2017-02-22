@@ -19,8 +19,8 @@ bool ModuleSceneIni::Start()
 	batman = new Model();
 	batman->Load("Resources/Models/Batman/","Batman.obj");
 
-	magnetto = new Model();
-	magnetto->Load("Resources/Models/", "magnetto2.fbx");
+	//magnetto = new Model();
+	//magnetto->Load("Resources/Models/", "magnetto2.fbx");
 
 	return res;
 }
