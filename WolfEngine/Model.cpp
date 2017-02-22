@@ -27,17 +27,17 @@ void Model::Load(const char* folder, const char* file)
 	aiString file_path = aiString(folder_path);
 	file_path.Append(file);
 
-	scene = aiImportFile(file_path.data, aiProcess_PreTransformVertices);
+	scene = aiImportFile(file_path.data, aiProcess_PreTransformVertices | aiProcess_Triangulate);
 	 
 	indices = new unsigned int *[scene->mNumMeshes];
 	for (int i = 0; i < scene->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[i];
-		indices[i] = new unsigned int[3.0f * mesh->mNumFaces];
-		int c = 0;
-		for (int j = 0; j < mesh->mNumFaces; ++j) 
+		indices[i] = new unsigned int[3 * mesh->mNumFaces];
+		unsigned int c = 0;
+		for (int j = 0; j < mesh->mNumFaces; ++j)
 		{
-			for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k)
+			for (int k = 0; k < 3; ++k)
 			{
 				indices[i][c++] = mesh->mFaces[j].mIndices[k];
 			}
@@ -50,6 +50,7 @@ void Model::Load(const char* folder, const char* file)
 	for (int i = 0; i < scene->mNumMaterials; i++)
 	{
 		aiMaterial* material = scene->mMaterials[i];
+		materials[i].Load(material);
 
 		unsigned int texIndex = 0;
 		aiString path;
@@ -67,23 +68,7 @@ void Model::Load(const char* folder, const char* file)
 				textures[i][j] = App->textures->LoadTexture(full_path);
 			}
 		}
-
-		float shine_strength = 1.0f;
-		materials[i].has_ambient = material->Get(AI_MATKEY_COLOR_AMBIENT, materials[i].ambient);
-		materials[i].has_diffuse = material->Get(AI_MATKEY_COLOR_DIFFUSE, materials[i].diffuse);
-		materials[i].has_specular = material->Get(AI_MATKEY_COLOR_SPECULAR, materials[i].specular);
-		materials[i].has_ambient = material->Get(AI_MATKEY_COLOR_AMBIENT, materials[i].ambient);
-		materials[i].has_shiness = material->Get(AI_MATKEY_SHININESS, materials[i].shiness);
-		bool has_strength = material->Get(AI_MATKEY_SHININESS_STRENGTH, shine_strength);
-
-		for (int j = 0; j < 4; j++) {
-			materials[i].specular[j] *= shine_strength;
-		}
-		materials[i].shiness *= 128.0f;
-
 	}
-
-
 
 }
 
@@ -116,13 +101,12 @@ void Model::Draw()
 		glBindTexture(GL_TEXTURE_2D, textures[mesh->mMaterialIndex][0]);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(aiVector3D), mesh->mTextureCoords[0]);
 
-
 		glMaterialfv(GL_FRONT, GL_AMBIENT, materials[mesh->mMaterialIndex].ambient);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, materials[mesh->mMaterialIndex].diffuse);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, materials[mesh->mMaterialIndex].specular);
 		glMaterialf(GL_FRONT, GL_SHININESS, materials[mesh->mMaterialIndex].shiness);
 		
-		glDrawElements(GL_TRIANGLES, 3.0f * mesh->mNumFaces, GL_UNSIGNED_INT,  indices[i]);
+		glDrawElements(GL_TRIANGLES, 3 * mesh->mNumFaces, GL_UNSIGNED_INT, indices[i]);
 		
 		glBindTexture(GL_TEXTURE_2D, 0);
 
