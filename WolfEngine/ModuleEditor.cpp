@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "Glew/include/GL/glew.h"   
 #include "SDL\include\SDL.h"
+#include <Windows.h>
 
 #include "ModuleWindow.h"
 
@@ -25,6 +26,7 @@ bool ModuleEditor::Init()
 		ms_log.push_back(0);
 	}
 	show_configuration = new bool(false);
+	show_about = new bool(false);
 	return true;
 }
 
@@ -41,13 +43,16 @@ update_status ModuleEditor::Update(float dt)
 
 	//Console();
 
-	//MenuBar();
+	MenuBar();
 	
 	if(*show_configuration)
 		Configuration();
 
-	/*if(show_test_window)
-		ImGui::ShowTestWindow();*/
+	if (*show_about)
+		About();
+
+	if(show_test_window)
+		ImGui::ShowTestWindow();
 
 	return UPDATE_CONTINUE;
 }
@@ -106,9 +111,26 @@ void ModuleEditor::MenuBar()
 	{
 		if (ImGui::MenuItem("Gui Demo"))
 			show_test_window = !show_test_window;
-
+		if (ImGui::MenuItem("Documentation"))
+		{
+			const char* urlD = "https://github.com/GuillemFP/WolfEngine/wiki";
+			ShellExecuteA(NULL, "open", "chrome", urlD, NULL, SW_MAXIMIZE);
+		}
+		if (ImGui::MenuItem("Download release"))
+		{
+			const char* urlD = "https://github.com/GuillemFP/WolfEngine/releases";
+			ShellExecuteA(NULL, "open", "chrome", urlD, NULL, SW_MAXIMIZE);
+		}
+		if (ImGui::MenuItem("Report a bug"))
+		{
+			const char* urlD = "https://github.com/GuillemFP/WolfEngine/issues";
+			ShellExecuteA(NULL, "open", "chrome", urlD, NULL, SW_MAXIMIZE);
+		}
+		if (ImGui::MenuItem("About"))
+			*show_about = true;
 		ImGui::EndMenu();
 	}
+
 	ImGui::EndMainMenuBar();
 }
 
@@ -187,7 +209,6 @@ void ModuleEditor::Configuration()
 		if (ImGui::CollapsingHeader("Hardware"))
 		{
 			SDL_version version;
-			ImVec4 yellow = ImVec4(255, 255, 0, 255);
 			SDL_GetVersion(&version);
 			ImGui::Text("SDL Version: ");
 			ImGui::SameLine();
@@ -201,7 +222,7 @@ void ModuleEditor::Configuration()
 			ImGui::SameLine();
 			ImGui::TextColored(yellow, "%dGB", SDL_GetSystemRAM()/1000);
 			ImGui::Text("Caps: ");
-			/*if (SDL_HasRDTSC())
+			if (SDL_HasRDTSC())
 			{
 				ImGui::SameLine();
 				ImGui::TextColored(yellow, "RDTSC,");
@@ -240,11 +261,28 @@ void ModuleEditor::Configuration()
 			{
 				ImGui::SameLine();
 				ImGui::TextColored(yellow, "AVX,");
-			}*/
-			ImGui::Separator();
+			}
 
+			ImGui::Separator();
+			ImGui::Text("GPU: ");
+			ImGui::SameLine();
+			
 		}
 		//ImGui::TreePop();
 	//}
+	ImGui::End();
+}
+
+void ModuleEditor::About()
+{
+	ImGui::Begin("About", show_about);
+	ImGui::Text("Engine name: ");
+	ImGui::SameLine();
+	ImGui::TextColored(yellow, App->window->TITLE);
+	ImGui::Text("Game engine made with C++.");
+	ImGui::Spacing();
+	ImGui::Text("Authors:");
+	ImGui::TextColored(yellow, "Esteban Arrua, Guillem Ferre and Adrian Guevara.");
+
 	ImGui::End();
 }
