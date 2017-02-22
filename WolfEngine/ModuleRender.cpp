@@ -87,7 +87,7 @@ bool ModuleRender::Init()
 		glCullFace(GL_BACK);
 
 		GLfloat light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		GLfloat light_position[] = { 0.25f, 1.0f, 1.0f, 1.0f };
+		GLfloat light_position[] = { 4.0f, 8.0f, 4.0f, 1.0f };
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 		ret = ret && GetGLError();
