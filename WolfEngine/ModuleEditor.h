@@ -25,6 +25,7 @@ public:
 	void MenuBar();
 	void Configuration();
 	void About();
+	void Interface();
 	void AddLog(const char* fmt, ...);
 public:
 	ImGuiTextBuffer Buf;
