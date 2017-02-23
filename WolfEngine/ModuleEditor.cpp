@@ -45,6 +45,7 @@ update_status ModuleEditor::Update(float dt)
 	//Console();
 
 	MenuBar();
+	
 	Interface();
 	
 	if(*show_configuration)
@@ -52,6 +53,7 @@ update_status ModuleEditor::Update(float dt)
 
 	if (*show_about)
 		About();
+		
 
 	if(show_test_window)
 		ImGui::ShowTestWindow();
@@ -283,20 +285,22 @@ void ModuleEditor::About()
 void ModuleEditor::Interface()
 {
 	bool* b = new bool(true);
+
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
-	ImGui::Begin("Hierachy", b, ImVec2(160, 400),-1.0f,ImGuiWindowFlags_ChildWindowAutoFitX|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_ChildWindowAutoFitY|ImGuiWindowFlags_NoResize);
+	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
+	
+	ImGui::Begin("Hierachy", b, ImVec2(App->window->GetScreenWidth()/5, App->window->GetScreenHeight()/1.58f),-1.0f,ImGuiWindowFlags_ChildWindowAutoFitX|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_ChildWindowAutoFitY|ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 	ImGui::Text("Main Camera");
 	ImGui::End();
 
-	//bool* b = new bool(true);
 	ImGui::SetNextWindowPos(ImVec2(App->window->GetScreenWidth()- App->window->GetScreenWidth()/5, 20));
-	ImGui::Begin("Inspector", b, ImVec2(160, 400), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize);
-	//ImGui::Text("Main Camera");
+	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
+	ImGui::Begin("Inspector", b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoCollapse);
 	ImGui::End();
 
-	//bool* b = new bool(true);
 	ImGui::SetNextWindowPos(ImVec2(0, App->window->GetScreenHeight()- App->window->GetScreenHeight() / 3));
-	ImGui::Begin("Project", b, ImVec2(App->window->GetScreenWidth(), 400), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize);
-	//ImGui::Text("Main Camera");
+	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth(), App->window->GetScreenHeight() / 3));
+	ImGui::Begin("Project", b, ImVec2(App->window->GetScreenWidth(), App->window->GetScreenHeight()/3), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 	ImGui::End();
+
 }
