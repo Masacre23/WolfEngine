@@ -41,13 +41,13 @@ public:
 		float shine_strength = 1.0f;
 		if (material->Get(AI_MATKEY_SHININESS_STRENGTH, shine_strength) == AI_SUCCESS)
 		{
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 3; i++)
 				specular[i] *= shine_strength;
 		}
 	}
 
 public:
-	GLfloat ambient[4]{0.0f,0.0f,0.0f,0.0f};
+	GLfloat ambient[4]{ 0.0f,0.0f,0.0f,0.0f };
 	GLfloat diffuse[4]{ 0.0f,0.0f,0.0f,0.0f };
 	GLfloat specular[4]{ 0.0f,0.0f,0.0f,0.0f };
 	float shiness = 0.0f;
