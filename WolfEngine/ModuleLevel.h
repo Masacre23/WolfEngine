@@ -68,10 +68,12 @@ public:
 	void LinkNode(Node* node, Node* destination);
 
 private:
-	void LoadMesh(aiMesh* scene_mesh, size_t material_offset);
 	void LoadMaterial(aiMaterial* scene_material, aiString folder_path);
+	void LoadMesh(aiMesh* scene_mesh, size_t material_offset);
 	void LoadChildren(aiNode* scene_node, Node* parent, size_t mesh_offset);
 	void CleanChildren(Node* parent);
+	void DrawNode(Node* node);
+	Node* FindNode(Node* node, const char* name);
 
 private:
 	Node* root = nullptr;

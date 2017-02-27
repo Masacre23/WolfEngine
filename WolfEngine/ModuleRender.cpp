@@ -128,8 +128,10 @@ update_status ModuleRender::PreUpdate(float dt)
 
 update_status ModuleRender::Update(float dt)
 {
+	glEnable(GL_COLOR_MATERIAL);
 	DrawBasePlane();
 	DrawAxis();
+	glDisable(GL_COLOR_MATERIAL);
 
 	return UPDATE_CONTINUE;
 }

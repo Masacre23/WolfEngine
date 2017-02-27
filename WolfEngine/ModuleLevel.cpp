@@ -1,6 +1,7 @@
 #include "Application.h"
-#include "ModuleLevel.h"
 #include "ModuleTextures.h"
+#include "ModuleLevel.h"
+#include "OpenGL.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -13,16 +14,7 @@ ModuleLevel::ModuleLevel() : Module(MODULE_LEVEL)
 
 ModuleLevel::~ModuleLevel()
 {
-	CleanChildren(root);
-}
-
-void ModuleLevel::CleanChildren(Node* parent)
-{
-	for (std::vector<Node*>::iterator it = parent->childs.begin(); it != parent->childs.end(); ++it)
-		CleanChildren(*it);
-
-	parent->childs.clear();
-	RELEASE(parent);
+	Clear();
 }
 
 void ModuleLevel::Load(const char * folder, const char * file)
@@ -53,6 +45,58 @@ void ModuleLevel::Load(const char * folder, const char * file)
 		root_node->meshes.push_back(scene->mRootNode->mMeshes[i] + mesh_offset);
 	for (unsigned i = 0; i < scene->mRootNode->mNumChildren; i++)
 		LoadChildren(scene->mRootNode->mChildren[i], root_node, mesh_offset);
+}
+
+void ModuleLevel::Clear()
+{
+	CleanChildren(root);
+
+	for (std::vector<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+	{
+		RELEASE((it)->vertices);
+		RELEASE((it)->normals);
+		RELEASE((it)->tex_coords);
+	}
+	meshes.clear();
+	materials.clear();
+}
+
+void ModuleLevel::Draw()
+{
+	DrawNode(root);
+}
+
+Node* ModuleLevel::FindNode(const char * name)
+{
+	Node* ret = FindNode(root, name);
+	return ret;
+}
+
+void ModuleLevel::LinkNode(Node * node, Node * destination)
+{
+	if (node->parent != nullptr)
+	{
+		bool founded = false;
+		for (std::vector<Node*>::iterator it = node->parent->childs.begin(); it != node->parent->childs.end() && !founded; ++it)
+		{
+			if ((Node*)(*it) == node) {
+				node->parent->childs.erase(it);
+				founded = true;
+			}
+		}
+	}
+		
+	destination->childs.push_back(node);
+	node->parent = destination;
+}
+
+void ModuleLevel::CleanChildren(Node* parent)
+{
+	for (std::vector<Node*>::iterator it = parent->childs.begin(); it != parent->childs.end(); ++it)
+		CleanChildren(*it);
+
+	parent->childs.clear();
+	RELEASE(parent);
 }
 
 void ModuleLevel::LoadMaterial(aiMaterial* scene_material, aiString folder_path)
@@ -88,11 +132,17 @@ void ModuleLevel::LoadMesh(aiMesh* scene_mesh, size_t material_offset)
 	for (int i = 0; i < mesh.num_vertices; i++)
 		mesh.vertices[i] = scene_mesh->mVertices[i];
 	mesh.normals = new aiVector3D[mesh.num_vertices];
-	for (int i = 0; i < mesh.num_vertices; i++)
-		mesh.normals[i] = scene_mesh->mNormals[i];
-	mesh.tex_coords = new aiVector3D[mesh.num_vertices];
-	for (int i = 0; i < mesh.num_vertices; i++)
-		mesh.tex_coords[i] = scene_mesh->mTextureCoords[i][0];
+	if (scene_mesh->HasNormals())
+	{
+		for (int i = 0; i < mesh.num_vertices; i++)
+			mesh.normals[i] = scene_mesh->mNormals[i];
+		mesh.tex_coords = new aiVector3D[mesh.num_vertices];
+	}
+	if (scene_mesh->HasTextureCoords(0))
+	{
+		for (int i = 0; i < mesh.num_vertices; i++)
+			mesh.tex_coords[i] = scene_mesh->mTextureCoords[0][i];
+	}
 
 	mesh.num_indices = scene_mesh->mNumFaces;
 	mesh.indices = new unsigned int[3 * scene_mesh->mNumFaces];
@@ -121,20 +171,66 @@ void ModuleLevel::LoadChildren(aiNode* scene_node, Node* parent, size_t mesh_off
 		LoadChildren(scene_node->mChildren[i], node, mesh_offset);
 }
 
-void ModuleLevel::Clear()
+void ModuleLevel::DrawNode(Node * node)
 {
+	if (node != nullptr) {
+		glPushMatrix();
+		glTranslatef(node->position.x, node->position.y, node->position.z);
+		glMultMatrixf(node->rotation.GetMatrix().Transpose()[0]);
+
+		for (int i = 0; i < node->meshes.size(); ++i)
+		{
+			Mesh mesh = meshes[node->meshes[i]];
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+			glVertexPointer(3, GL_FLOAT, 0, mesh.vertices);
+			glNormalPointer(GL_FLOAT, 0, mesh.normals);
+
+			glBindTexture(GL_TEXTURE_2D, materials[mesh.material].texture);
+			glTexCoordPointer(2, GL_FLOAT, sizeof(aiVector3D), mesh.tex_coords);
+
+			glMaterialfv(GL_FRONT, GL_AMBIENT, &materials[mesh.material].ambient[0]);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, &materials[mesh.material].diffuse[0]);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, &materials[mesh.material].specular[0]);
+			glMaterialf(GL_FRONT, GL_SHININESS, materials[mesh.material].shiness);
+
+			glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, mesh.indices);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableClientState(GL_VERTEX_ARRAY);
+		}
+
+		for (int i = 0; i < node->childs.size(); ++i)
+		{
+			DrawNode(node->childs[i]);
+		}
+
+		glPopMatrix();
+	}
 }
 
-void ModuleLevel::Draw()
-{
-}
 
-Node* ModuleLevel::FindNode(const char * name)
+Node * ModuleLevel::FindNode(Node * node, const char * name)
 {
-	return nullptr;
+	Node* ret = nullptr;
+	if (node != nullptr)
+	{
+		bool founded = false;
+		for (int i = 0; i < node->childs.size() && ret != nullptr; ++i)
+		{
+			if (node->childs[i]->name.compare(name) == 0)
+			{
+				ret = node->childs[i];
+			}
+			else {
+				ret = FindNode(node->childs[i], name);
+			}
+		}
+	}
+	return ret;
 }
-
-void ModuleLevel::LinkNode(Node * node, Node * destination)
-{
-}
-

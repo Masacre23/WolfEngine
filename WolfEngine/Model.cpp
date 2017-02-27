@@ -116,5 +116,4 @@ void Model::Draw()
 		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
-
 }

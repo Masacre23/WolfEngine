@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
+#include "ModuleLevel.h"
 #include "Model.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
@@ -22,6 +23,8 @@ bool ModuleSceneIni::Start()
 	magnetto = new Model("magnetto2");
 	magnetto->Load("Resources/Models/", "magnetto2.fbx");
 
+	App->level->Load("Resources/Models/street/", "Street.obj");
+
 	return res;
 }
 
@@ -32,6 +35,7 @@ bool ModuleSceneIni::CleanUp()
 
 	RELEASE(batman);
 	RELEASE(magnetto);
+	App->level->Clear();
 
 	return true;
 }
@@ -39,10 +43,13 @@ bool ModuleSceneIni::CleanUp()
 // Draw the elements of the scene
 update_status ModuleSceneIni::Update(float dt)
 {
-	App->renderer->DrawCube(App->textures->texture_debug, { 2.0f, 0.0f, 0.0f });
-	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
-	batman->Draw();
-	magnetto->Draw();
+	//App->renderer->DrawCube(App->textures->texture_debug, { 2.0f, 0.0f, 0.0f });
+	//App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
+
+	//batman->Draw();
+	//magnetto->Draw();
+
+	App->level->Draw();
 
 	return UPDATE_CONTINUE;
 }
