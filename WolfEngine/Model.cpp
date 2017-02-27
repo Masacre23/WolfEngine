@@ -6,12 +6,13 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "Material.h"
-#include <string>
+#include "ModuleEditor.h"
 
 #pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
 
-Model::Model()
+Model::Model(std::string name)
 {
+	App->editor->game_objects_labels.push_back(name);
 }
 
 

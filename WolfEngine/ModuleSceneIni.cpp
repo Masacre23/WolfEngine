@@ -16,10 +16,10 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	LOG("Loading initial scene");
 
-	batman = new Model();
+	batman = new Model("Batman");
 	batman->Load("Resources/Models/Batman/","Batman.obj");
 
-	magnetto = new Model();
+	magnetto = new Model("magnetto2");
 	magnetto->Load("Resources/Models/", "magnetto2.fbx");
 
 	return res;

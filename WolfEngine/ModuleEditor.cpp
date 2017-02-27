@@ -11,6 +11,67 @@
 
 ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
 {
+	ImGuiStyle* style = &ImGui::GetStyle();
+	style->WindowPadding = ImVec2(15, 15);
+	style->WindowRounding = 5.0f;
+	style->FramePadding = ImVec2(5, 5);
+	style->FrameRounding = 4.0f;
+	style->ItemSpacing = ImVec2(12, 8);
+	style->ItemInnerSpacing = ImVec2(8, 6);
+	style->IndentSpacing = 25.0f;
+	style->ScrollbarSize = 15.0f;
+	style->ScrollbarRounding = 9.0f;
+	style->GrabMinSize = 5.0f;
+	style->GrabRounding = 3.0f;
+
+	style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
+	style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
+	style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
+	style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
+	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_ComboBg] = ImVec4(0.19f, 0.18f, 0.21f, 1.00f);
+	style->Colors[ImGuiCol_CheckMark] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_Column] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ColumnHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_ColumnActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style->Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_CloseButton] = ImVec4(0.40f, 0.39f, 0.38f, 0.16f);
+	style->Colors[ImGuiCol_CloseButtonHovered] = ImVec4(0.40f, 0.39f, 0.38f, 0.39f);
+	style->Colors[ImGuiCol_CloseButtonActive] = ImVec4(0.40f, 0.39f, 0.38f, 1.00f);
+	style->Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+	style->Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
+	style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
+
+	/*io.Fonts->AddFontFromFileTTF(XorStrA("C:\\Windows\\Fonts\\Ruda-Bold.ttf"), 12);
+	io.Fonts->AddFontFromFileTTF(XorStrA("C:\\Windows\\Fonts\\Ruda-Bold.ttf"), 10);
+	io.Fonts->AddFontFromFileTTF(XorStrA("C:\\Windows\\Fonts\\Ruda-Bold.ttf"), 14);
+	io.Fonts->AddFontFromFileTTF(XorStrA("C:\\Windows\\Fonts\\Ruda-Bold.ttf"), 18);*/
 }
 
 
@@ -28,6 +89,9 @@ bool ModuleEditor::Init()
 	}
 	show_configuration = new bool(false);
 	show_about = new bool(false);
+	ref = new ImGuiStyle();
+	
+	game_objects_labels.push_back("Main Camera");
 	return true;
 }
 
@@ -104,6 +168,48 @@ void ModuleEditor::Console()
 void ModuleEditor::MenuBar()
 {
 	ImGui::BeginMainMenuBar();
+	if (ImGui::BeginMenu("File"))
+	{
+		//ShowExampleMenuFile();
+		//ImGui::MenuItem("(dummy menu)", NULL, false, false);
+		if (ImGui::MenuItem("New")) {}
+		if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+		if (ImGui::BeginMenu("Open Recent"))
+		{
+			ImGui::EndMenu();
+		}
+		if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+		if (ImGui::MenuItem("Save As..")) {}
+		ImGui::Separator();
+		if (ImGui::BeginMenu("Options"))
+		{
+			static bool enabled = true;
+			ImGui::MenuItem("Enabled", "", &enabled);
+			ImGui::BeginChild("child", ImVec2(0, 60), true);
+			for (int i = 0; i < 10; i++)
+				ImGui::Text("Scrolling Text %d", i);
+			ImGui::EndChild();
+			static float f = 0.5f;
+			static int n = 0;
+			ImGui::SliderFloat("Value", &f, 0.0f, 1.0f);
+			ImGui::InputFloat("Input", &f, 0.1f);
+			ImGui::Combo("Combo", &n, "Yes\0No\0Maybe\0\0");
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Colors"))
+		{
+			for (int i = 0; i < ImGuiCol_COUNT; i++)
+				ImGui::MenuItem(ImGui::GetStyleColName((ImGuiCol)i));
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Disabled", false)) // Disabled
+		{
+			IM_ASSERT(0);
+		}
+		if (ImGui::MenuItem("Checked", NULL, true)) {}
+		if (ImGui::MenuItem("Quit", "Alt+F4")) {}
+		ImGui::EndMenu();
+	}
 	if (ImGui::BeginMenu("Configuration"))
 	{
 		if (ImGui::MenuItem("Options"))
@@ -203,6 +309,8 @@ void ModuleEditor::Configuration()
 		ImGui::SameLine();
 		if (ImGui::Checkbox("Full Desktop", &full_desktop))
 			App->window->FULLSCREEN_DESKTOP = full_desktop;
+
+		ImGui::ShowStyleEditor(ref);
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
@@ -289,18 +397,57 @@ void ModuleEditor::Interface()
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
 	
-	ImGui::Begin("Hierachy", b, ImVec2(App->window->GetScreenWidth()/5, App->window->GetScreenHeight()/1.58f),-1.0f,ImGuiWindowFlags_ChildWindowAutoFitX|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_ChildWindowAutoFitY|ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
-	ImGui::Text("Main Camera");
+	ImGui::Begin("Hierachy", b, ImVec2(App->window->GetScreenWidth()/5, App->window->GetScreenHeight()/1.58f),-1.0f,ImGuiWindowFlags_ChildWindowAutoFitX|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_ChildWindowAutoFitY|ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+	
+	ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+	static int selection_mask = (1 << 2); // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
+	int node_clicked = -1;                // Temporary storage of what node we have clicked to process selection at the end of the loop. May be a pointer to your own node type, etc.
+	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
+	for (int i = 0; i < game_objects_labels.size(); i++)
+	{
+		// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
+	/*	if (i < 3)
+		{
+			// Node
+			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Node %d", i);
+			if (ImGui::IsItemClicked())
+				node_clicked = i;
+			if (node_open)
+			{
+				ImGui::Text("Blah blah\nBlah Blah");
+				ImGui::TreePop();
+			}
+		}
+		else
+		{*/
+			// Leaf: The only reason we have a TreeNode at all is to allow selection of the leaf. Otherwise we can use BulletText() or TreeAdvanceToLabelPos()+Text().
+			ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, game_objects_labels[i].c_str());
+			if (ImGui::IsItemClicked())
+				node_clicked = i;
+		//}
+	}
+	if (node_clicked != -1)
+	{
+		// Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
+		if (ImGui::GetIO().KeyCtrl)
+			selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
+		else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
+			selection_mask = (1 << node_clicked);           // Click to single-select
+	}
+	ImGui::PopStyleVar();
+	ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
 	ImGui::End();
 
 	ImGui::SetNextWindowPos(ImVec2(App->window->GetScreenWidth()- App->window->GetScreenWidth()/5, 20));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
-	ImGui::Begin("Inspector", b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Inspector", b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoCollapse);
 	ImGui::End();
 
 	ImGui::SetNextWindowPos(ImVec2(0, App->window->GetScreenHeight()- App->window->GetScreenHeight() / 3));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth(), App->window->GetScreenHeight() / 3));
-	ImGui::Begin("Project", b, ImVec2(App->window->GetScreenWidth(), App->window->GetScreenHeight()/3), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Project", b, ImVec2(App->window->GetScreenWidth(), App->window->GetScreenHeight()/3), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 	ImGui::End();
 
 }
