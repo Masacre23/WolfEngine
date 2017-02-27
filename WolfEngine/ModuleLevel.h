@@ -8,6 +8,10 @@
 #include <string>
 #include <assimp/types.h>
 
+struct aiNode;
+struct aiMesh;
+struct aiMaterial;
+
 struct Node
 {
 	std::string name;
@@ -62,6 +66,12 @@ public:
 
 	Node* FindNode(const char* name);
 	void LinkNode(Node* node, Node* destination);
+
+private:
+	void LoadMesh(aiMesh* scene_mesh, size_t material_offset);
+	void LoadMaterial(aiMaterial* scene_material, aiString folder_path);
+	void LoadChildren(aiNode* scene_node, Node* parent, size_t mesh_offset);
+	void CleanChildren(Node* parent);
 
 private:
 	Node* root = nullptr;
