@@ -86,19 +86,19 @@ bool ModuleRender::Init()
 		glFrontFace(GL_CCW);
 		glCullFace(GL_BACK);
 
-		//GLfloat light_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		GLfloat light_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		GLfloat light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		//GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		GLfloat light_position[] = { 4.0f, 8.0f, 4.0f, 1.0f };
-		//GLfloat ambient[] = { 0.2f, 0.2, 0.2f, 1.0f };
+		GLfloat ambient[] = { 0.2f, 0.2, 0.2f, 1.0f };
 
-		//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-		//glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-		//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
 		ret = ret && GetGLError();
 	}
