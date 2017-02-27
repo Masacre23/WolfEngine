@@ -43,6 +43,7 @@ class ModuleLevel : public Module
 
 private:
 	void DrawNode(Node* node);
+	Node* FindNode(Node* node, const char* name);
 
 public:
 	ModuleLevel();
