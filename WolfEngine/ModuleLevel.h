@@ -40,6 +40,10 @@ struct Material
 
 class ModuleLevel : public Module
 {
+
+private:
+	void DrawNode(Node* node);
+
 public:
 	ModuleLevel();
 	~ModuleLevel();
