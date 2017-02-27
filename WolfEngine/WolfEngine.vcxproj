@@ -171,6 +171,7 @@
     <ClCompile Include="ModuleCamera.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
+    <ClCompile Include="ModuleLevel.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneIni.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="ModuleCamera.h" />
     <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleInput.h" />
+    <ClInclude Include="ModuleLevel.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleSceneIni.h" />
     <ClInclude Include="ModuleTextures.h" />

@@ -15,6 +15,7 @@ class ModuleWindow;
 class ModuleRender;
 class ModuleCamera;
 class ModuleTextures;
+class ModuleLevel;
 class ModuleAudio;
 
 class ModuleEditor;
@@ -37,6 +38,7 @@ public:
 	ModuleInput* input;
 	ModuleWindow* window;
 	ModuleRender* renderer;
+	ModuleLevel* level;
 	ModuleCamera* camera;
 	ModuleTextures* textures;
 	ModuleAudio* audio;
