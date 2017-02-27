@@ -79,7 +79,6 @@ bool ModuleRender::Init()
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHTING);
-		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 		ret = ret && GetGLError();
 
