@@ -6,7 +6,7 @@ void ModuleLevel::DrawNode(Node * node)
 	if (node != nullptr) {
 		glPushMatrix();
 		glTranslatef(node->position.x, node->position.y, node->position.z);
-		glMultMatrixf(node->rotation.GetMatrix()[0]);
+		glMultMatrixf(node->rotation.GetMatrix().Transpose()[0]);
 
 		for (int i = 0; i < node->meshes.size(); ++i)
 		{
@@ -93,7 +93,19 @@ Node * ModuleLevel::FindNode(const char * name)
 
 void ModuleLevel::LinkNode(Node * node, Node * destination)
 {
-	node->childs.push_back(destination);
-	destination->parent = node;
+	if (node->parent != nullptr)
+	{
+		bool founded = false;
+		for (std::vector<Node*>::iterator it = node->parent->childs.begin(); it != node->parent->childs.end() && !founded; ++it)
+		{
+			if ((Node*)(*it) == node) {
+				node->parent->childs.erase(it);
+				founded = true;
+			}
+		}
+	}
+		
+	destination->childs.push_back(node);
+	node->parent = destination;
 }
 
