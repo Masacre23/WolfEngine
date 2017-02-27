@@ -5,6 +5,7 @@
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
 #include <vector>
+#include <string>
 
 class ModuleEditor : public Module
 {
@@ -37,12 +38,15 @@ public:
 	std::vector<float> ms_log;
 	int size_vector = 100;
 
+	std::vector<std::string> game_objects_labels;
+
 	bool fullscreen;
 	bool resizable;
 	bool borderless;
 	bool full_desktop;
 
 	ImVec4 yellow = ImVec4(255, 255, 0, 255);
+	ImGuiStyle* ref;
 };
 
 #endif

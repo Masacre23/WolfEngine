@@ -1,5 +1,6 @@
 #ifndef MODEL_H
 #define MODEL_H
+#include <string>
 
 class Material;
 class aiScene;
@@ -7,7 +8,7 @@ class aiScene;
 class Model
 {
 public:
-	Model();
+	Model(std::string name);
 	~Model();
 
 	void Load(const char* folder, const char* file);
