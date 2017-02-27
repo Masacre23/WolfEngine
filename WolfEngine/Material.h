@@ -14,7 +14,7 @@ public:
 		aiColor3D ambient3d;
 		if (material->Get(AI_MATKEY_COLOR_AMBIENT, ambient3d) == AI_SUCCESS)
 		{
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 3; i++)
 				ambient[i] = ambient3d[i];
 			ambient[3] = 1.0f;
 		}
