@@ -108,7 +108,7 @@ void Model::Draw()
 		glMaterialf(GL_FRONT, GL_SHININESS, materials[mesh->mMaterialIndex].shiness);
 		
 		glDrawElements(GL_TRIANGLES, 3 * mesh->mNumFaces, GL_UNSIGNED_INT, indices[i]);
-		
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);

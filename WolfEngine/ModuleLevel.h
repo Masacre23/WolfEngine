@@ -17,6 +17,7 @@ struct Node
 	std::string name;
 	aiVector3D position = aiVector3D(0, 0, 0);
 	aiQuaternion rotation = aiQuaternion(1, 0, 0, 0);
+	aiVector3D scaling = aiVector3D(1, 1, 1);
 	std::vector<unsigned> meshes;
 	Node* parent = nullptr;
 	std::vector<Node*> childs;
@@ -29,7 +30,7 @@ struct Mesh
 	aiVector3D* tex_coords = nullptr;
 	aiVector3D* normals = nullptr;
 	unsigned num_vertices = 0;
-	unsigned* indices = 0;
+	unsigned* indices = nullptr;
 	unsigned num_indices = 0;
 };
 
@@ -74,6 +75,7 @@ private:
 	void CleanChildren(Node* parent);
 	void DrawNode(Node* node);
 	Node* FindNode(Node* node, const char* name);
+	void GetGLError(const char* string) const;
 
 private:
 	Node* root = nullptr;

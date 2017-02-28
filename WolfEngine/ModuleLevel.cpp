@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
+#include "Math.h"
 
 ModuleLevel::ModuleLevel() : Module(MODULE_LEVEL)
 {
@@ -37,14 +38,8 @@ void ModuleLevel::Load(const char * folder, const char * file)
 	for (unsigned i = 0; i < scene->mNumMeshes; i++)
 		LoadMesh(scene->mMeshes[i], material_offset);
 
-	//Load root module of aiScene
-	Node* root_node = new Node();
-	root_node->name = scene->mRootNode->mName.data;
-	LinkNode(root_node, root);
-	for (unsigned i = 0; i < scene->mRootNode->mNumMeshes; i++)
-		root_node->meshes.push_back(scene->mRootNode->mMeshes[i] + mesh_offset);
-	for (unsigned i = 0; i < scene->mRootNode->mNumChildren; i++)
-		LoadChildren(scene->mRootNode->mChildren[i], root_node, mesh_offset);
+	//Load nodes
+	LoadChildren(scene->mRootNode, root, mesh_offset);
 }
 
 void ModuleLevel::Clear()
@@ -53,9 +48,10 @@ void ModuleLevel::Clear()
 
 	for (std::vector<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
 	{
-		RELEASE((it)->vertices);
-		RELEASE((it)->normals);
-		RELEASE((it)->tex_coords);
+		RELEASE_ARRAY((it)->vertices);
+		RELEASE_ARRAY((it)->normals);
+		RELEASE_ARRAY((it)->tex_coords);
+		RELEASE_ARRAY((it)->indices);
 	}
 	meshes.clear();
 	materials.clear();
@@ -79,7 +75,8 @@ void ModuleLevel::LinkNode(Node * node, Node * destination)
 		bool founded = false;
 		for (std::vector<Node*>::iterator it = node->parent->childs.begin(); it != node->parent->childs.end() && !founded; ++it)
 		{
-			if ((Node*)(*it) == node) {
+			if ((Node*)(*it) == node) 
+			{
 				node->parent->childs.erase(it);
 				founded = true;
 			}
@@ -129,27 +126,27 @@ void ModuleLevel::LoadMesh(aiMesh* scene_mesh, size_t material_offset)
 	mesh.material = scene_mesh->mMaterialIndex + material_offset;
 	mesh.num_vertices = scene_mesh->mNumVertices;
 	mesh.vertices = new aiVector3D[mesh.num_vertices];
-	for (int i = 0; i < mesh.num_vertices; i++)
+	for (size_t i = 0; i < mesh.num_vertices; i++)
 		mesh.vertices[i] = scene_mesh->mVertices[i];
 	mesh.normals = new aiVector3D[mesh.num_vertices];
 	if (scene_mesh->HasNormals())
 	{
-		for (int i = 0; i < mesh.num_vertices; i++)
+		for (size_t i = 0; i < mesh.num_vertices; i++)
 			mesh.normals[i] = scene_mesh->mNormals[i];
 		mesh.tex_coords = new aiVector3D[mesh.num_vertices];
 	}
 	if (scene_mesh->HasTextureCoords(0))
 	{
-		for (int i = 0; i < mesh.num_vertices; i++)
+		for (size_t i = 0; i < mesh.num_vertices; i++)
 			mesh.tex_coords[i] = scene_mesh->mTextureCoords[0][i];
 	}
 
-	mesh.num_indices = scene_mesh->mNumFaces;
+	mesh.num_indices = 3 * scene_mesh->mNumFaces;
 	mesh.indices = new unsigned int[3 * scene_mesh->mNumFaces];
 	unsigned int c = 0;
-	for (int j = 0; j < scene_mesh->mNumFaces; ++j)
+	for (size_t j = 0; j < scene_mesh->mNumFaces; ++j)
 	{
-		for (int k = 0; k < 3; ++k)
+		for (size_t k = 0; k < 3; ++k)
 		{
 			mesh.indices[c++] = scene_mesh->mFaces[j].mIndices[k];
 		}
@@ -164,21 +161,23 @@ void ModuleLevel::LoadChildren(aiNode* scene_node, Node* parent, size_t mesh_off
 {
 	Node* node = new Node();
 	node->name = scene_node->mName.data;
+	scene_node->mTransformation.Decompose(node->scaling, node->rotation, node->position);
 	LinkNode(node, parent);
-	for (unsigned i = 0; i < scene_node->mNumMeshes; i++)
+	for (size_t i = 0; i < scene_node->mNumMeshes; i++)
 		node->meshes.push_back(scene_node->mMeshes[i] + mesh_offset);
-	for (unsigned i = 0; i < scene_node->mNumChildren; i++)
+	for (size_t i = 0; i < scene_node->mNumChildren; i++)
 		LoadChildren(scene_node->mChildren[i], node, mesh_offset);
 }
 
 void ModuleLevel::DrawNode(Node * node)
 {
-	if (node != nullptr) {
+	if (node != nullptr) 
+	{
 		glPushMatrix();
 		glTranslatef(node->position.x, node->position.y, node->position.z);
-		glMultMatrixf(node->rotation.GetMatrix().Transpose()[0]);
+		glScalef(node->scaling.x, node->scaling.y, node->scaling.z);
 
-		for (int i = 0; i < node->meshes.size(); ++i)
+		for (size_t i = 0; i < node->meshes.size(); ++i)
 		{
 			Mesh mesh = meshes[node->meshes[i]];
 			glEnableClientState(GL_VERTEX_ARRAY);
@@ -205,7 +204,7 @@ void ModuleLevel::DrawNode(Node * node)
 			glDisableClientState(GL_VERTEX_ARRAY);
 		}
 
-		for (int i = 0; i < node->childs.size(); ++i)
+		for (size_t i = 0; i < node->childs.size(); ++i)
 		{
 			DrawNode(node->childs[i]);
 		}
@@ -221,7 +220,7 @@ Node * ModuleLevel::FindNode(Node * node, const char * name)
 	if (node != nullptr)
 	{
 		bool founded = false;
-		for (int i = 0; i < node->childs.size() && ret != nullptr; ++i)
+		for (size_t i = 0; i < node->childs.size() && ret != nullptr; ++i)
 		{
 			if (node->childs[i]->name.compare(name) == 0)
 			{
@@ -233,4 +232,17 @@ Node * ModuleLevel::FindNode(Node * node, const char * name)
 		}
 	}
 	return ret;
+}
+
+void ModuleLevel::GetGLError(const char* string) const
+{
+	bool ret = true;
+
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR)
+	{
+		LOG("OpenGL error during %s: %s", string, gluErrorString(err));
+		ret = false;
+	}
+
 }
