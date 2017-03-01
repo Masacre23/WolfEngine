@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ModuleLevel.h"
 #include "Model.h"
+#include "ModuleEditor.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -24,6 +25,9 @@ bool ModuleSceneIni::Start()
 	magnetto->Load("Resources/Models/", "magnetto2.fbx");
 
 	App->level->Load("Resources/Models/street/", "Street.obj");
+	App->editor->game_objects_labels.push_back(App->level->GetRootNode()->name);
+	/*for(int i = 0; i < App->level->GetRootNode()->childs.size(); ++i)
+		App->editor->game_objects_labels.push_back(App->level->GetRootNode()->childs[i]->name);*/
 
 	return res;
 }
