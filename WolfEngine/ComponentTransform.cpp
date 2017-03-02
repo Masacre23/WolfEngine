@@ -1,4 +1,5 @@
 #include "ComponentTransform.h"
+#include "OpenGL.h"
 
 ComponentTransform::ComponentTransform() : Component(TRANSFORM)
 {
@@ -26,6 +27,6 @@ bool ComponentTransform::OnUpdate()
 
 bool ComponentTransform::OnEditor()
 {
-	ImGui::Text("Yolo");
+//	ImGui::Text("Yolo");
 	return false;
 }
