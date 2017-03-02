@@ -7,6 +7,8 @@
 #include <vector>
 #include <string>
 
+class PanelMenuBar;
+
 class ModuleEditor : public Module
 {
 public:
@@ -23,15 +25,15 @@ public:
 	
 	void Draw(const char* title, bool* p_opened = NULL);
 	void Console();
-	void MenuBar();
-	void Configuration();
-	void About();
+	//void MenuBar();
+	//void Configuration();
+	//void About();
 	void Interface();
 	void AddLog(const char* fmt, ...);
 public:
 	ImGuiTextBuffer Buf;
 	bool ScrollToBottom = false;
-	bool show_test_window = false;
+	//bool show_test_window = false;
 	bool* show_configuration;
 	bool* show_about;
 	std::vector<float> fps_log;
@@ -40,13 +42,10 @@ public:
 
 	std::vector<std::string> game_objects_labels;
 
-	bool fullscreen;
-	bool resizable;
-	bool borderless;
-	bool full_desktop;
-
 	ImVec4 yellow = ImVec4(255, 255, 0, 255);
 	ImGuiStyle* ref;
+
+	PanelMenuBar* menu;
 };
 
 #endif
