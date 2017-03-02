@@ -7,6 +7,8 @@
 #include <vector>
 #include <string>
 #include <assimp/types.h>
+#include "MathGeoLib/src/Math/float3.h"
+#include "MathGeoLib/src/Math/Quat.h"
 
 struct aiNode;
 struct aiMesh;
@@ -15,9 +17,9 @@ struct aiMaterial;
 struct Node
 {
 	std::string name;
-	aiVector3D position = aiVector3D(0, 0, 0);
-	aiQuaternion rotation = aiQuaternion(1, 0, 0, 0);
-	aiVector3D scaling = aiVector3D(1, 1, 1);
+	float3 position = float3(0, 0, 0);
+	float3 scaling = float3(1, 1, 1);
+	Quat rotation = Quat(0, 0, 0, 1);
 	std::vector<unsigned> meshes;
 	Node* parent = nullptr;
 	std::vector<Node*> childs;

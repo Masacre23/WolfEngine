@@ -161,7 +161,15 @@ void ModuleLevel::LoadChildren(aiNode* scene_node, Node* parent, size_t mesh_off
 {
 	Node* node = new Node();
 	node->name = scene_node->mName.data;
-	scene_node->mTransformation.Decompose(node->scaling, node->rotation, node->position);
+
+	aiVector3D position;
+	aiVector3D scaling;
+	aiQuaternion rotation;
+	scene_node->mTransformation.Decompose(scaling, rotation, position);
+	node->position = float3(position.x, position.y, position.z);
+	node->scaling = float3(scaling.x, scaling.y, scaling.z);
+	node->rotation = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
+
 	LinkNode(node, parent);
 	for (size_t i = 0; i < scene_node->mNumMeshes; i++)
 		node->meshes.push_back(scene_node->mMeshes[i] + mesh_offset);
@@ -176,6 +184,7 @@ void ModuleLevel::DrawNode(Node * node)
 		glPushMatrix();
 		glTranslatef(node->position.x, node->position.y, node->position.z);
 		glScalef(node->scaling.x, node->scaling.y, node->scaling.z);
+		glRotatef(node->rotation.Angle(), node->rotation.Axis().x, node->rotation.Axis().y, node->rotation.Axis().z);
 
 		for (size_t i = 0; i < node->meshes.size(); ++i)
 		{
@@ -226,7 +235,8 @@ Node * ModuleLevel::FindNode(Node * node, const char * name)
 			{
 				ret = node->childs[i];
 			}
-			else {
+			else 
+			{
 				ret = FindNode(node->childs[i], name);
 			}
 		}

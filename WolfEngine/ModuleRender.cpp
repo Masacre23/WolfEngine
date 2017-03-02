@@ -90,7 +90,7 @@ bool ModuleRender::Init()
 		GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		GLfloat light_position[] = { 4.0f, 8.0f, 4.0f, 1.0f };
-		GLfloat ambient[] = { 0.2f, 0.2, 0.2f, 1.0f };
+		GLfloat ambient[] = { 1.0f, 1.0, 1.0f, 1.0f };
 
 		glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
