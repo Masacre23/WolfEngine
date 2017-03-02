@@ -213,6 +213,9 @@
     <ClCompile Include="ComponentTransform.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Game Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -495,6 +498,9 @@
       <Filter>Game Object</Filter>
     </ClInclude>
     <ClInclude Include="ComponentTransform.h">
+      <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
       <Filter>Game Object</Filter>
     </ClInclude>
   </ItemGroup>

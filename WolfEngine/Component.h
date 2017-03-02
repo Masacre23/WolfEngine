@@ -10,7 +10,7 @@ class Component
 {
 
 public:
-	Component() {}
+	Component(TypeComponent type) : type(type) {}
 	virtual ~Component() {}
 
 	virtual void Enable() {
@@ -25,7 +25,7 @@ public:
 
 private: 
 	TypeComponent type;
-	bool enable;
+	bool enable = true;
 };
 
 #endif

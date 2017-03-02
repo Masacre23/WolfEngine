@@ -14,6 +14,8 @@ struct aiNode;
 struct aiMesh;
 struct aiMaterial;
 
+class GameObject;
+
 struct Node
 {
 	std::string name;
@@ -55,6 +57,9 @@ public:
 	void Clear();
 	void Draw();
 
+	GameObject* CreateGameObject();
+	GameObject* CreateGameObject(const char* folder, const char* file);
+
 	unsigned GetNumMeshes() const { return meshes.size(); }
 	unsigned GetNumMaterials() const { return materials.size(); }
 
@@ -71,6 +76,8 @@ public:
 	void LinkNode(Node* node, Node* destination);
 
 private:
+	GameObject* LoadGameObject(aiNode* node);
+
 	void LoadMaterial(aiMaterial* scene_material, aiString folder_path);
 	void LoadMesh(aiMesh* scene_mesh, size_t material_offset);
 	void LoadChildren(aiNode* scene_node, Node* parent, size_t mesh_offset);
@@ -83,6 +90,8 @@ private:
 	Node* root = nullptr;
 	std::vector<Mesh> meshes;
 	std::vector<Material> materials;
+
+	std::vector<GameObject*> gameobjects;
 };
 
 #endif // !MODULELEVEL_H

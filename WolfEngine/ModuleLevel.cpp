@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleLevel.h"
+#include "GameObject.h"
 #include "OpenGL.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
@@ -60,6 +61,39 @@ void ModuleLevel::Clear()
 void ModuleLevel::Draw()
 {
 	DrawNode(root);
+}
+
+GameObject* ModuleLevel::CreateGameObject()
+{
+	GameObject* object = new GameObject();
+	gameobjects.push_back(object);
+
+	return object;
+}
+
+GameObject* ModuleLevel::CreateGameObject(const char * folder, const char * file)
+{
+	aiString folder_path = aiString();
+	folder_path.Append(folder);
+
+	aiString file_path = aiString(folder_path);
+	file_path.Append(file);
+
+	const aiScene* scene = aiImportFile(file_path.data, aiProcess_Triangulate);
+
+	GameObject* ret = LoadGameObject(scene->mRootNode);
+	gameobjects.push_back(ret);
+
+	return ret;
+}
+
+GameObject* ModuleLevel::LoadGameObject(aiNode* node)
+{
+	GameObject* ret = new GameObject(node->mName.data);
+
+	ret->CreateComponent(TypeComponent::TRANSFORM);
+
+	return ret;
 }
 
 Node* ModuleLevel::FindNode(const char * name)
