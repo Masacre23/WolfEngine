@@ -11,8 +11,9 @@ class ComponentMesh : public Component
 {
 public:
 	ComponentMesh();
-	ComponentMesh(aiMesh* mesh);
 	~ComponentMesh();
+
+	void Load(aiMesh* mesh);
 
 	bool OnUpdate();
 	bool OnEditor();

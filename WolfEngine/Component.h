@@ -6,6 +6,8 @@
 enum TypeComponent
 {
 	TRANSFORM = 0,
+	MESH,
+	MATERIAL,
 };
 
 class Component
