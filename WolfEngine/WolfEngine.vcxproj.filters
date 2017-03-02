@@ -216,6 +216,9 @@
     <ClCompile Include="PanelMenuBar.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentMesh.cpp">
+      <Filter>Game Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -499,6 +502,9 @@
     </ClInclude>
     <ClInclude Include="PanelMenuBar.h">
       <Filter>Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentMesh.h">
+      <Filter>Game Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

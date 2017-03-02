@@ -1,16 +1,20 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include "Globals.h"
+
 enum TypeComponent
 {
 	TRANSFORM = 0,
+	MESH,
+	MATERIAL,
 };
 
 class Component
 {
 
 public:
-	Component() {}
+	Component(TypeComponent type) : type(type){}
 	virtual ~Component() {}
 
 	virtual void Enable() {
@@ -23,7 +27,7 @@ public:
 	}
 
 
-private: 
+protected: 
 	TypeComponent type;
 	bool enable;
 };
