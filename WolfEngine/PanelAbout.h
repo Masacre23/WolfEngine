@@ -8,6 +8,8 @@ class PanelAbout : public Panel
 public:
 	PanelAbout();
 	~PanelAbout();
+
+	void Draw();
 };
 
 #endif

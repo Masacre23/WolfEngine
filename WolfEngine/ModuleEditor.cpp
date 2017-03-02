@@ -4,11 +4,10 @@
 #include <stdio.h>
 #include "Glew/include/GL/glew.h"   
 #include "SDL\include\SDL.h"
-#include <Windows.h>
-
 #include "ModuleWindow.h"
 #include "JsonHandler.h"
 #include "ModuleLevel.h"
+#include "PanelMenuBar.h"
 
 ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
 {
@@ -93,6 +92,7 @@ bool ModuleEditor::Init()
 	ref = new ImGuiStyle();
 	
 	game_objects_labels.push_back("Main Camera");
+	menu = new PanelMenuBar();
 	return true;
 }
 
@@ -106,10 +106,11 @@ update_status ModuleEditor::PreUpdate(float dt)
 update_status ModuleEditor::Update(float dt)
 {
 	//bool show_another_window = false;
+	menu->Draw(ref);
 
 	//Console();
 
-	MenuBar();
+	/*MenuBar();
 	
 	Interface();
 	
@@ -120,8 +121,8 @@ update_status ModuleEditor::Update(float dt)
 		About();
 		
 
-	if(show_test_window)
-		ImGui::ShowTestWindow();
+	//if(show_test_window)
+	//	ImGui::ShowTestWindow();*/
 
 	return UPDATE_CONTINUE;
 }
@@ -166,7 +167,7 @@ void ModuleEditor::Console()
 	Draw("Console");
 }
 
-void ModuleEditor::MenuBar()
+/*void ModuleEditor::MenuBar()
 {
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
@@ -243,9 +244,9 @@ void ModuleEditor::MenuBar()
 	}
 
 	ImGui::EndMainMenuBar();
-}
+}*/
 
-void ModuleEditor::Configuration()
+/*void ModuleEditor::Configuration()
 {
 	ImGui::Begin("Configuration", show_configuration);
 	ImGui::Text("Options");
@@ -377,7 +378,7 @@ void ModuleEditor::Configuration()
 	ImGui::End();
 }
 
-void ModuleEditor::About()
+/*void ModuleEditor::About()
 {
 	ImGui::Begin("About", show_about);
 	ImGui::Text("Engine name: ");
@@ -389,7 +390,7 @@ void ModuleEditor::About()
 	ImGui::TextColored(yellow, "Esteban Arrua, Guillem Ferre and Adrian Guevara.");
 
 	ImGui::End();
-}
+}*/
 
 void ModuleEditor::Interface()
 {
@@ -431,18 +432,6 @@ void ModuleEditor::Interface()
 				ImGui::TreePop();
 			}
 		}
-	/*	if (i < 3)
-		{
-			// Node
-			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Node %d", i);
-			if (ImGui::IsItemClicked())
-				node_clicked = i;
-			if (node_open)
-			{
-				ImGui::Text("Blah blah\nBlah Blah");
-				ImGui::TreePop();
-			}
-		}*/
 		else
 		{
 			// Leaf: The only reason we have a TreeNode at all is to allow selection of the leaf. Otherwise we can use BulletText() or TreeAdvanceToLabelPos()+Text().
@@ -477,6 +466,32 @@ void ModuleEditor::Interface()
 	ImGui::SetNextWindowPos(ImVec2(App->window->GetScreenWidth()- App->window->GetScreenWidth()/5, 20));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
 	ImGui::Begin("Inspector", b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoCollapse);
+	node_clicked = -1;
+	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
+	for (int i = 0; i < 1; i++)
+	{
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
+		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Transform");
+		if (ImGui::IsItemClicked())
+			node_clicked = i;
+		
+		if (node_open)
+		{
+			ImGui::DragInt3("Position", new int[23, 23, 23]);
+			ImGui::SameLine();
+			ImGui::TreePop();
+		}
+	}
+	if (node_clicked != -1)
+	{
+		// Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
+		if (ImGui::GetIO().KeyCtrl)
+			selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
+		else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
+			selection_mask = (1 << node_clicked);           // Click to single-select
+	}
+
+	ImGui::PopStyleVar();
 	ImGui::End();
 
 	ImGui::SetNextWindowPos(ImVec2(0, App->window->GetScreenHeight()- App->window->GetScreenHeight() / 3));
