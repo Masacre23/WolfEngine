@@ -1,12 +1,19 @@
 #include "ComponentTransform.h"
 #include "OpenGL.h"
 
-ComponentTransform::ComponentTransform(float3 position, float3 scale, Quat rotation) : position(position), scale(scale), rotation(rotation)
+ComponentTransform::ComponentTransform() : Component(TRANSFORM)
 {
 }
 
 ComponentTransform::~ComponentTransform()
 {
+}
+
+void ComponentTransform::Load(float3 position, float3 scale, Quat rotation)
+{
+	this->position = position;
+	this->scale = scale;
+	this->rotation = rotation;
 }
 
 bool ComponentTransform::OnUpdate()

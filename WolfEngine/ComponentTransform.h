@@ -7,8 +7,10 @@
 class ComponentTransform : public Component
 {
 public:
-	ComponentTransform(float3 position, float3 scale, Quat rotation);
+	ComponentTransform();
 	~ComponentTransform();
+
+	void Load(float3 position, float3 scale, Quat rotation);
 
 	bool OnUpdate();
 	bool OnEditor();

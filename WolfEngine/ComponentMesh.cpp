@@ -4,16 +4,24 @@
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
 
-ComponentMesh::ComponentMesh()
+ComponentMesh::ComponentMesh(): Component(MESH)
 {
 }
 
-ComponentMesh::ComponentMesh(aiMesh * mesh)
+ComponentMesh::~ComponentMesh()
+{
+	RELEASE_ARRAY(vertices);
+	RELEASE_ARRAY(normals);
+	RELEASE_ARRAY(tex_coords);
+	RELEASE_ARRAY(indices);
+}
+
+void ComponentMesh::Load(aiMesh * mesh)
 {
 	num_vertices = mesh->mNumVertices;
 	vertices = new float3[num_vertices];
 	for (size_t i = 0; i < num_vertices; ++i)
-		vertices[i] = (float3) mesh->mVertices[i][0];
+		vertices[i] = (float3)mesh->mVertices[i][0];
 
 	has_normals = mesh->HasNormals();
 	if (has_normals) {
@@ -21,7 +29,7 @@ ComponentMesh::ComponentMesh(aiMesh * mesh)
 		for (size_t i = 0; i < num_vertices; ++i)
 			normals[i] = (float3)mesh->mNormals[i][0];
 	}
-	
+
 	has_tex_coords = mesh->HasTextureCoords(0);
 
 	if (has_tex_coords) {
@@ -32,7 +40,7 @@ ComponentMesh::ComponentMesh(aiMesh * mesh)
 
 	num_indices = 3 * mesh->mNumFaces;
 	indices = new unsigned int[num_indices];
-	
+
 	unsigned int c = 0;
 	for (size_t j = 0; j < mesh->mNumFaces; ++j)
 	{
@@ -43,10 +51,6 @@ ComponentMesh::ComponentMesh(aiMesh * mesh)
 	}
 	if (c != 3 * mesh->mNumFaces)
 		LOG("Error loading meshes: Incorrect number of indices");
-}
-
-ComponentMesh::~ComponentMesh()
-{
 }
 
 bool ComponentMesh::OnUpdate()
