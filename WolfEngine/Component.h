@@ -1,6 +1,8 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include "Globals.h"
+
 enum TypeComponent
 {
 	TRANSFORM = 0,
@@ -23,7 +25,7 @@ public:
 	}
 
 
-private: 
+protected: 
 	TypeComponent type;
 	bool enable;
 };
