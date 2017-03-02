@@ -210,7 +210,7 @@
     <ClCompile Include="PanelConfiguration.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
-    <ClCompile Include="Component.cpp">
+    <ClCompile Include="ComponentTransform.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
   </ItemGroup>
@@ -492,6 +492,9 @@
       <Filter>Clases</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
+      <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentTransform.h">
       <Filter>Game Object</Filter>
     </ClInclude>
   </ItemGroup>
