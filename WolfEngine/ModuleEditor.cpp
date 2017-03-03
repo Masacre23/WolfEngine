@@ -8,6 +8,7 @@
 #include "JsonHandler.h"
 #include "ModuleLevel.h"
 #include "PanelMenuBar.h"
+#include "GameObject.h"
 #include "PanelInterface.h"
 
 ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)

@@ -5,6 +5,7 @@
 #include "ModuleLevel.h"
 #include "Model.h"
 #include "ModuleEditor.h"
+#include "GameObject.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -24,8 +25,8 @@ bool ModuleSceneIni::Start()
 	magnetto = new Model("magnetto2");
 	magnetto->Load("Resources/Models/", "magnetto2.fbx");
 
-	App->level->Load("Resources/Models/street/", "Street.obj");
-	App->editor->game_objects_labels.push_back(App->level->GetRootNode()->name);
+	App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	App->editor->game_objects_labels.push_back(App->level->GetRoot()->GetName());
 	/*for(int i = 0; i < App->level->GetRootNode()->childs.size(); ++i)
 		App->editor->game_objects_labels.push_back(App->level->GetRootNode()->childs[i]->name);*/
 
@@ -39,7 +40,6 @@ bool ModuleSceneIni::CleanUp()
 
 	RELEASE(batman);
 	RELEASE(magnetto);
-	App->level->Clear();
 
 	return true;
 }

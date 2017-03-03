@@ -10,16 +10,48 @@
 
 ModuleLevel::ModuleLevel() : Module(MODULE_LEVEL)
 {
-	root = new Node();
-	root->name = "Root";
 }
 
 ModuleLevel::~ModuleLevel()
 {
-	Clear();
 }
 
-void ModuleLevel::Load(const char * folder, const char * file)
+bool ModuleLevel::Init()
+{
+	LOG("Init level.");
+
+	root = new GameObject(nullptr, "Root");
+
+	return true;
+}
+
+bool ModuleLevel::CleanUp()
+{
+	LOG("Destroying GameObjects and clearing level.")
+
+	RELEASE(root);
+
+	return true;
+}
+
+void ModuleLevel::Draw() const
+{
+	//DrawNode(root);
+
+	root->Draw();
+}
+
+GameObject* ModuleLevel::CreateGameObject(GameObject* parent)
+{
+	if (parent == nullptr)
+		parent = root;
+
+	GameObject* ret = new GameObject(parent);
+
+	return ret;
+}
+
+void ModuleLevel::ImportScene(const char * folder, const char * file)
 {
 	aiString folder_path = aiString();
 	folder_path.Append(folder);
@@ -29,253 +61,47 @@ void ModuleLevel::Load(const char * folder, const char * file)
 
 	const aiScene* scene = aiImportFile(file_path.data, aiProcess_Triangulate);
 
-	//Load materials
-	size_t material_offset = materials.size();
-	for (unsigned i = 0; i < scene->mNumMaterials; i++)
-		LoadMaterial(scene->mMaterials[i], folder_path);
-
-	//Load meshes
-	size_t mesh_offset = meshes.size();
-	for (unsigned i = 0; i < scene->mNumMeshes; i++)
-		LoadMesh(scene->mMeshes[i], material_offset);
-
-	//Load nodes
-	LoadChildren(scene->mRootNode, root, mesh_offset);
-}
-
-void ModuleLevel::Clear()
-{
-	CleanChildren(root);
-
-	for (std::vector<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+	if (scene != nullptr)
 	{
-		RELEASE_ARRAY((it)->vertices);
-		RELEASE_ARRAY((it)->normals);
-		RELEASE_ARRAY((it)->tex_coords);
-		RELEASE_ARRAY((it)->indices);
+		RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path);
 	}
-	meshes.clear();
-	materials.clear();
+
+	aiReleaseImport(scene);
 }
 
-void ModuleLevel::Draw()
+void ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path)
 {
-	DrawNode(root);
-}
+	GameObject* new_object = new GameObject(parent, scene_node->mName.data);
 
-GameObject* ModuleLevel::CreateGameObject()
-{
-	GameObject* object = new GameObject();
-	gameobjects.push_back(object);
+	//Create transformation component
+	aiVector3D ai_position;
+	aiVector3D ai_scaling;
+	aiQuaternion ai_rotation;
+	scene_node->mTransformation.Decompose(ai_scaling, ai_rotation, ai_position);
+	float3 position = float3(ai_position.x, ai_position.y, ai_position.z);
+	float3 scaling = float3(ai_scaling.x, ai_scaling.y, ai_scaling.z);
+	Quat rotation = Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w);
+	new_object->SetTransform(position, scaling, rotation);
 
-	return object;
-}
-
-GameObject* ModuleLevel::CreateGameObject(const char * folder, const char * file)
-{
-	aiString folder_path = aiString();
-	folder_path.Append(folder);
-
-	aiString file_path = aiString(folder_path);
-	file_path.Append(file);
-
-	const aiScene* scene = aiImportFile(file_path.data, aiProcess_Triangulate);
-
-	GameObject* ret = LoadGameObject(scene->mRootNode);
-	gameobjects.push_back(ret);
-
-	return ret;
-}
-
-GameObject* ModuleLevel::LoadGameObject(aiNode* node)
-{
-	GameObject* ret = new GameObject(node->mName.data);
-
-	ret->CreateComponent(TypeComponent::TRANSFORM);
-
-	return ret;
-}
-
-Node* ModuleLevel::FindNode(const char * name)
-{
-	Node* ret = FindNode(root, name);
-	return ret;
-}
-
-void ModuleLevel::LinkNode(Node * node, Node * destination)
-{
-	if (node->parent != nullptr)
+	//Create mesh and materials
+	if (scene_node->mNumMeshes > 1)
 	{
-		bool founded = false;
-		for (std::vector<Node*>::iterator it = node->parent->childs.begin(); it != node->parent->childs.end() && !founded; ++it)
+		GameObject* mesh_object = nullptr;
+		//Create one new game object for each mesh
+		for (int i = 0; i < scene_node->mNumMeshes; i++)
 		{
-			if ((Node*)(*it) == node) 
-			{
-				node->parent->childs.erase(it);
-				founded = true;
-			}
+			mesh_object = new GameObject(new_object, scene_node->mName.data);
+			mesh_object->LoadMeshFromScene(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
 		}
 	}
-		
-	destination->childs.push_back(node);
-	node->parent = destination;
-}
-
-void ModuleLevel::CleanChildren(Node* parent)
-{
-	for (std::vector<Node*>::iterator it = parent->childs.begin(); it != parent->childs.end(); ++it)
-		CleanChildren(*it);
-
-	parent->childs.clear();
-	RELEASE(parent);
-}
-
-void ModuleLevel::LoadMaterial(aiMaterial* scene_material, aiString folder_path)
-{
-	Material material;
-	scene_material->Get(AI_MATKEY_COLOR_AMBIENT, material.ambient);
-	scene_material->Get(AI_MATKEY_COLOR_DIFFUSE, material.diffuse);
-	scene_material->Get(AI_MATKEY_COLOR_SPECULAR, material.specular);
-	if (scene_material->Get(AI_MATKEY_SHININESS, material.shiness) == AI_SUCCESS)
-		material.shiness *= 128.0f;
-	float shine_strength = 1.0f;
-	if (scene_material->Get(AI_MATKEY_SHININESS_STRENGTH, shine_strength) == AI_SUCCESS)
-		material.specular *= shine_strength;
-
-	aiString path;
-	if (scene_material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+	else if (scene_node->mNumMeshes == 1)
 	{
-		aiString full_path = aiString(folder_path);
-		full_path.Append(path.data);
-
-		material.texture = App->textures->LoadTexture(full_path);
+		//Create mesh component on this object
+		new_object->LoadMeshFromScene(scene->mMeshes[scene_node->mMeshes[0]], scene, folder_path);
 	}
 
-	materials.push_back(material);
-}
-
-void ModuleLevel::LoadMesh(aiMesh* scene_mesh, size_t material_offset)
-{
-	Mesh mesh;
-	mesh.material = scene_mesh->mMaterialIndex + material_offset;
-	mesh.num_vertices = scene_mesh->mNumVertices;
-	mesh.vertices = new aiVector3D[mesh.num_vertices];
-	for (size_t i = 0; i < mesh.num_vertices; i++)
-		mesh.vertices[i] = scene_mesh->mVertices[i];
-	mesh.normals = new aiVector3D[mesh.num_vertices];
-	if (scene_mesh->HasNormals())
-	{
-		for (size_t i = 0; i < mesh.num_vertices; i++)
-			mesh.normals[i] = scene_mesh->mNormals[i];
-		mesh.tex_coords = new aiVector3D[mesh.num_vertices];
-	}
-	if (scene_mesh->HasTextureCoords(0))
-	{
-		for (size_t i = 0; i < mesh.num_vertices; i++)
-			mesh.tex_coords[i] = scene_mesh->mTextureCoords[0][i];
-	}
-
-	mesh.num_indices = 3 * scene_mesh->mNumFaces;
-	mesh.indices = new unsigned int[3 * scene_mesh->mNumFaces];
-	unsigned int c = 0;
-	for (size_t j = 0; j < scene_mesh->mNumFaces; ++j)
-	{
-		for (size_t k = 0; k < 3; ++k)
-		{
-			mesh.indices[c++] = scene_mesh->mFaces[j].mIndices[k];
-		}
-	}
-	if (c != 3 * scene_mesh->mNumFaces)
-		LOG("Error loading meshes: Incorrect number of indices");
-
-	meshes.push_back(mesh);
-}
-
-void ModuleLevel::LoadChildren(aiNode* scene_node, Node* parent, size_t mesh_offset)
-{
-	Node* node = new Node();
-	node->name = scene_node->mName.data;
-
-	aiVector3D position;
-	aiVector3D scaling;
-	aiQuaternion rotation;
-	scene_node->mTransformation.Decompose(scaling, rotation, position);
-	node->position = float3(position.x, position.y, position.z);
-	node->scaling = float3(scaling.x, scaling.y, scaling.z);
-	node->rotation = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
-
-	LinkNode(node, parent);
-	for (size_t i = 0; i < scene_node->mNumMeshes; i++)
-		node->meshes.push_back(scene_node->mMeshes[i] + mesh_offset);
-	for (size_t i = 0; i < scene_node->mNumChildren; i++)
-		LoadChildren(scene_node->mChildren[i], node, mesh_offset);
-}
-
-void ModuleLevel::DrawNode(Node * node)
-{
-	if (node != nullptr) 
-	{
-		glPushMatrix();
-		glTranslatef(node->position.x, node->position.y, node->position.z);
-		glScalef(node->scaling.x, node->scaling.y, node->scaling.z);
-		glRotatef(node->rotation.Angle(), node->rotation.Axis().x, node->rotation.Axis().y, node->rotation.Axis().z);
-
-		for (size_t i = 0; i < node->meshes.size(); ++i)
-		{
-			Mesh mesh = meshes[node->meshes[i]];
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-			glVertexPointer(3, GL_FLOAT, 0, mesh.vertices);
-			glNormalPointer(GL_FLOAT, 0, mesh.normals);
-
-			glBindTexture(GL_TEXTURE_2D, materials[mesh.material].texture);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(aiVector3D), mesh.tex_coords);
-
-			glMaterialfv(GL_FRONT, GL_AMBIENT, &materials[mesh.material].ambient[0]);
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, &materials[mesh.material].diffuse[0]);
-			glMaterialfv(GL_FRONT, GL_SPECULAR, &materials[mesh.material].specular[0]);
-			glMaterialf(GL_FRONT, GL_SHININESS, materials[mesh.material].shiness);
-
-			glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, mesh.indices);
-
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-			glDisableClientState(GL_NORMAL_ARRAY);
-			glDisableClientState(GL_VERTEX_ARRAY);
-		}
-
-		for (size_t i = 0; i < node->childs.size(); ++i)
-		{
-			DrawNode(node->childs[i]);
-		}
-
-		glPopMatrix();
-	}
-}
-
-
-Node * ModuleLevel::FindNode(Node * node, const char * name)
-{
-	Node* ret = nullptr;
-	if (node != nullptr)
-	{
-		bool founded = false;
-		for (size_t i = 0; i < node->childs.size() && ret != nullptr; ++i)
-		{
-			if (node->childs[i]->name.compare(name) == 0)
-			{
-				ret = node->childs[i];
-			}
-			else 
-			{
-				ret = FindNode(node->childs[i], name);
-			}
-		}
-	}
-	return ret;
+	for (int i = 0; i < scene_node->mNumChildren; i++)
+		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path);
 }
 
 void ModuleLevel::GetGLError(const char* string) const

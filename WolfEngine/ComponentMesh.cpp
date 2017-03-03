@@ -3,8 +3,9 @@
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
+#include "GameObject.h"
 
-ComponentMesh::ComponentMesh(): Component(MESH)
+ComponentMesh::ComponentMesh(GameObject* parent): Component(Component::Type::MESH, parent)
 {
 }
 
@@ -19,59 +20,73 @@ ComponentMesh::~ComponentMesh()
 void ComponentMesh::Load(aiMesh * mesh)
 {
 	num_vertices = mesh->mNumVertices;
-	vertices = new float3[num_vertices];
+	vertices = new float[3 * num_vertices];
+	unsigned c = 0;
 	for (size_t i = 0; i < num_vertices; ++i)
-		vertices[i] = (float3)mesh->mVertices[i][0];
+		for (size_t j = 0; j < 3; ++j)
+			vertices[c++] = mesh->mVertices[i][j];
+	if (c != 3 * mesh->mNumVertices)
+		LOG("Error loading meshes: Incorrect number of vertices");
 
 	has_normals = mesh->HasNormals();
-	if (has_normals) {
-		normals = new float3[num_vertices];
+	if (has_normals) 
+	{
+		normals = new float[3 * num_vertices];
+		c = 0;
 		for (size_t i = 0; i < num_vertices; ++i)
-			normals[i] = (float3)mesh->mNormals[i][0];
+			for (size_t j = 0; j < 3; ++j)
+				normals[c++] = mesh->mNormals[i][j];
+		if (c != 3 * mesh->mNumVertices)
+			LOG("Error loading meshes: Incorrect number of normals");
 	}
 
 	has_tex_coords = mesh->HasTextureCoords(0);
-
-	if (has_tex_coords) {
-		tex_coords = new float2[num_vertices];
+	if (has_tex_coords) 
+	{
+		tex_coords = new float[2 * num_vertices];
+		c = 0;
 		for (size_t i = 0; i < num_vertices; ++i)
-			tex_coords[i] = (float2)mesh->mTextureCoords[0][i][0];
+			for (size_t j = 0; j < 2; ++j)
+				tex_coords[c++] = mesh->mTextureCoords[0][i][j];
+		if (c != 2 * mesh->mNumVertices)
+			LOG("Error loading meshes: Incorrect number of texture coordinates");
 	}
 
 	num_indices = 3 * mesh->mNumFaces;
 	indices = new unsigned int[num_indices];
 
-	unsigned int c = 0;
+	c = 0;
 	for (size_t j = 0; j < mesh->mNumFaces; ++j)
-	{
 		for (size_t k = 0; k < 3; ++k)
-		{
 			indices[c++] = mesh->mFaces[j].mIndices[k];
-		}
-	}
 	if (c != 3 * mesh->mNumFaces)
 		LOG("Error loading meshes: Incorrect number of indices");
 }
 
 bool ComponentMesh::OnUpdate()
 {
-	if (enable) {
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	return true;
+}
 
-		glVertexPointer(3, GL_FLOAT, 0, vertices);
+bool ComponentMesh::OnDraw() const
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+	if (has_normals)
 		glNormalPointer(GL_FLOAT, 0, normals);
+	if (has_tex_coords)
 		glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
 
-		glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
+	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_NORMAL_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
-	}
 	return true;
 }
 

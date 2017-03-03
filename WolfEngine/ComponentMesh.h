@@ -3,27 +3,27 @@
 
 #include "Component.h"
 #include "Math.h"
-#include <assimp/types.h>
 
 struct aiMesh;
 
 class ComponentMesh : public Component
 {
 public:
-	ComponentMesh();
+	ComponentMesh(GameObject* parent);
 	~ComponentMesh();
 
 	void Load(aiMesh* mesh);
 
 	bool OnUpdate();
+	bool OnDraw() const;
 	bool OnEditor();
 
 private:
-	float3* vertices = nullptr;
+	float* vertices = nullptr;
 	bool has_tex_coords = false;
-	float2* tex_coords = nullptr;
+	float* tex_coords = nullptr;
 	bool has_normals = false;
-	float3* normals = nullptr;
+	float* normals = nullptr;
 	unsigned num_vertices = 0;
 	unsigned* indices = nullptr;
 	unsigned num_indices = 0;

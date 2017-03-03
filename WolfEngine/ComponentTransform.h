@@ -7,12 +7,13 @@
 class ComponentTransform : public Component
 {
 public:
-	ComponentTransform();
+	ComponentTransform(GameObject* parent);
 	~ComponentTransform();
 
-	void Load(float3 position, float3 scale, Quat rotation);
+	void Load(const float3& position, const float3& scale, const Quat& rotation);
 
 	bool OnUpdate();
+	bool OnDraw() const;
 	bool OnEditor();
 
 private:
