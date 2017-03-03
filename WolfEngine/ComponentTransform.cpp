@@ -1,7 +1,7 @@
 #include "ComponentTransform.h"
 #include "OpenGL.h"
 
-ComponentTransform::ComponentTransform() : Component(TRANSFORM)
+ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
 {
 }
 
@@ -9,7 +9,7 @@ ComponentTransform::~ComponentTransform()
 {
 }
 
-void ComponentTransform::Load(float3 position, float3 scale, Quat rotation)
+void ComponentTransform::Load(const float3& position, const float3& scale, const Quat& rotation)
 {
 	this->position = position;
 	this->scale = scale;
@@ -18,9 +18,13 @@ void ComponentTransform::Load(float3 position, float3 scale, Quat rotation)
 
 bool ComponentTransform::OnUpdate()
 {
-	glTranslatef(position.x, position.y, position.z);
-	glScalef(scale.x, scale.y, scale.z);
-	glRotatef(rotation.Angle(), rotation.Axis().x, rotation.Axis().y, rotation.Axis().z);
+	return true;
+}
+
+bool ComponentTransform::OnDraw() const
+{
+	float* transform = (float*)float4x4::FromTRS(position, rotation, scale).v;
+	glMultMatrixf(transform);
 
 	return true;
 }
