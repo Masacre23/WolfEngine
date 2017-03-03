@@ -8,6 +8,7 @@
 #include <string>
 
 class PanelMenuBar;
+class PanelInterface;
 
 class ModuleEditor : public Module
 {
@@ -46,6 +47,7 @@ public:
 	ImGuiStyle* ref;
 
 	PanelMenuBar* menu;
+	PanelInterface* interfaces;
 };
 
 #endif

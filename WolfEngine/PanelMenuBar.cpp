@@ -92,11 +92,11 @@ void PanelMenuBar::Draw(ImGuiStyle* ref)
 		ImGui::EndMenu();
 	}
 
-	/*if (config->active)
+	if (*config->active)
 		config->Draw(ref);
-
-	if (about->active)
-		about->Draw();*/
+	
+	if (*about->active)
+		about->Draw();
 
 	ImGui::EndMainMenuBar();
 }

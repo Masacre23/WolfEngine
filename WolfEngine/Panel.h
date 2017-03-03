@@ -15,7 +15,7 @@ public:
 	void Draw() { return; };
 
 public:
-	bool* active = new bool(true);
+	bool* active;
 	int w, h, x, y;
 
 	ImVec4 yellow = ImVec4(255, 255, 0, 255);

@@ -4,7 +4,9 @@
 #include "ModuleWindow.h"
 
 PanelAbout::PanelAbout() : Panel("About")
-{}
+{
+	active = new bool(false);
+}
 
 
 PanelAbout::~PanelAbout()

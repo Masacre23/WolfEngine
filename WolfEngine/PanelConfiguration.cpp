@@ -4,7 +4,14 @@
 #include "SDL\include\SDL.h"
 
 PanelConfiguration::PanelConfiguration() : Panel("Configuration")
-{}
+{
+	active = new bool(false);
+	for (int i = 0; i < size_vector; ++i)
+	{
+		fps_log.push_back(0);
+		ms_log.push_back(0);
+	}
+}
 
 PanelConfiguration::~PanelConfiguration()
 {}

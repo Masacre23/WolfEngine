@@ -183,6 +183,7 @@
     <ClCompile Include="PanelAbout.cpp" />
     <ClCompile Include="PanelConfiguration.cpp" />
     <ClCompile Include="PanelConsole.cpp" />
+    <ClCompile Include="PanelInterface.cpp" />
     <ClCompile Include="PanelMenuBar.cpp" />
     <ClCompile Include="parson\parson.c" />
     <ClCompile Include="TimerUs.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="PanelAbout.h" />
     <ClInclude Include="PanelConfiguration.h" />
     <ClInclude Include="PanelConsole.h" />
+    <ClInclude Include="PanelInterface.h" />
     <ClInclude Include="PanelMenuBar.h" />
     <ClInclude Include="parson\parson.h" />
     <ClInclude Include="Point.h" />

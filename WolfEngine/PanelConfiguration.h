@@ -20,6 +20,8 @@ public:
 	bool resizable;
 	bool borderless;
 	bool full_desktop;
+
+	int size_vector = 100;
 };
 
 #endif
