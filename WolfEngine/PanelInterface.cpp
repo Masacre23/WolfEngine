@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleLevel.h"
+#include "GameObject.h"
 
 PanelInterface::PanelInterface() : Panel("Interface")
 {
@@ -35,15 +36,15 @@ void PanelInterface::Draw()
 		if (game_objects_labels[i] == "Root")
 		{
 			// Node
-			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, App->level->GetRootNode()->childs[0]->name.c_str());
+			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, App->level->GetRoot()->childs[0]->name.c_str());
 			if (ImGui::IsItemClicked())
 				node_clicked = i;
 			if (node_open)
 			{
-				for (int j = 0; j < App->level->GetRootNode()->childs[0]->childs.size(); ++j)
+				for (int j = 0; j < App->level->GetRoot()->childs[0]->childs.size(); ++j)
 				{
 					node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask_child & (1 << j)) ? ImGuiTreeNodeFlags_Selected : 0);
-					ImGui::TreeNodeEx((void*)(intptr_t)(j + i), node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, App->level->GetRootNode()->childs[0]->childs[j]->name.c_str());
+					ImGui::TreeNodeEx((void*)(intptr_t)(j + i), node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, App->level->GetRoot()->childs[0]->childs[j]->name.c_str());
 					if (ImGui::IsItemClicked())
 					{
 						child_clicked = j;

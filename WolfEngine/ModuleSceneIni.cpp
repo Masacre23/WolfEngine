@@ -26,7 +26,7 @@ bool ModuleSceneIni::Start()
 	magnetto->Load("Resources/Models/", "magnetto2.fbx");
 
 	App->level->ImportScene("Resources/Models/street/", "Street.obj");
-	App->editor->game_objects_labels.push_back(App->level->GetRoot()->GetName());
+	App->editor->game_objects_labels.push_back(App->level->GetRoot()->name);
 	/*for(int i = 0; i < App->level->GetRootNode()->childs.size(); ++i)
 		App->editor->game_objects_labels.push_back(App->level->GetRootNode()->childs[i]->name);*/
 
@@ -51,8 +51,7 @@ update_status ModuleSceneIni::Update(float dt)
 	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 
 	batman->Draw();
-
-//	magnetto->Draw();
+	magnetto->Draw();
 
 	App->level->Draw();
 
