@@ -225,6 +225,10 @@
     <ClCompile Include="ComponentMaterial.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
+    <ClCompile Include="PanelInterface.cpp">
+      <Filter>Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelHierachy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -518,6 +522,10 @@
     <ClInclude Include="ComponentMaterial.h">
       <Filter>Game Object</Filter>
     </ClInclude>
+    <ClInclude Include="PanelInterface.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelHierachy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\src\Geometry\KDTree.inl">

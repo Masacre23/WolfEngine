@@ -51,7 +51,7 @@ update_status ModuleSceneIni::Update(float dt)
 	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 
 	batman->Draw();
-	magnetto->Draw();
+	//magnetto->Draw();
 
 	App->level->Draw();
 

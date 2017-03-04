@@ -3,7 +3,7 @@
 
 #include "Panel.h"
 
-#include <vector>
+class PanelHierachy;
 
 class PanelInterface : public Panel
 {
@@ -14,7 +14,7 @@ public:
 	void Draw();
 
 public:
-	std::vector<std::string> game_objects_labels;
+	PanelHierachy* hierachy;
 };
 
 #endif
