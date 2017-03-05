@@ -228,7 +228,9 @@
     <ClCompile Include="PanelInterface.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
-    <ClCompile Include="PanelHierachy.cpp" />
+    <ClCompile Include="PanelHierachy.cpp">
+      <Filter>Panels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -525,7 +527,9 @@
     <ClInclude Include="PanelInterface.h">
       <Filter>Panels</Filter>
     </ClInclude>
-    <ClInclude Include="PanelHierachy.h" />
+    <ClInclude Include="PanelHierachy.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\src\Geometry\KDTree.inl">

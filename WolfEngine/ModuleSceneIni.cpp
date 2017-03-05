@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "ModuleEditor.h"
 #include "GameObject.h"
+#include "PanelInterface.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -26,9 +27,16 @@ bool ModuleSceneIni::Start()
 	magnetto->Load("Resources/Models/", "magnetto2.fbx");
 
 	App->level->ImportScene("Resources/Models/street/", "Street.obj");
-	App->editor->game_objects_labels.push_back(App->level->GetRoot()->name);
-	/*for(int i = 0; i < App->level->GetRootNode()->childs.size(); ++i)
-		App->editor->game_objects_labels.push_back(App->level->GetRootNode()->childs[i]->name);*/
+	//App->level->CreateGameObject("Resources/Models/Batman/", "Batman.obj");
+
+	empty_gameobject = new GameObject(nullptr);
+	empty_gameobject->CreateComponent(Component::Type::TRANSFORM);
+	empty_gameobject->name = "empty_gameobject";
+	App->editor->interfaces->game_objects.push_back(empty_gameobject);
+
+	child_gameobject = new GameObject(empty_gameobject);
+	child_gameobject->name = "child_1";
+	child_gameobject->CreateComponent(Component::Type::TRANSFORM);
 
 	return res;
 }

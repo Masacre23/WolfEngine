@@ -2,8 +2,9 @@
 #define PANELHIERACHY_H
 
 #include "Panel.h"
-
 #include <vector>
+
+class GameObject;
 
 class PanelHierachy : public Panel
 {
@@ -11,10 +12,7 @@ public:
 	PanelHierachy();
 	~PanelHierachy();
 
-	void Draw();
-
-public:
-	std::vector<std::string> game_objects_labels;
+	void Draw(std::vector<GameObject*> game_objects);
 };
 
 #endif

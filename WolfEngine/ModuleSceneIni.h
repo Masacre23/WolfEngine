@@ -6,6 +6,7 @@
 #include "Globals.h"
 
 class Model;
+class GameObject;
 
 class ModuleSceneIni : public Module
 {
@@ -20,6 +21,9 @@ public:
 private:
 	Model* batman = nullptr;
 	Model* magnetto = nullptr;
+
+	GameObject* empty_gameobject = nullptr;
+	GameObject* child_gameobject = nullptr;
 };
 
 #endif
