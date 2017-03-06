@@ -17,9 +17,9 @@ public:
 	bool OnEditor();
 
 private:
-	float3 position;
-	float3 scale;
-	Quat rotation;
+	float3 position = float3::zero;
+	float3 scale = float3::one;
+	Quat rotation = Quat::identity;
 };
 
 #endif

@@ -39,38 +39,10 @@ GameObject* PanelHierachy::Draw(std::vector<GameObject*> game_objects)
 		}
 		if (node_open)
 		{
-			//for (int j = i + 1; j < game_objects[i]->childs.size() + i + 1; ++j)
-			//{
-				/*node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << j)) ? ImGuiTreeNodeFlags_Selected : 0);
-				if(game_objects[i]->childs[j-i-1]->childs.size() == 0)
-					ImGui::TreeNodeEx((void*)(intptr_t)(j), node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, game_objects[i]->childs[j - i - 1]->name.c_str());
-				else
-					ImGui::TreeNodeEx((void*)(intptr_t)(j), node_flags, game_objects[i]->childs[j - i - 1]->name.c_str());
-
-				if (ImGui::IsItemClicked())
-				{
-					node_clicked = j;
-				}*/
-				
-			//}
-			//DrawChilds(game_objects[i], i, node_flags);
-			//ImGui::TreePop();
-		//}
 			GameObject* go = DrawChilds(App->level->GetRoot()->childs[i], i, node_open);
 			if (go != nullptr)
 				ret = go;
-
-		//if (game_objects[i]->childs.size() != 0)
-		//i += game_objects[i]->childs.size();
-		//ImGui::TreePop();
 		}
-	/*	else
-		{
-			// Leaf: The only reason we have a TreeNode at all is to allow selection of the leaf. Otherwise we can use BulletText() or TreeAdvanceToLabelPos()+Text().
-			ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, App->level->GetRoot()->childs[i]->name.c_str());
-			if (ImGui::IsItemClicked())
-				node_clicked = i;
-		}*/
 	}
 
 	if (node_clicked != -1)
@@ -98,22 +70,38 @@ GameObject* PanelHierachy::DrawChilds(GameObject* game_object, int &i, bool node
 		for (int j = i + 1; j < game_object->childs.size() + i + 1; ++j)
 		{
 			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << j)) ? ImGuiTreeNodeFlags_Selected : 0);
-			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, game_object->childs[j - i - 1]->name.c_str());
-
-			if (ImGui::IsItemClicked())
+			if (game_object->childs[j - i - 1]->childs.size() != 0)
 			{
-				node_clicked = j;
-				ret = game_object->childs[j - i - 1];
+				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, game_object->childs[j - i - 1]->name.c_str());
+				if (ImGui::IsItemClicked())
+				{
+					node_clicked = j;
+					ret = game_object->childs[j - i - 1];
+				}
+
+				int n = j;
+
+				GameObject* go = DrawChilds(game_object->childs[j - i - 1], n, node_open);
+
+				if (go != nullptr)
+					ret = go;
 			}
+			else
+			{
+				ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, game_object->childs[j - i - 1]->name.c_str());
+				if (ImGui::IsItemClicked())
+				{
+					node_clicked = j;
+					ret = game_object->childs[j - i - 1];
+				}
 
-			//if()
-			int n = j - i - 1;
-			GameObject* go = DrawChilds(game_object->childs[j - i - 1], n, node_open);
-			if (go != nullptr)
-				ret = go;
+				int n = j ;
 
-			if(node_open)
-				ImGui::TreePop();
+				GameObject* go = DrawChilds(game_object->childs[j - i - 1], n, false);
+
+				if (go != nullptr)
+					ret = go;
+			}
 			
 		}
 		ImGui::TreePop();
