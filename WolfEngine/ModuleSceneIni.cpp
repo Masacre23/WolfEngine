@@ -29,18 +29,15 @@ bool ModuleSceneIni::Start()
 	App->level->ImportScene("Resources/Models/street/", "Street.obj");
 	//App->level->CreateGameObject("Resources/Models/Batman/", "Batman.obj");
 
-	empty_gameobject = new GameObject(nullptr);
+	empty_gameobject = App->level->CreateGameObject(nullptr, "empty_gameobject");
 	empty_gameobject->CreateComponent(Component::Type::TRANSFORM);
-	empty_gameobject->name = "empty_gameobject";
 	App->editor->interfaces->game_objects.push_back(empty_gameobject);
 
-	child_gameobject = new GameObject(empty_gameobject);
-	child_gameobject->name = "child_1";
+	child_gameobject = App->level->CreateGameObject(empty_gameobject, "child_1");
 	child_gameobject->CreateComponent(Component::Type::TRANSFORM);
 	App->editor->interfaces->game_objects.push_back(child_gameobject);
 
-	child_child_gameobject = new GameObject(child_gameobject);
-	child_child_gameobject->name = "child_child1";
+	child_child_gameobject = App->level->CreateGameObject(child_gameobject, "child_child1");
 	child_child_gameobject->CreateComponent(Component::Type::TRANSFORM);
 	App->editor->interfaces->game_objects.push_back(child_child_gameobject);
 

@@ -39,6 +39,10 @@ public:
 	std::vector<Component*> components;
 	std::vector<GameObject*> childs;
 
+	Component* transform = nullptr;
+	Component* mesh = nullptr;
+	Component* material = nullptr;
+
 private:
 	GameObject* parent = nullptr;
 	bool active;
