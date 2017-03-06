@@ -7,7 +7,6 @@
 
 ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
 {
-	position = float3(0, 0, 0);
 }
 
 ComponentTransform::~ComponentTransform()

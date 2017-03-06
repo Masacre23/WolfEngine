@@ -21,6 +21,7 @@ public:
 	bool Update();
 	
 	void Draw() const;
+	void DrawHierarchy() const;
 
 	void SetParent(GameObject* parent);
 	Component* CreateComponent(Component::Type type);
@@ -33,6 +34,9 @@ public:
 
 	void SetTransform(const float3& position, const float3& scaling, const Quat& rotation);
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
+
+private:
+	void RecursiveDrawHierarchy(const float4x4& parent_transform) const;
 
 public:
 	std::string name = "GameObject";

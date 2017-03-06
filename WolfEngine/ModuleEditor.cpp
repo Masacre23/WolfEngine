@@ -101,9 +101,9 @@ update_status ModuleEditor::PreUpdate(float dt)
 
 update_status ModuleEditor::Update(float dt)
 {
-	menu->Draw(ref);
+	//menu->Draw(ref);
 
-	interfaces->Draw();
+	//interfaces->Draw();
 
 	return UPDATE_CONTINUE;
 }

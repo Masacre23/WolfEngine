@@ -36,9 +36,9 @@ bool ModuleLevel::CleanUp()
 
 void ModuleLevel::Draw() const
 {
-	//DrawNode(root);
-
 	root->Draw();
+
+	//root->DrawHierarchy();
 }
 
 GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string& name)
@@ -59,7 +59,7 @@ void ModuleLevel::ImportScene(const char * folder, const char * file)
 	aiString file_path = aiString(folder_path);
 	file_path.Append(file);
 
-	const aiScene* scene = aiImportFile(file_path.data, aiProcess_Triangulate);
+	const aiScene* scene = aiImportFile(file_path.data, aiProcess_Triangulate | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (scene != nullptr)
 	{

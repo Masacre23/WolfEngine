@@ -30,7 +30,6 @@ bool ModuleTextures::Init()
 
 	LoadCheckers();
 	texture_debug = LoadTexture(aiString("Resources/Lenna.png"));
-	texture_debug = LoadTexture(aiString("Resources/Lenna.png"));
 
 	return ret;
 }
@@ -52,8 +51,8 @@ unsigned int ModuleTextures::LoadTexture(const aiString& path)
 
 	if (it == textures.end())
 	{
-		ILuint debug_image = ilGenImage();
-		ilBindImage(debug_image);
+		ILuint imageId = ilGenImage();
+		ilBindImage(imageId);
 		ilLoadImage(path.data);
 
 		ILenum Error = ilGetError();
@@ -70,7 +69,7 @@ unsigned int ModuleTextures::LoadTexture(const aiString& path)
 
 		LOG("Load texture key %s with value %d", path.data, ret);
 
-		ilDeleteImage(debug_image);
+		ilDeleteImage(imageId);
 	}
 	else
 	{

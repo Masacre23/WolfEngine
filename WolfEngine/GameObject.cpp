@@ -5,6 +5,8 @@
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
+#include "Application.h"
+#include "ModuleLevel.h"
 #include "OpenGL.h"
 
 GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
@@ -51,6 +53,49 @@ void GameObject::Draw() const
 	glPopMatrix();
 }
 
+void GameObject::DrawHierarchy() const
+{
+	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->RecursiveDrawHierarchy(float4x4::identity);
+}
+
+void GameObject::RecursiveDrawHierarchy(const float4x4& parent_transform) const
+{
+	float4x4 this_transform = float4x4::identity;
+	if (transform != nullptr)
+		this_transform = ((ComponentTransform*)transform)->GetTransform();
+	if (parent != App->level->GetRoot())
+	{
+		this_transform.Mul(parent_transform);
+
+		glLineWidth(1.0f);
+		glDepthRange(0.0, 0.1);
+		glColor3f(0.0, 0.0f, 3.0f);
+		glBegin(GL_LINES);
+
+		float3 translate;
+		Quat rotation;
+		float3 scale;
+		this_transform.Decompose(translate, rotation, scale);
+
+		glVertex3f(translate.x, translate.y, translate.z);
+
+		translate;
+		rotation;
+		scale;
+		parent_transform.Decompose(translate, rotation, scale);
+		glVertex3f(translate.x, translate.y, translate.z);
+
+		glEnd();
+		glColor3f(0.0, 0.0f, 0.0f);
+		glDepthRange(0.1, 0.9);
+	}
+
+	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->RecursiveDrawHierarchy(this_transform);
+	
+}
+
 void GameObject::SetParent(GameObject * parent)
 {
 	if (this->parent == parent || parent == nullptr)
@@ -79,16 +124,40 @@ Component* GameObject::CreateComponent(Component::Type type)
 	switch (type)
 	{
 	case Component::TRANSFORM:
-		ret = new ComponentTransform(this);
-		transform = ret;
+		if (transform == nullptr)
+		{
+			ret = new ComponentTransform(this);
+			transform = ret;
+		}
+		else
+		{
+			LOG("Error adding component: Already a transform in %c", name);
+			ret = transform;
+		}	
 		break;
 	case Component::MESH:
-		ret = new ComponentMesh(this);
-		mesh = ret;
+		if (mesh == nullptr)
+		{
+			ret = new ComponentMesh(this);
+			mesh = ret;
+		}
+		else
+		{
+			LOG("Error adding component: Already a mesh in %c", name);
+			ret = mesh;
+		}
 		break;
 	case Component::MATERIAL:
-		ret = new ComponentMaterial(this);
-		material = ret;
+		if (material == nullptr)
+		{
+			ret = new ComponentMaterial(this);
+			material = ret;
+		}
+		else
+		{
+			LOG("Error adding component: Already a material in %c", name);
+			ret = material;
+		}	
 		break;
 	case Component::UNKNOWN:
 		break;
@@ -106,7 +175,7 @@ const Component * GameObject::GetComponent(Component::Type type) const
 {
 	Component* ret = nullptr;
 
-	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.end(); ++it)
+	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 	{
 		if ((*it)->GetType() == type && (*it)->IsActive())
 			ret = *it;

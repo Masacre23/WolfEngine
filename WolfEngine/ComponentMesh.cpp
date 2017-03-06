@@ -53,7 +53,7 @@ void ComponentMesh::Load(aiMesh * mesh)
 	}
 
 	num_indices = 3 * mesh->mNumFaces;
-	indices = new unsigned int[num_indices];
+	indices = new unsigned[num_indices];
 
 	c = 0;
 	for (size_t j = 0; j < mesh->mNumFaces; ++j)
@@ -71,16 +71,21 @@ bool ComponentMesh::OnUpdate()
 bool ComponentMesh::OnDraw() const
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 
 	if (has_normals)
+	{
+		glEnableClientState(GL_NORMAL_ARRAY);
 		glNormalPointer(GL_FLOAT, 0, normals);
+	}
+		
 	if (has_tex_coords)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
-
+	}
+		
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

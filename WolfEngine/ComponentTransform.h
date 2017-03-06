@@ -10,6 +10,9 @@ public:
 	ComponentTransform(GameObject* parent);
 	~ComponentTransform();
 
+	const float3& GetPosition() const { return position; }
+	const float4x4& GetTransform() const { return float4x4::FromTRS(position, rotation, scale); }
+
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
 
 	bool OnUpdate();
@@ -17,9 +20,9 @@ public:
 	bool OnEditor();
 
 private:
-	float3 position;
-	float3 scale;
-	Quat rotation;
+	float3 position = float3::zero;
+	float3 scale = float3::one;
+	Quat rotation = Quat::identity;
 };
 
 #endif

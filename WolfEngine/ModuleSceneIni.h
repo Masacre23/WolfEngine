@@ -17,14 +17,6 @@ public:
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
-
-private:
-	Model* batman = nullptr;
-	Model* magnetto = nullptr;
-
-	GameObject* empty_gameobject = nullptr;
-	GameObject* child_gameobject = nullptr;
-	GameObject* child_child_gameobject = nullptr;
 };
 
 #endif
