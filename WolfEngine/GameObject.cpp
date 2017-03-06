@@ -12,6 +12,7 @@
 GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
 {
 	SetParent(parent);
+	components.push_back(new ComponentTransform(this));
 }
 
 GameObject::~GameObject()

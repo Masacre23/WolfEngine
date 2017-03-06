@@ -98,5 +98,8 @@ void PanelMenuBar::Draw(ImGuiStyle* ref)
 	if (*about->active)
 		about->Draw();
 
+	if (show_test_window)
+		ImGui::ShowTestWindow();
+
 	ImGui::EndMainMenuBar();
 }

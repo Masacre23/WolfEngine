@@ -4,6 +4,7 @@
 #include "ModuleLevel.h"
 #include "GameObject.h"
 #include "PanelHierachy.h"
+#include "ComponentTransform.h"
 
 PanelInterface::PanelInterface() : Panel("Interface")
 {
@@ -17,12 +18,10 @@ PanelInterface::~PanelInterface()
 
 void PanelInterface::Draw()
 {
-	int index = hierachy->Draw(game_objects);
-	
-	if (index != -1)
-		game_objects[index]->components[0]->OnEditor();
+	GameObject* go = hierachy->Draw(game_objects);
 
-	//LOG("%d", index);
+	if(go != nullptr)
+		go->components[0]->OnEditor();
 
 	bool* b = new bool(true);
 

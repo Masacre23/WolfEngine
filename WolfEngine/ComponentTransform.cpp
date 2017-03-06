@@ -29,6 +29,7 @@ bool ComponentTransform::OnDraw() const
 {
 	float* transform = (float*)float4x4::FromTRS(position, rotation, scale).v;
 	glMultMatrixf(transform);
+	//glTranslatef(position.x, position.y, position.z);
 
 	return true;
 }
@@ -55,8 +56,10 @@ bool ComponentTransform::OnEditor()
 		{
 			float pos[3] = {position.x, position.y, position.z};
 			ImGui::DragFloat3("Position", pos, 1.0f);
-			position = float3(pos);
 			
+			position = float3(pos[0], pos[1], pos[2]);
+			LOG("%f", position.x);
+
 			ImGui::SameLine();
 			ImGui::TreePop();
 		}

@@ -17,6 +17,14 @@ public:
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
+
+private:
+
+	GameObject* empty_gameobject = nullptr;
+	GameObject* child_gameobject = nullptr;
+	GameObject* child_gameobject2 = nullptr;
+	GameObject* child_child_gameobject = nullptr;
+	GameObject* child_child_gameobject2 = nullptr;
 };
 
 #endif

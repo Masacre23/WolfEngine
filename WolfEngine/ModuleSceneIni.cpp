@@ -25,6 +25,22 @@ bool ModuleSceneIni::Start()
 	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
 	//App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
 
+
+	empty_gameobject = App->level->CreateGameObject(nullptr, "empty_gameobject");
+	empty_gameobject->CreateComponent(Component::Type::TRANSFORM);
+
+	child_gameobject = App->level->CreateGameObject(empty_gameobject, "child_1");
+	child_gameobject->CreateComponent(Component::Type::TRANSFORM);
+
+	child_gameobject2 = App->level->CreateGameObject(empty_gameobject, "child_2");
+	child_gameobject2->CreateComponent(Component::Type::TRANSFORM);
+
+	child_child_gameobject = App->level->CreateGameObject(child_gameobject, "child_child1");
+	child_child_gameobject->CreateComponent(Component::Type::TRANSFORM);
+
+	child_child_gameobject2 = App->level->CreateGameObject(child_gameobject, "child_child2");
+	child_child_gameobject2->CreateComponent(Component::Type::TRANSFORM);
+
 	return res;
 }
 
