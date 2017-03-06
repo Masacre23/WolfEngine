@@ -10,6 +10,7 @@
 GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
 {
 	SetParent(parent);
+	components.push_back(new ComponentTransform(this));
 }
 
 GameObject::~GameObject()
@@ -31,17 +32,14 @@ void GameObject::Draw() const
 {
 	glPushMatrix();
 
-	const Component* transform = GetComponent(Component::Type::TRANSFORM);
 	if (transform != nullptr)
 		transform->OnDraw();
-
+	
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	const Component* material = GetComponent(Component::Type::MATERIAL);
 	if (material != nullptr)
 		material->OnDraw();
 
-	const Component* mesh = GetComponent(Component::Type::MESH);
 	if (mesh != nullptr)
 		mesh->OnDraw();
 
@@ -83,12 +81,15 @@ Component* GameObject::CreateComponent(Component::Type type)
 	{
 	case Component::TRANSFORM:
 		ret = new ComponentTransform(this);
+		transform = ret;
 		break;
 	case Component::MESH:
 		ret = new ComponentMesh(this);
+		mesh = ret;
 		break;
 	case Component::MATERIAL:
 		ret = new ComponentMaterial(this);
+		material = ret;
 		break;
 	case Component::UNKNOWN:
 		break;
@@ -106,7 +107,7 @@ const Component * GameObject::GetComponent(Component::Type type) const
 {
 	Component* ret = nullptr;
 
-	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.end(); ++it)
+	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 	{
 		if ((*it)->GetType() == type && (*it)->IsActive())
 			ret = *it;
@@ -117,18 +118,10 @@ const Component * GameObject::GetComponent(Component::Type type) const
 
 void GameObject::SetTransform(const float3& position, const float3& scaling, const Quat& rotation)
 {
-	ComponentTransform* transform = nullptr;
-
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
-	{
-		if ((*it)->GetType() == Component::Type::TRANSFORM && (*it)->IsActive())
-			transform = (ComponentTransform*)*it;
-	}
-
 	if (transform == nullptr)
 		transform = (ComponentTransform*)CreateComponent(Component::Type::TRANSFORM);
-	
-	transform->Load(position, scaling, rotation);
+
+	((ComponentTransform*)transform)->Load(position, scaling, rotation);
 }
 
 void GameObject::LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path)

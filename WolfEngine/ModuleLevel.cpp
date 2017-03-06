@@ -41,12 +41,12 @@ void ModuleLevel::Draw() const
 	root->Draw();
 }
 
-GameObject* ModuleLevel::CreateGameObject(GameObject* parent)
+GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string& name)
 {
 	if (parent == nullptr)
 		parent = root;
 
-	GameObject* ret = new GameObject(parent);
+	GameObject* ret = new GameObject(parent, name);
 
 	return ret;
 }
