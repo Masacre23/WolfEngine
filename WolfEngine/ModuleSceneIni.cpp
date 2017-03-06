@@ -37,6 +37,12 @@ bool ModuleSceneIni::Start()
 	child_gameobject = new GameObject(empty_gameobject);
 	child_gameobject->name = "child_1";
 	child_gameobject->CreateComponent(Component::Type::TRANSFORM);
+	App->editor->interfaces->game_objects.push_back(child_gameobject);
+
+	child_child_gameobject = new GameObject(child_gameobject);
+	child_child_gameobject->name = "child_child1";
+	child_child_gameobject->CreateComponent(Component::Type::TRANSFORM);
+	App->editor->interfaces->game_objects.push_back(child_child_gameobject);
 
 	return res;
 }

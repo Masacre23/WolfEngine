@@ -17,13 +17,14 @@ PanelInterface::~PanelInterface()
 
 void PanelInterface::Draw()
 {
-	hierachy->Draw(game_objects);
+	int index = hierachy->Draw(game_objects);
 	
-	game_objects[0]->components[0]->OnEditor();
+	if (index != -1)
+		game_objects[index]->components[0]->OnEditor();
+
+	//LOG("%d", index);
 
 	bool* b = new bool(true);
-	//static int selection_mask = (1 << 2);
-	//int node_clicked = -1;
 
 	ImGui::SetNextWindowPos(ImVec2(0, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth(), App->window->GetScreenHeight() / 3));

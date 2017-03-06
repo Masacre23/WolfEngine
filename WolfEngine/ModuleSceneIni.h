@@ -24,6 +24,7 @@ private:
 
 	GameObject* empty_gameobject = nullptr;
 	GameObject* child_gameobject = nullptr;
+	GameObject* child_child_gameobject = nullptr;
 };
 
 #endif
