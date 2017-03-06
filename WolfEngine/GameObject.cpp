@@ -10,6 +10,7 @@
 GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
 {
 	SetParent(parent);
+	components.push_back(new ComponentTransform(this));
 }
 
 GameObject::~GameObject()
@@ -106,7 +107,7 @@ const Component * GameObject::GetComponent(Component::Type type) const
 {
 	Component* ret = nullptr;
 
-	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.end(); ++it)
+	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 	{
 		if ((*it)->GetType() == type && (*it)->IsActive())
 			ret = *it;
