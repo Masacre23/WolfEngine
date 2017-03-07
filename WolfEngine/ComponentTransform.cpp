@@ -45,24 +45,29 @@ bool ComponentTransform::OnEditor()
 	ImGui::Begin("Inspector", &b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 	node_clicked = -1;
 	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
-	for (int i = 0; i < 1; i++)
+	
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << 0)) ? ImGuiTreeNodeFlags_Selected : 0);
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)0, node_flags, "Transform");
+	if (ImGui::IsItemClicked())
+		node_clicked = 0;
+	
+	if (node_open)
 	{
-		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
-		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Transform");
-		if (ImGui::IsItemClicked())
-			node_clicked = i;
+		float pos[3] = {position.x, position.y, position.z};
+		ImGui::DragFloat3("Position", pos, 1.0f);
+		position = float3(pos[0], pos[1], pos[2]);
 
-		if (node_open)
-		{
-			float pos[3] = {position.x, position.y, position.z};
-			ImGui::DragFloat3("Position", pos, 0.25f);
-			
-			position = float3(pos[0], pos[1], pos[2]);
+		float rot[4] = { rotation.x, rotation.y, rotation.z, rotation.w };
+		ImGui::DragFloat4("Rotation", rot, 1.0f);
+		rotation = Quat(rot[0], rot[1], rot[2], rot[3]);
 
-			ImGui::SameLine();
-			ImGui::TreePop();
-		}
+		float sca[3] = { scale.x, scale.y, scale.z };
+		ImGui::DragFloat3("Scale", sca, 1.0f);
+		scale = float3(sca[0], sca[1], sca[2]);
+
+		ImGui::TreePop();
 	}
+	
 	if (node_clicked != -1)
 	{
 		// Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
