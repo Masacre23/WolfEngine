@@ -44,8 +44,6 @@ public:
 	std::vector<GameObject*> childs;
 
 	Component* transform = nullptr;
-	Component* mesh = nullptr;
-	Component* material = nullptr;
 
 private:
 	GameObject* parent = nullptr;

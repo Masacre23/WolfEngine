@@ -27,7 +27,7 @@ bool ComponentTransform::OnUpdate()
 
 bool ComponentTransform::OnDraw() const
 {
-	float* transform = (float*)float4x4::FromTRS(position, rotation, scale).v;
+	float* transform = float4x4::FromTRS(position, rotation, scale).Transposed().ptr();
 	glMultMatrixf(transform);
 	//glTranslatef(position.x, position.y, position.z);
 
@@ -36,13 +36,13 @@ bool ComponentTransform::OnDraw() const
 
 bool ComponentTransform::OnEditor()
 {
-	bool* b = new bool(true);
+	bool b = true;
 	static int selection_mask = (1 << 2);
 	int node_clicked = -1;
 
 	ImGui::SetNextWindowPos(ImVec2(App->window->GetScreenWidth() - App->window->GetScreenWidth() / 5, 20));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
-	ImGui::Begin("Inspector", b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Inspector", &b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 	node_clicked = -1;
 	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
 	for (int i = 0; i < 1; i++)
@@ -55,10 +55,9 @@ bool ComponentTransform::OnEditor()
 		if (node_open)
 		{
 			float pos[3] = {position.x, position.y, position.z};
-			ImGui::DragFloat3("Position", pos, 1.0f);
+			ImGui::DragFloat3("Position", pos, 0.25f);
 			
 			position = float3(pos[0], pos[1], pos[2]);
-			LOG("%f", position.x);
 
 			ImGui::SameLine();
 			ImGui::TreePop();

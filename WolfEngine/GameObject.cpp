@@ -12,7 +12,7 @@
 GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
 {
 	SetParent(parent);
-	components.push_back(new ComponentTransform(this));
+	components.push_back(transform = new ComponentTransform(this));
 }
 
 GameObject::~GameObject()
@@ -27,7 +27,7 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
-	return false;
+	return true;
 }
 
 void GameObject::Draw() const
@@ -39,9 +39,11 @@ void GameObject::Draw() const
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	const Component* material = GetComponent(Component::Type::MATERIAL);
 	if (material != nullptr)
 		material->OnDraw();
 
+	const Component* mesh = GetComponent(Component::Type::MESH);
 	if (mesh != nullptr)
 		mesh->OnDraw();
 
@@ -120,45 +122,45 @@ Component* GameObject::CreateComponent(Component::Type type)
 {
 	static_assert(Component::Type::UNKNOWN == 3, "Update factory code");
 
+	const Component* existing_component = GetComponent(type);
+
 	Component* ret = nullptr;
 
 	switch (type)
 	{
 	case Component::TRANSFORM:
-		if (transform == nullptr)
+		if (existing_component != nullptr)
+		{
+			if (existing_component != transform)
+			{
+				LOG("Error in transform: Transform pointer different from transform component %s", name.c_str());
+			}
+			else
+			{
+				LOG("Error adding component: Already a transform in %s", name.c_str());
+			}
+		}
+		else
 		{
 			ret = new ComponentTransform(this);
 			transform = ret;
 		}
-		else
-		{
-			LOG("Error adding component: Already a transform in %c", name);
-			ret = transform;
-		}	
 		break;
 	case Component::MESH:
-		if (mesh == nullptr)
+		if (existing_component != nullptr)
 		{
-			ret = new ComponentMesh(this);
-			mesh = ret;
+			LOG("Error adding component: Already a mesh in %s", name.c_str());
 		}
 		else
-		{
-			LOG("Error adding component: Already a mesh in %c", name);
-			ret = mesh;
-		}
+			ret = new ComponentMesh(this);
 		break;
 	case Component::MATERIAL:
-		if (material == nullptr)
+		if (existing_component != nullptr)
 		{
-			ret = new ComponentMaterial(this);
-			material = ret;
+			LOG("Error adding component: Already a material in %c", name.c_str());
 		}
 		else
-		{
-			LOG("Error adding component: Already a material in %c", name);
-			ret = material;
-		}	
+			ret = new ComponentMaterial(this);
 		break;
 	case Component::UNKNOWN:
 		break;

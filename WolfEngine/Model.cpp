@@ -12,7 +12,6 @@
 
 Model::Model(std::string name)
 {
-	App->editor->game_objects_labels.push_back(name);
 }
 
 
