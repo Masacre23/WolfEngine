@@ -6,23 +6,22 @@
 #include "ComponentTransform.h"
 #include "Component.h"
 
-PanelHierachy::PanelHierachy() : Panel("Hierachy")
+PanelHierachy::PanelHierachy(bool active) : Panel("Hierachy", active)
 {
-	active = new bool(true);
 }
 
 PanelHierachy::~PanelHierachy()
 {}
 
-GameObject* PanelHierachy::Draw(std::vector<GameObject*> game_objects)
+GameObject* PanelHierachy::DrawInterfaceHierachy()
 {
-	bool* b = new bool(true);
+	bool b = true;
 	static GameObject* ret = nullptr;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
 
-	ImGui::Begin("Hierachy", b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Hierachy", &b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 
 	//ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 	ImGui::Unindent(15.0f);

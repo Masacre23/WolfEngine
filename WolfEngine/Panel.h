@@ -8,14 +8,13 @@
 class Panel
 {
 public:
-	Panel(const char* name);
-	~Panel();
+	Panel(const char* name, bool active = true) : name(name), active(active) {}
+	virtual ~Panel() {};
 
-	//virtual void Draw() = 0;
-	void Draw() { return; };
+	virtual void Draw() {};
 
 public:
-	bool* active;
+	bool active;
 	int w, h, x, y;
 
 	ImVec4 yellow = ImVec4(255, 255, 0, 255);

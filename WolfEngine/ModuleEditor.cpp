@@ -1,15 +1,17 @@
-#include "ModuleEditor.h"
-#include "Application.h"
-
 #include <stdio.h>
+#include "Application.h"
+#include "ModuleEditor.h"
+#include "ModuleWindow.h"
+#include "ModuleLevel.h"
+#include "GameObject.h"
+#include "Panel.h"
+#include "PanelInterface.h"
+#include "PanelMenuBar.h"
+#include "PanelConsole.h"
+#include "JsonHandler.h"
 #include "Glew/include/GL/glew.h"   
 #include "SDL\include\SDL.h"
-#include "ModuleWindow.h"
-#include "JsonHandler.h"
-#include "ModuleLevel.h"
-#include "PanelMenuBar.h"
-#include "GameObject.h"
-#include "PanelInterface.h"
+
 
 ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
 {
@@ -74,11 +76,14 @@ ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
 	io.Fonts->AddFontFromFileTTF(XorStrA("C:\\Windows\\Fonts\\Ruda-Bold.ttf"), 10);
 	io.Fonts->AddFontFromFileTTF(XorStrA("C:\\Windows\\Fonts\\Ruda-Bold.ttf"), 14);
 	io.Fonts->AddFontFromFileTTF(XorStrA("C:\\Windows\\Fonts\\Ruda-Bold.ttf"), 18);*/
+
+	console = new PanelConsole();
 }
 
 
 ModuleEditor::~ModuleEditor()
 {
+	RELEASE(console);
 }
 
 bool ModuleEditor::Init()
@@ -86,9 +91,8 @@ bool ModuleEditor::Init()
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
 	ref = new ImGuiStyle();
 	
-	game_objects_labels.push_back("Main Camera");
-	menu = new PanelMenuBar();
-	interfaces = new PanelInterface();
+	panels.push_back(menu = new PanelMenuBar());
+	panels.push_back(interfaces = new PanelInterface());
 	return true;
 }
 
@@ -101,15 +105,23 @@ update_status ModuleEditor::PreUpdate(float dt)
 
 update_status ModuleEditor::Update(float dt)
 {
-	//menu->Draw(ref);
+	for (std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it)
+		if ((*it)->active)
+			(*it)->Draw();
 
-	//interfaces->Draw();
+	if (console->active)
+		console->Draw();
 
 	return UPDATE_CONTINUE;
 }
 
 bool ModuleEditor::CleanUp()
 {
+	RELEASE(ref);
+
+	for (std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it)
+		RELEASE(*it);
+
 	ImGui_ImplSdlGL3_Shutdown();
 	return true;
 }
@@ -119,31 +131,13 @@ void ModuleEditor::HandleInput(SDL_Event* event)
 	ImGui_ImplSdlGL3_ProcessEvent(event);
 }
 
-void ModuleEditor::DrawEditor()
+void ModuleEditor::Draw()
 {
 	ImGui::Render();
 }
 
-void ModuleEditor::Draw(const char* title, bool* p_opened)
+void ModuleEditor::AddLog(const char* fmt)
 {
-	ImGui::Begin(title, p_opened);
-	ImGui::TextUnformatted(Buf.begin());
-	if (ScrollToBottom)
-		ImGui::SetScrollHere(1.0f);
-	ScrollToBottom = false;
-	ImGui::End();
-}
-
-void ModuleEditor::AddLog(const char* fmt, ...) IM_PRINTFARGS(2)
-{
-	va_list args;
-	va_start(args, fmt);
-	Buf.appendv(fmt, args);
-	va_end(args);
-	ScrollToBottom = true;
-}
-
-void ModuleEditor::Console()
-{
-	Draw("Console");
+	if (console != nullptr)
+		console->AddLog(fmt);
 }

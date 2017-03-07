@@ -7,8 +7,10 @@
 #include <vector>
 #include <string>
 
+class Panel;
 class PanelMenuBar;
 class PanelInterface;
+class PanelConsole;
 
 class ModuleEditor : public Module
 {
@@ -22,18 +24,10 @@ public:
 	bool CleanUp();
 
 	void HandleInput(SDL_Event* event);
-	void DrawEditor();
+	void Draw();
 	
-	void Draw(const char* title, bool* p_opened = NULL);
-	void Console();
-	//void MenuBar();
-	//void Configuration();
-	//void About();
-	void Interface();
-	void AddLog(const char* fmt, ...);
+	void AddLog(const char* fmt);
 public:
-	ImGuiTextBuffer Buf;
-	bool ScrollToBottom = false;
 	//bool show_test_window = false;
 	bool* show_configuration;
 	bool* show_about;
@@ -41,13 +35,16 @@ public:
 	std::vector<float> ms_log;
 	int size_vector = 100;
 
-	std::vector<std::string> game_objects_labels;
-
 	ImVec4 yellow = ImVec4(255, 255, 0, 255);
 	ImGuiStyle* ref;
 
-	PanelMenuBar* menu;
-	PanelInterface* interfaces;
+	PanelConsole* console = nullptr;
+
+	PanelMenuBar* menu = nullptr;
+	PanelInterface* interfaces = nullptr;
+
+private:
+	std::vector<Panel*> panels;
 };
 
 #endif

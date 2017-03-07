@@ -7,10 +7,10 @@
 class PanelConfiguration : public Panel
 {
 public:
-	PanelConfiguration();
+	PanelConfiguration(bool active = false);
 	~PanelConfiguration();
 
-	void Draw(ImGuiStyle* ref);
+	void Draw();
 
 public:
 	std::vector<float> fps_log;

@@ -201,9 +201,6 @@
     <ClCompile Include="ComponentTransform.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
-    <ClCompile Include="Panel.cpp">
-      <Filter>Panels</Filter>
-    </ClCompile>
     <ClCompile Include="PanelAbout.cpp">
       <Filter>Panels</Filter>
     </ClCompile>

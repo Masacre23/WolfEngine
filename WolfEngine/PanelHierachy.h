@@ -9,10 +9,10 @@ class GameObject;
 class PanelHierachy : public Panel
 {
 public:
-	PanelHierachy();
+	PanelHierachy(bool active = true);
 	~PanelHierachy();
 
-	GameObject* Draw(std::vector<GameObject*> game_objects);
+	GameObject* DrawInterfaceHierachy();
 	GameObject* DrawChilds(GameObject* game_object, int &i, bool node_open);
 
 public:

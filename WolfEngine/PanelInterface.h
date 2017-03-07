@@ -10,14 +10,13 @@ class GameObject;
 class PanelInterface : public Panel
 {
 public:
-	PanelInterface();
+	PanelInterface(bool active = true);
 	~PanelInterface();
 
 	void Draw();
 
 public:
 	PanelHierachy* hierachy;
-	std::vector<GameObject*> game_objects;
 };
 
 #endif

@@ -3,9 +3,8 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 
-PanelAbout::PanelAbout() : Panel("About")
+PanelAbout::PanelAbout(bool active) : Panel("About", active)
 {
-	active = new bool(false);
 }
 
 
@@ -14,7 +13,7 @@ PanelAbout::~PanelAbout()
 
 void PanelAbout::Draw()
 {
-	ImGui::Begin("About", active);
+	ImGui::Begin("About", &active);
 	ImGui::Text("Engine name: ");
 	ImGui::SameLine();
 	ImGui::TextColored(yellow, App->window->TITLE);

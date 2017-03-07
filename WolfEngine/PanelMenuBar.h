@@ -10,10 +10,10 @@ struct ImGuiStyle;
 class PanelMenuBar : public Panel
 {
 public:
-	PanelMenuBar();
+	PanelMenuBar(bool active = true);
 	~PanelMenuBar();
 
-	void Draw(ImGuiStyle* ref);
+	void Draw();
 
 public:
 	PanelAbout* about;

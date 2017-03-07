@@ -1,11 +1,16 @@
+#include <Windows.h>
+#include "Application.h"
+#include "ModuleEditor.h"
+#include "Panel.h"
+#include "PanelConsole.h"
 #include "PanelMenuBar.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
-#include <Windows.h>
 #include "PanelAbout.h"
 #include "PanelConfiguration.h"
+#include "Globals.h"
 
-PanelMenuBar::PanelMenuBar() : Panel("Menu")
+PanelMenuBar::PanelMenuBar(bool active) : Panel("Menu", active)
 {
 	config = new PanelConfiguration();
 	about = new PanelAbout();
@@ -14,9 +19,11 @@ PanelMenuBar::PanelMenuBar() : Panel("Menu")
 
 PanelMenuBar::~PanelMenuBar()
 {
+	RELEASE(config);
+	RELEASE(about);
 }
 
-void PanelMenuBar::Draw(ImGuiStyle* ref)
+void PanelMenuBar::Draw()
 {
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
@@ -63,8 +70,16 @@ void PanelMenuBar::Draw(ImGuiStyle* ref)
 	}
 	if (ImGui::BeginMenu("Configuration"))
 	{
-		if (ImGui::MenuItem("Options"))
-			*config->active = true;
+		if (ImGui::MenuItem("Options", "1", &(config->active)))
+			!config->active;
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("View"))
+	{
+		if (ImGui::MenuItem("Console", "1", &(App->editor->console->active)))
+			!App->editor->console->active;
+
 		ImGui::EndMenu();
 	}
 
@@ -88,14 +103,14 @@ void PanelMenuBar::Draw(ImGuiStyle* ref)
 			ShellExecuteA(NULL, "open", "chrome", urlD, NULL, SW_MAXIMIZE);
 		}
 		if (ImGui::MenuItem("About"))
-			*about->active = true;
+			about->active = true;
 		ImGui::EndMenu();
 	}
 
-	if (*config->active)
-		config->Draw(ref);
+	if (config->active)
+		config->Draw();
 	
-	if (*about->active)
+	if (about->active)
 		about->Draw();
 
 	if (show_test_window)

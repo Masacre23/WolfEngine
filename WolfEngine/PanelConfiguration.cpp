@@ -1,11 +1,11 @@
 #include "PanelConfiguration.h"
 #include "Application.h"
+#include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "SDL\include\SDL.h"
 
-PanelConfiguration::PanelConfiguration() : Panel("Configuration")
+PanelConfiguration::PanelConfiguration(bool active) : Panel("Configuration", active)
 {
-	active = new bool(false);
 	for (int i = 0; i < size_vector; ++i)
 	{
 		fps_log.push_back(0);
@@ -16,9 +16,9 @@ PanelConfiguration::PanelConfiguration() : Panel("Configuration")
 PanelConfiguration::~PanelConfiguration()
 {}
 
-void PanelConfiguration::Draw(ImGuiStyle* ref)
+void PanelConfiguration::Draw()
 {
-	ImGui::Begin("Configuration", active);
+	ImGui::Begin("Configuration", &active);
 	ImGui::Text("Options");
 
 	if (ImGui::CollapsingHeader("Application"))
@@ -82,7 +82,7 @@ void PanelConfiguration::Draw(ImGuiStyle* ref)
 		if (ImGui::Checkbox("Full Desktop", &full_desktop))
 			App->window->FULLSCREEN_DESKTOP = full_desktop;
 
-		ImGui::ShowStyleEditor(ref);
+		ImGui::ShowStyleEditor(App->editor->ref);
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{

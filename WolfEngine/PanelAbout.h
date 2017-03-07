@@ -6,7 +6,7 @@
 class PanelAbout : public Panel
 {
 public:
-	PanelAbout();
+	PanelAbout(bool active = false);
 	~PanelAbout();
 
 	void Draw();
