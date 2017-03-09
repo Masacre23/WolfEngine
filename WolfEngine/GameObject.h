@@ -37,6 +37,7 @@ public:
 
 private:
 	void RecursiveDrawHierarchy(const float4x4& parent_transform) const;
+	void DrrawAABBBox();
 
 public:
 	std::string name = "GameObject";
@@ -44,6 +45,9 @@ public:
 	std::vector<GameObject*> childs;
 
 	Component* transform = nullptr;
+	Component* mesh = nullptr;
+	Component* material = nullptr;
+	AABB bbox;
 
 private:
 	GameObject* parent = nullptr;
