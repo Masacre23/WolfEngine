@@ -13,6 +13,7 @@ public:
 		TRANSFORM = 0,
 		MESH,
 		MATERIAL,
+		CAMERA,
 		UNKNOWN
 	};
 

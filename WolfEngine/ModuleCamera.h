@@ -7,6 +7,8 @@
 #define MODULE_CAMERA "ModuleCamera"
 #define CAMERA_SECTION "Config.Modules.EditorCamera"
 
+class ComponentCamera;
+
 class ModuleCamera : public Module
 {
 public:
@@ -21,7 +23,6 @@ public:
 	void SetAspectRatio(float aspect_ratio);
 	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
 	void SetPosition(const float3& position);
-	void SetOrientation(const float3& rotation);
 
 	void LookAt(const float3& position);
 
@@ -33,6 +34,8 @@ private:
 	float speed_translation = 1.0f;
 	float extra_speed_zoom = 10.0f;
 	Frustum* frustum;
+	
+	ComponentCamera* editor_camera = nullptr;
 };
 
 #endif // !MODULECAMERA_H

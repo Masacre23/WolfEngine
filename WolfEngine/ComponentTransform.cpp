@@ -45,10 +45,10 @@ bool ComponentTransform::OnEditor(int selection_mask, int id)
 		ImGui::DragFloat3("Position", pos, 0.1f);
 		position = float3(pos[0], pos[1], pos[2]);
 
-		float3 rotation_euler = rotation.ToEulerXYZ();
+		float3 rotation_euler = rotation.ToEulerXYZ() * RAD_TO_DEG;
 		float rot[3] = { rotation_euler.x, rotation_euler.y, rotation_euler.z };
-		ImGui::DragFloat3("Rotation", rot, 0.1f);
-		rotation = Quat::RotateX(rot[0]).Mul(Quat::RotateY(rot[1])).Mul(Quat::RotateZ(rot[2]));
+		ImGui::DragFloat3("Rotation", rot, 1.0f, -89.0f, 89.0f);
+		rotation = Quat::RotateX(rot[0] * DEG_TO_RAD).Mul(Quat::RotateY(rot[1] * DEG_TO_RAD)).Mul(Quat::RotateZ(rot[2] * DEG_TO_RAD));
 
 		float sca[3] = { scale.x, scale.y, scale.z };
 		ImGui::DragFloat3("Scale", sca, 0.1f, 0.0f);

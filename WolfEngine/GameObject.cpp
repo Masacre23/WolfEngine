@@ -2,6 +2,7 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
+#include "ComponentCamera.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -68,8 +69,6 @@ void GameObject::DrawHierarchy() const
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->RecursiveDrawHierarchy(float4x4::identity);
 }
-
-
 
 void GameObject::RecursiveDrawHierarchy(const float4x4& parent_transform) const
 {
@@ -176,7 +175,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 3, "Update factory code");
+	static_assert(Component::Type::UNKNOWN == 4, "Update factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -223,6 +222,9 @@ Component* GameObject::CreateComponent(Component::Type type)
 			ret = new ComponentMaterial(this);
 			material = ret;
 		}
+		break;
+	case Component::CAMERA:
+		ret = new ComponentCamera(this);
 		break;
 	case Component::UNKNOWN:
 		break;
