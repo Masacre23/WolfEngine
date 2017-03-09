@@ -48,7 +48,6 @@ public:
 	Component* transform = nullptr;
 	Component* mesh = nullptr;
 	Component* material = nullptr;
-	AABB bbox;
 
 private:
 	GameObject* parent = nullptr;
