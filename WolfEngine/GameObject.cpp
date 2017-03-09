@@ -13,6 +13,9 @@ GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
 {
 	SetParent(parent);
 	components.push_back(transform = new ComponentTransform(this));
+
+	//Init BoundingBox (in case some GameObjects don't have a MeshComponent)
+	bbox.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()
