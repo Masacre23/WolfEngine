@@ -36,6 +36,7 @@ bool ModuleLevel::CleanUp()
 
 void ModuleLevel::Draw() const
 {
+	root->Update();
 	root->Draw();
 
 	//root->DrawHierarchy();

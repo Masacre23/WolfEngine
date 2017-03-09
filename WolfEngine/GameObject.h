@@ -35,6 +35,8 @@ public:
 	void SetTransform(const float3& position, const float3& scaling, const Quat& rotation);
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 
+	float4x4 GetGlobalTransformMatrix();
+
 private:
 	void RecursiveDrawHierarchy(const float4x4& parent_transform) const;
 	void DrawAABBBox() const;
