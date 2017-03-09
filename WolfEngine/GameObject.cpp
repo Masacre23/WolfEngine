@@ -30,6 +30,10 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
+	bbox.TransformAsAABB(GetGlobalTransformMatrix());
+	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
+		if ((*it)->IsActive())
+			(*it)->Update();
 	return true;
 }
 
@@ -37,7 +41,7 @@ void GameObject::Draw() const
 {
 	glPushMatrix();
 
-	if(selected)
+	if (selected)
 		DrawAABBBox();
 
 	if (transform != nullptr)
@@ -68,8 +72,6 @@ void GameObject::DrawHierarchy() const
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->RecursiveDrawHierarchy(float4x4::identity);
 }
-
-
 
 void GameObject::RecursiveDrawHierarchy(const float4x4& parent_transform) const
 {
@@ -265,4 +267,16 @@ void GameObject::LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, con
 	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
 	aiMaterial* scene_material = scene->mMaterials[scene_mesh->mMaterialIndex];
 	material->Load(scene_material, folder_path);
+}
+
+float4x4 GameObject::GetGlobalTransformMatrix()
+{
+	float4x4 ret = float4x4::identity;
+	if (parent != nullptr){
+		ret.Mul(parent->GetGlobalTransformMatrix());
+	}
+	if (transform != nullptr) {
+		ret.Mul(((ComponentTransform *)transform)->GetTransformMatrix());
+	}
+	return ret;
 }

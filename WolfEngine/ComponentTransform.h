@@ -19,6 +19,8 @@ public:
 	bool OnDraw() const;
 	bool OnEditor();
 
+	float4x4 GetTransformMatrix();
+
 private:
 	float3 position = float3::zero;
 	float3 scale = float3::one;

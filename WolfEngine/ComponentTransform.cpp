@@ -29,8 +29,7 @@ bool ComponentTransform::OnDraw() const
 {
 	float* transform = float4x4::FromTRS(position, rotation, scale).Transposed().ptr();
 	glMultMatrixf(transform);
-	//glTranslatef(position.x, position.y, position.z);
-
+	
 	return true;
 }
 
@@ -81,4 +80,9 @@ bool ComponentTransform::OnEditor()
 	ImGui::End();
 
 	return false;
+}
+
+float4x4 ComponentTransform::GetTransformMatrix()
+{
+	return float4x4::FromTRS(position, rotation, scale).Transposed();
 }
