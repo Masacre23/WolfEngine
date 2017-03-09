@@ -6,6 +6,8 @@
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
 #include "GameObject.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl_gl3.h"
 
 ComponentMaterial::ComponentMaterial(GameObject* parent) : Component(Component::Type::MATERIAL, parent)
 {
@@ -66,7 +68,16 @@ bool ComponentMaterial::OnDraw() const
 	return true;
 }
 
-bool ComponentMaterial::OnEditor()
+bool ComponentMaterial::OnEditor(int selection_mask, int id)
 {
-	return false;
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, "Material");
+
+	if (node_open)
+	{
+		ImGui::Checkbox("Active", &enable);
+		ImGui::TreePop();
+	}
+
+	return ImGui::IsItemClicked();
 }

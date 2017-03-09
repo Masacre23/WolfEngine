@@ -17,7 +17,7 @@ public:
 
 	bool OnUpdate();
 	bool OnDraw() const;
-	bool OnEditor();
+	bool OnEditor(int selection_mask, int id);
 
 private:
 	float3 position = float3::zero;
