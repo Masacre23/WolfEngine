@@ -4,6 +4,8 @@
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
 #include "GameObject.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl_gl3.h"
 
 ComponentMesh::ComponentMesh(GameObject* parent): Component(Component::Type::MESH, parent)
 {
@@ -99,7 +101,17 @@ bool ComponentMesh::OnDraw() const
 	return true;
 }
 
-bool ComponentMesh::OnEditor()
+bool ComponentMesh::OnEditor(int selection_mask, int id)
 {
-	return true;
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, "Mesh");
+
+	if (node_open)
+	{
+		ImGui::Checkbox("Active", &enable);
+
+		ImGui::TreePop();
+	}
+
+	return ImGui::IsItemClicked();
 }

@@ -17,18 +17,20 @@ GameObject* PanelHierachy::DrawInterfaceHierachy()
 {
 	bool b = true;
 	static GameObject* ret = nullptr;
+	id = 0;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
 
 	ImGui::Begin("Hierachy", &b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_ChildWindowAutoFitX | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_ChildWindowAutoFitY | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 
-	//ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 	ImGui::Unindent(15.0f);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
 	for (int i = 0; i < App->level->GetRoot()->childs.size(); ++i)
 	{
+		//if(node_clicked == -1)
+		//	++id;
 		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
 		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, App->level->GetRoot()->childs[i]->name.c_str());
 		if (ImGui::IsItemClicked())
@@ -44,7 +46,7 @@ GameObject* PanelHierachy::DrawInterfaceHierachy()
 		}
 	}
 
-	if (node_clicked != -1)
+	if (node_clicked != -1 && id != -1)
 	{
 		// Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
 		if (ImGui::GetIO().KeyCtrl)
@@ -54,7 +56,6 @@ GameObject* PanelHierachy::DrawInterfaceHierachy()
 	}
 
 	ImGui::PopStyleVar();
-	//ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
 	ImGui::Indent(15.0f);
 	ImGui::End();
 

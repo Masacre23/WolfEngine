@@ -16,7 +16,7 @@ public:
 
 	bool OnUpdate();
 	bool OnDraw() const;
-	bool OnEditor();
+	bool OnEditor(int selection_mask, int id);
 
 private:
 	float* vertices = nullptr;
