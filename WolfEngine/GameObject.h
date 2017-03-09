@@ -37,7 +37,7 @@ public:
 
 private:
 	void RecursiveDrawHierarchy(const float4x4& parent_transform) const;
-	void DrrawAABBBox();
+	void DrawAABBBox() const;
 
 public:
 	AABB bbox;
@@ -48,6 +48,8 @@ public:
 	Component* transform = nullptr;
 	Component* mesh = nullptr;
 	Component* material = nullptr;
+
+	bool selected = false;
 
 private:
 	GameObject* parent = nullptr;

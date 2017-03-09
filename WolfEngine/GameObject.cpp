@@ -37,6 +37,9 @@ void GameObject::Draw() const
 {
 	glPushMatrix();
 
+	if(selected)
+		DrawAABBBox();
+
 	if (transform != nullptr)
 		if (transform->IsActive())
 			transform->OnDraw();
@@ -52,8 +55,6 @@ void GameObject::Draw() const
 			mesh->OnDraw();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	
 
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		if ((*it)->IsActive())
@@ -107,11 +108,13 @@ void GameObject::RecursiveDrawHierarchy(const float4x4& parent_transform) const
 	
 }
 
-void GameObject::DrrawAABBBox() {
+void GameObject::DrawAABBBox() const {
 	//Draw AABB box.
+	glLineWidth(2.0f);
+	glEnable(GL_COLOR_MATERIAL);
+	glBegin(GL_LINES);
+
 	glColor3f(0.0f, 1.0f, 0.0f);
-	glBegin(GL_LINE);
-
 	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
 	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
 
@@ -147,9 +150,9 @@ void GameObject::DrrawAABBBox() {
 
 	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
 	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
-
 
 	glEnd();
+	glDisable(GL_COLOR_MATERIAL);
 }
 
 void GameObject::SetParent(GameObject * parent)
