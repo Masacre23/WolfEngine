@@ -4,6 +4,7 @@
 #include "Imgui/imgui_impl_sdl_gl3.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "Globals.h"
 
 ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
 {
@@ -54,15 +55,16 @@ bool ComponentTransform::OnEditor()
 	if (node_open)
 	{
 		float pos[3] = {position.x, position.y, position.z};
-		ImGui::DragFloat3("Position", pos, 1.0f);
+		ImGui::DragFloat3("Position", pos, 0.1f);
 		position = float3(pos[0], pos[1], pos[2]);
 
-		float rot[4] = { rotation.x, rotation.y, rotation.z, rotation.w };
-		ImGui::DragFloat4("Rotation", rot, 1.0f);
-		rotation = Quat(rot[0], rot[1], rot[2], rot[3]);
+		float3 rotation_euler = rotation.ToEulerXYZ();
+		float rot[3] = { rotation_euler.x, rotation_euler.y, rotation_euler.z };
+		ImGui::DragFloat3("Rotation", rot, 0.1f);
+		rotation = Quat::RotateX(rot[0]).Mul(Quat::RotateY(rot[1])).Mul(Quat::RotateZ(rot[2]));
 
 		float sca[3] = { scale.x, scale.y, scale.z };
-		ImGui::DragFloat3("Scale", sca, 1.0f);
+		ImGui::DragFloat3("Scale", sca, 0.1f);
 		scale = float3(sca[0], sca[1], sca[2]);
 
 		ImGui::TreePop();
