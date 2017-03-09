@@ -13,6 +13,9 @@ GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
 {
 	SetParent(parent);
 	components.push_back(transform = new ComponentTransform(this));
+
+	//Init BoundingBox (in case some GameObjects don't have a MeshComponent)
+	bbox.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()
@@ -34,18 +37,22 @@ void GameObject::Draw() const
 {
 	glPushMatrix();
 
+	if(selected)
+		DrawAABBBox();
+
 	if (transform != nullptr)
-		transform->OnDraw();
+		if (transform->IsActive())
+			transform->OnDraw();
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	const Component* material = GetComponent(Component::Type::MATERIAL);
 	if (material != nullptr)
-		material->OnDraw();
+		if (material->IsActive())
+			material->OnDraw();
 
-	const Component* mesh = GetComponent(Component::Type::MESH);
 	if (mesh != nullptr)
-		mesh->OnDraw();
+		if (mesh->IsActive())
+			mesh->OnDraw();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -61,6 +68,8 @@ void GameObject::DrawHierarchy() const
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->RecursiveDrawHierarchy(float4x4::identity);
 }
+
+
 
 void GameObject::RecursiveDrawHierarchy(const float4x4& parent_transform) const
 {
@@ -97,6 +106,53 @@ void GameObject::RecursiveDrawHierarchy(const float4x4& parent_transform) const
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->RecursiveDrawHierarchy(this_transform);
 	
+}
+
+void GameObject::DrawAABBBox() const {
+	//Draw AABB box.
+	glLineWidth(2.0f);
+	glEnable(GL_COLOR_MATERIAL);
+	glBegin(GL_LINES);
+
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
+	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
+
+	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
+	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
+
+	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
+	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
+
+	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
+	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
+
+	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
+	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
+
+	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
+	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
+
+	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
+	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
+
+	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
+	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
+
+	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
+	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
+
+	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
+	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
+
+	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
+	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
+
+	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
+	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
+
+	glEnd();
+	glDisable(GL_COLOR_MATERIAL);
 }
 
 void GameObject::SetParent(GameObject * parent)
@@ -152,7 +208,10 @@ Component* GameObject::CreateComponent(Component::Type type)
 			LOG("Error adding component: Already a mesh in %s", name.c_str());
 		}
 		else
+		{
 			ret = new ComponentMesh(this);
+			mesh = ret;
+		}
 		break;
 	case Component::MATERIAL:
 		if (existing_component != nullptr)
@@ -160,7 +219,10 @@ Component* GameObject::CreateComponent(Component::Type type)
 			LOG("Error adding component: Already a material in %c", name.c_str());
 		}
 		else
+		{
 			ret = new ComponentMaterial(this);
+			material = ret;
+		}
 		break;
 	case Component::UNKNOWN:
 		break;

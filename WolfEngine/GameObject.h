@@ -37,13 +37,19 @@ public:
 
 private:
 	void RecursiveDrawHierarchy(const float4x4& parent_transform) const;
+	void DrawAABBBox() const;
 
 public:
+	AABB bbox;
 	std::string name = "GameObject";
 	std::vector<Component*> components;
 	std::vector<GameObject*> childs;
 
 	Component* transform = nullptr;
+	Component* mesh = nullptr;
+	Component* material = nullptr;
+
+	bool selected = false;
 
 private:
 	GameObject* parent = nullptr;

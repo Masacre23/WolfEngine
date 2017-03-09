@@ -4,6 +4,7 @@
 #include "Imgui/imgui_impl_sdl_gl3.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "Globals.h"
 
 ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
 {
@@ -44,9 +45,10 @@ bool ComponentTransform::OnEditor(int selection_mask, int id)
 		ImGui::DragFloat3("Position", pos, 0.1f);
 		position = float3(pos[0], pos[1], pos[2]);
 
-		float rot[4] = { rotation.x, rotation.y, rotation.z, rotation.w };
-		ImGui::DragFloat4("Rotation", rot, 0.1f);
-		rotation = Quat(rot[0], rot[1], rot[2], rot[3]);
+		float3 rotation_euler = rotation.ToEulerXYZ();
+		float rot[3] = { rotation_euler.x, rotation_euler.y, rotation_euler.z };
+		ImGui::DragFloat3("Rotation", rot, 0.1f);
+		rotation = Quat::RotateX(rot[0]).Mul(Quat::RotateY(rot[1])).Mul(Quat::RotateZ(rot[2]));
 
 		float sca[3] = { scale.x, scale.y, scale.z };
 		ImGui::DragFloat3("Scale", sca, 0.1f, 0.0f);
