@@ -18,6 +18,7 @@ public:
 public:
 	int selection_mask = (1 << 2);
 	int node_clicked = -1;
+	int id;
 };
 
 #endif

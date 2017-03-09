@@ -103,8 +103,6 @@ bool ComponentMesh::OnDraw() const
 
 bool ComponentMesh::OnEditor(int selection_mask, int id)
 {
-	//static int selection_mask = (1 << 2);
-
 	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
 	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, "Mesh");
 
