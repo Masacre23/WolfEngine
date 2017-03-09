@@ -40,6 +40,7 @@ private:
 	void DrrawAABBBox();
 
 public:
+	AABB bbox;
 	std::string name = "GameObject";
 	std::vector<Component*> components;
 	std::vector<GameObject*> childs;

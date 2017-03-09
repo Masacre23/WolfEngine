@@ -33,8 +33,6 @@ public:
 protected:
 	bool enable = true;
 	Type type;
-
-private:
 	GameObject* parent;
 };
 
