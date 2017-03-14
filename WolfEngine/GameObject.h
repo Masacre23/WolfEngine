@@ -58,6 +58,4 @@ private:
 	bool active;
 };
 
-
-
 #endif // !GAMEOBJECT_H

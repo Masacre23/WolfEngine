@@ -36,8 +36,9 @@ bool ComponentTransform::OnDraw() const
 
 bool ComponentTransform::OnEditor(int selection_mask, int id)
 {
-	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, "Transform");
+	//ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
+	//bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, "Transform");
+	bool node_open = ImGui::CollapsingHeader("Transform");
 	
 	if (node_open)
 	{
@@ -54,7 +55,7 @@ bool ComponentTransform::OnEditor(int selection_mask, int id)
 		ImGui::DragFloat3("Scale", sca, 0.1f, 0.0f);
 		scale = float3(sca[0], sca[1], sca[2]);
 
-		ImGui::TreePop();
+		//ImGui::TreePop();
 	}
 
 	return ImGui::IsItemClicked();

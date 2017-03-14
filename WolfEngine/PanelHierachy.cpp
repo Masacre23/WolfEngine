@@ -27,17 +27,18 @@ GameObject* PanelHierachy::DrawInterfaceHierachy()
 	ImGui::Unindent(15.0f);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
+
 	for (int i = 0; i < App->level->GetRoot()->childs.size(); ++i)
 	{
-		//if(node_clicked == -1)
-		//	++id;
-		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
-		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, App->level->GetRoot()->childs[i]->name.c_str());
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
+		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, App->level->GetRoot()->childs[i]->name.c_str());
 		if (ImGui::IsItemClicked())
 		{
-			node_clicked = i;
+			node_clicked = id;
 			ret = App->level->GetRoot()->childs[i];
+			//LOG("%d", id);
 		}
+		++id;
 		if (node_open)
 		{
 			GameObject* go = DrawChilds(App->level->GetRoot()->childs[i], i, node_open);
@@ -69,18 +70,19 @@ GameObject* PanelHierachy::DrawChilds(GameObject* game_object, int &i, bool node
 	{
 		for (int j = i + 1; j < game_object->childs.size() + i + 1; ++j)
 		{
-			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << j)) ? ImGuiTreeNodeFlags_Selected : 0);
+			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
 			if (game_object->childs[j - i - 1]->childs.size() != 0)
 			{
-				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, game_object->childs[j - i - 1]->name.c_str());
+				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, game_object->childs[j - i - 1]->name.c_str());
 				if (ImGui::IsItemClicked())
 				{
-					node_clicked = j;
+					node_clicked = id;
+					//LOG("%d", id);
 					ret = game_object->childs[j - i - 1];
 				}
 
 				int n = j;
-
+				++id;
 				GameObject* go = DrawChilds(game_object->childs[j - i - 1], n, node_open);
 
 				if (go != nullptr)
@@ -88,21 +90,21 @@ GameObject* PanelHierachy::DrawChilds(GameObject* game_object, int &i, bool node
 			}
 			else
 			{
-				ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, game_object->childs[j - i - 1]->name.c_str());
+				ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, game_object->childs[j - i - 1]->name.c_str());
 				if (ImGui::IsItemClicked())
 				{
-					node_clicked = j;
+					node_clicked = id;
 					ret = game_object->childs[j - i - 1];
+					//LOG("%d", id);
 				}
 
 				int n = j ;
-
+				++id;
 				GameObject* go = DrawChilds(game_object->childs[j - i - 1], n, false);
 
 				if (go != nullptr)
 					ret = go;
 			}
-			
 		}
 		ImGui::TreePop();
 	}
