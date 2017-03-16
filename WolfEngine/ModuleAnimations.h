@@ -2,7 +2,6 @@
 #define MODULEANIMATION_H
 
 #include "Module.h"
-#include <assimp/types.h>
 #include <string>
 #include <map>
 #include <vector>
