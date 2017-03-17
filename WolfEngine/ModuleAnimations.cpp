@@ -16,53 +16,74 @@ ModuleAnimations::~ModuleAnimations()
 
 update_status ModuleAnimations::Update(float dt)
 {
-	return update_status();
+	return UPDATE_CONTINUE;
 }
 
 bool ModuleAnimations::CleanUp()
 {
-	return false;
+	for (AnimMap::iterator it = animations.begin(); it != animations.end(); ++it)
+	{
+		for (int i = 0; i < it->second->num_channels; i++)
+		{
+			RELEASE_ARRAY(it->second->channels[i]->positions);
+			RELEASE_ARRAY(it->second->channels[i]->rotations);
+			RELEASE(it->second->channels[i]);
+		}
+		RELEASE_ARRAY(it->second->channels);
+		RELEASE(it->second);
+	}
+	animations.clear();
+
+	return true;
 }
 
 void ModuleAnimations::Load(const char * name, const char * file)
 {
+	aiString animation_name = aiString();
+	animation_name.Append(name);
+
 	aiString file_path = aiString();
 	file_path.Append(file);
 
 	const aiScene* scene = aiImportFile(file_path.data, aiProcess_Triangulate | aiProcessPreset_TargetRealtime_MaxQuality);
 
-	if (scene->HasAnimations()) 
+	if (scene != nullptr)
 	{
-		for (unsigned int i = 0; i <= scene->mNumAnimations; ++i)
+		if (scene->HasAnimations())
 		{
-			Anim* anim = new Anim();
-			double ticks_per_miliseconds = scene->mAnimations[i]->mTicksPerSecond / 1000;
-			anim->duration = (unsigned int)scene->mAnimations[i]->mDuration / ticks_per_miliseconds;
-			anim->num_channels = scene->mAnimations[i]->mNumChannels;
-			anim->channels = new NodeAnim[scene->mAnimations[i]->mNumChannels];
-			for (unsigned int j = 0; i <= scene->mAnimations[i]->mNumChannels; ++i) 
+			for (unsigned int i = 0; i <= scene->mNumAnimations; ++i)
 			{
-				NodeAnim node_anim = NodeAnim();
-				node_anim.name = scene->mAnimations[i]->mChannels[j]->mNodeName.C_Str();
-				node_anim.num_positions = scene->mAnimations[i]->mChannels[j]->mNumPositionKeys;
-				node_anim.num_rotations = scene->mAnimations[i]->mChannels[j]->mNumRotationKeys;
-				node_anim.positions = new float3[scene->mAnimations[i]->mChannels[j]->mNumPositionKeys];
-				for (unsigned int k = 0; k <= scene->mAnimations[i]->mChannels[j]->mNumPositionKeys; ++k)
+				aiAnimation* scene_animation = scene->mAnimations[i];
+				Anim* anim = new Anim();
+				double ticks_per_miliseconds = scene_animation->mTicksPerSecond / 1000;
+				anim->duration = (unsigned int)scene_animation->mDuration / ticks_per_miliseconds;
+				anim->num_channels = scene_animation->mNumChannels;
+				anim->channels = new NodeAnim*[anim->num_channels];
+				for (unsigned int j = 0; j <= anim->num_channels; ++j)
 				{
-					aiVector3D position_aux = scene->mAnimations[i]->mChannels[j]->mPositionKeys[k].mValue;
-					node_anim.positions[k] = { position_aux.x, position_aux.y, position_aux.z };
+					aiNodeAnim* scene_nodeanim = scene_animation->mChannels[j];
+					NodeAnim* node_anim = new NodeAnim();
+					node_anim->name = scene_nodeanim->mNodeName.data;
+					node_anim->num_positions = scene_nodeanim->mNumPositionKeys;
+					node_anim->positions = new aiVector3D[node_anim->num_positions];
+					for (unsigned int k = 0; k <= node_anim->num_positions; ++k)
+						node_anim->positions[k] = scene_nodeanim->mPositionKeys[k].mValue;
+					node_anim->num_rotations = scene_nodeanim->mNumRotationKeys;
+					node_anim->rotations = new aiQuaternion[node_anim->num_rotations];
+					for (unsigned int k = 0; k <= node_anim->num_rotations; ++k)
+						node_anim->rotations[k] = scene_nodeanim->mRotationKeys[k].mValue;
+					anim->channels[j] = node_anim;
 				}
-				node_anim.rotations = new Quat[scene->mAnimations[i]->mChannels[j]->mNumRotationKeys];
-				for (unsigned int k = 0; k <= scene->mAnimations[i]->mChannels[j]->mNumRotationKeys; ++k)
-				{
-					aiQuaternion rotation_aux = scene->mAnimations[i]->mChannels[j]->mRotationKeys[k].mValue;
-					node_anim.rotations[k] = { rotation_aux.x, rotation_aux.y, rotation_aux.z, rotation_aux.w };
-				}
-				anim->channels[j] = node_anim;
+				animations[animation_name] = anim;
 			}
-			animations[scene->mAnimations[i]->mName.C_Str()] = anim;
 		}
 	}
+	else
+	{
+		LOG("Error loading animation: No animation found in path %s", file_path.data);
+	}
+	
+	aiReleaseImport(scene);
 }
 
 unsigned int ModuleAnimations::Play(const char * name)

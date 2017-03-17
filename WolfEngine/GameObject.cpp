@@ -66,54 +66,66 @@ void GameObject::Draw() const
 			(*it)->Draw();
 
 	glPopMatrix();
+
 }
 
 void GameObject::DrawHierarchy() const
 {
-	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveDrawHierarchy(float4x4::identity);
-}
+	glLineWidth(2.0f);
+	glDepthRange(0.0, 0.1);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+	
+	glColor3f(0.0f, 0.0f, 1.0f);
 
-void GameObject::RecursiveDrawHierarchy(const float4x4& parent_transform) const
-{
-	float4x4 this_transform = float4x4::identity;
+	glPushMatrix();
+
 	if (transform != nullptr)
-		this_transform = ((ComponentTransform*)transform)->GetTransform();
-	if (parent != App->level->GetRoot())
+		if (transform->IsActive())
+			transform->OnDraw();
+
+	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
 	{
-		this_transform.Mul(parent_transform);
-
-		glLineWidth(1.0f);
-		glDepthRange(0.0, 0.1);
-		glColor3f(0.0, 0.0f, 3.0f);
+		float3 child_transform = (*it)->transform->GetPosition();
 		glBegin(GL_LINES);
-
-		float3 translate;
-		Quat rotation;
-		float3 scale;
-		this_transform.Decompose(translate, rotation, scale);
-
-		glVertex3f(translate.x, translate.y, translate.z);
-
-		translate;
-		rotation;
-		scale;
-		parent_transform.Decompose(translate, rotation, scale);
-		glVertex3f(translate.x, translate.y, translate.z);
-
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(child_transform.x, child_transform.y, child_transform.z);
 		glEnd();
-		glColor3f(0.0, 0.0f, 0.0f);
-		glDepthRange(0.1, 0.9);
+		(*it)->RecursiveDrawHierarchy();
 	}
 
-	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveDrawHierarchy(this_transform);
-	
+	glPopMatrix();
+
+	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
 }
 
-void GameObject::DrawAABBBox() const {
+void GameObject::RecursiveDrawHierarchy() const
+{
+	glPushMatrix();
+
+	if (transform != nullptr)
+		if (transform->IsActive())
+			transform->OnDraw();
+
+	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
+	{
+		float3 child_transform = (*it)->transform->GetPosition();
+		glBegin(GL_LINES);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(child_transform.x, child_transform.y, child_transform.z);
+		glEnd();
+		(*it)->RecursiveDrawHierarchy();
+	}
+
+	glPopMatrix();	
+}
+
+void GameObject::DrawAABBBox() const 
+{
 	//Draw AABB box.
 	glLineWidth(2.0f);
+	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	glBegin(GL_LINES);
 
@@ -156,6 +168,7 @@ void GameObject::DrawAABBBox() const {
 
 	glEnd();
 	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
 }
 
 void GameObject::SetParent(GameObject * parent)
@@ -202,7 +215,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 		else
 		{
 			ret = new ComponentTransform(this);
-			transform = ret;
+			transform = (ComponentTransform*)ret;
 		}
 		break;
 	case Component::MESH:
@@ -213,7 +226,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 		else
 		{
 			ret = new ComponentMesh(this);
-			mesh = ret;
+			mesh = (ComponentMesh*)ret;
 		}
 		break;
 	case Component::MATERIAL:
@@ -224,7 +237,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 		else
 		{
 			ret = new ComponentMaterial(this);
-			material = ret;
+			material = (ComponentMaterial*)ret;
 		}
 		break;
 	case Component::CAMERA:

@@ -7,6 +7,9 @@
 #include "Math.h"
 
 class Component;
+class ComponentTransform;
+class ComponentMesh;
+class ComponentMaterial;
 
 struct aiMesh;
 struct aiScene;
@@ -38,7 +41,7 @@ public:
 	float4x4 GetGlobalTransformMatrix();
 
 private:
-	void RecursiveDrawHierarchy(const float4x4& parent_transform) const;
+	void RecursiveDrawHierarchy() const;
 	void DrawAABBBox() const;
 
 public:
@@ -47,9 +50,9 @@ public:
 	std::vector<Component*> components;
 	std::vector<GameObject*> childs;
 
-	Component* transform = nullptr;
-	Component* mesh = nullptr;
-	Component* material = nullptr;
+	ComponentTransform * transform = nullptr;
+	ComponentMesh* mesh = nullptr;
+	ComponentMaterial* material = nullptr;
 
 	bool selected = false;
 

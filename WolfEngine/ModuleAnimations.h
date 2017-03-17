@@ -2,19 +2,18 @@
 #define MODULEANIMATION_H
 
 #include "Module.h"
-#include <string>
 #include <map>
 #include <vector>
+#include <assimp/types.h>
 #include "Math.h"
 
 #define MODULE_ANIMATION "ModuleAnimation"
 
-
 struct NodeAnim
 {
-	std::string name;
-	float3* positions = nullptr;
-	Quat* rotations = nullptr;
+	aiString name;
+	aiVector3D* positions = nullptr;
+	aiQuaternion* rotations = nullptr;
 	unsigned int num_positions = 0;
 	unsigned int num_rotations = 0;
 };
@@ -23,7 +22,7 @@ struct Anim
 {
 	unsigned int duration = 0;
 	unsigned int num_channels = 0;
-	NodeAnim* channels = nullptr;
+	NodeAnim** channels = nullptr;
 };
 
 struct AnimInstance
@@ -41,13 +40,13 @@ class ModuleAnimations : public Module
 {
 	struct LessString
 	{
-		bool operator()(const std::string left, const std::string right) const
+		bool operator()(const aiString& left, const aiString& right) const
 		{
-			return ::strcmp(left.c_str(), right.c_str()) < 0;
+			return ::strcmp(left.data, right.data) < 0;
 		}
 	};
 
-	typedef std::map<std::string, Anim*, LessString> AnimMap;
+	typedef std::map<aiString, Anim*, LessString> AnimMap;
 	typedef std::vector<AnimInstance*> InstanceList;
 	typedef std::vector<unsigned int> HoleList;
 

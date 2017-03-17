@@ -5,7 +5,6 @@
 #include "Animation.h"
 #include "Globals.h"
 
-class Model;
 class GameObject;
 
 class ModuleSceneIni : public Module

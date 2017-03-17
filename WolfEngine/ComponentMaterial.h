@@ -2,7 +2,6 @@
 #define COMPONENTMATERIAL_H
 
 #include "Component.h"
-#include "MathGeoLib/src/Math/float4.h"
 
 struct aiMaterial;
 struct aiString;

@@ -3,9 +3,9 @@
 #include "ModuleLevel.h"
 #include "GameObject.h"
 #include "OpenGL.h"
-#include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include "Math.h"
 
 ModuleLevel::ModuleLevel() : Module(MODULE_LEVEL)
@@ -25,6 +25,13 @@ bool ModuleLevel::Init()
 	return true;
 }
 
+update_status ModuleLevel::Update(float dt)
+{
+	root->Update();
+
+	return UPDATE_CONTINUE;
+}
+
 bool ModuleLevel::CleanUp()
 {
 	LOG("Destroying GameObjects and clearing level.")
@@ -36,10 +43,10 @@ bool ModuleLevel::CleanUp()
 
 void ModuleLevel::Draw() const
 {
-	root->Update();
 	root->Draw();
 
-	//root->DrawHierarchy();
+	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
+		(*it)->DrawHierarchy();
 }
 
 GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string& name)

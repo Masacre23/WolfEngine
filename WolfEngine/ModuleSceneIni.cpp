@@ -3,7 +3,7 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleLevel.h"
-#include "Model.h"
+#include "ModuleAnimations.h"
 #include "ModuleEditor.h"
 #include "GameObject.h"
 #include "PanelInterface.h"
@@ -20,10 +20,12 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	LOG("Loading initial scene");
 
-	App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
-	App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
-	App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
+	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
+	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
 	App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
+
+	App->animations->Load("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 
 	return res;
 }

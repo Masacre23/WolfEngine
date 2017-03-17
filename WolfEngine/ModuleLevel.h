@@ -6,14 +6,10 @@
 #include "Module.h"
 #include <vector>
 #include <string>
-#include <assimp/types.h>
-#include "MathGeoLib/src/Math/float3.h"
-#include "MathGeoLib/src/Math/Quat.h"
 
-struct aiNode;
-struct aiMesh;
-struct aiMaterial;
 struct aiScene;
+struct aiString;
+struct aiNode;
 
 class GameObject;
 
@@ -24,6 +20,7 @@ public:
 	~ModuleLevel();
 
 	bool Init();
+	update_status Update(float dt);
 	bool CleanUp();
 
 	void Draw() const;
