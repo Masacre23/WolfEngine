@@ -12,6 +12,7 @@ public:
 	void Start()
 	{
 		start_time = SDL_GetTicks();
+		last_time = start_time;
 		running = true;
 	}
 
@@ -38,6 +39,22 @@ public:
 		return ret; 
 	}
 
+	Uint32 DeltaTime() 
+	{
+		Uint32 ret;
+
+		if (running)
+		{
+			Uint32 aux_time = SDL_GetTicks();
+			ret =  aux_time - last_time;
+			last_time = aux_time;
+		}
+		else
+			ret = 0;
+
+		return ret;
+	}
+
 	void static DelayInMs(Uint32 delay) 
 	{
 		SDL_Delay(delay);
@@ -46,6 +63,7 @@ public:
 private:
 	Uint32 start_time = 0;
 	Uint32 final_time = 0;
+	Uint32 last_time = 0;
 	bool running = false;
 };
 

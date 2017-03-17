@@ -19,7 +19,14 @@ ModuleAnimations::~ModuleAnimations()
 
 update_status ModuleAnimations::Update(float dt)
 {
-
+	unsigned int delta_time = timer->DeltaTime();
+	for (InstanceList::iterator it = instances.begin(); it != instances.end(); ++it)
+	{
+		if (*it != nullptr)
+		{
+			(*it)->time += delta_time;
+		}
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -27,16 +34,22 @@ bool ModuleAnimations::CleanUp()
 {
 	for (AnimMap::iterator it = animations.begin(); it != animations.end(); ++it)
 	{
-		for (int i = 0; i < it->second->num_channels; i++)
+		for (NodeAnimMap::iterator it2 = it->second->channels.begin(); it2 != it->second->channels.end(); ++it2)
 		{
-			RELEASE_ARRAY(it->second->channels[i]->positions);
-			RELEASE_ARRAY(it->second->channels[i]->rotations);
-			RELEASE(it->second->channels[i]);
+			RELEASE_ARRAY(it2->second->positions);
+			RELEASE_ARRAY(it2->second->rotations);
+			RELEASE(it2->second);
 		}
-		RELEASE_ARRAY(it->second->channels);
+		it->second->channels.clear();
 		RELEASE(it->second);
 	}
+	for (InstanceList::iterator it = instances.begin(); it != instances.end(); ++it)
+	{
+		RELEASE(*it);
+	}
 	animations.clear();
+	instances.clear();
+	holes.clear();
 	RELEASE(timer);
 	return true;
 }
@@ -62,7 +75,6 @@ void ModuleAnimations::Load(const char * name, const char * file)
 				double ticks_per_miliseconds = scene_animation->mTicksPerSecond / 1000;
 				anim->duration = (unsigned int)scene_animation->mDuration / ticks_per_miliseconds;
 				anim->num_channels = scene_animation->mNumChannels;
-				anim->channels = new NodeAnim*[anim->num_channels];
 				for (unsigned int j = 0; j < anim->num_channels; ++j)
 				{
 
@@ -84,7 +96,7 @@ void ModuleAnimations::Load(const char * name, const char * file)
 						node_anim->rotations[k] = { rotation_aux.x, rotation_aux.y, rotation_aux.z, rotation_aux.w };
 					}
 						
-					anim->channels[j] = node_anim;
+					anim->channels[node_anim->name] = node_anim;
 				}
 				animations[animation_name] = anim;
 			}
@@ -108,7 +120,7 @@ unsigned int ModuleAnimations::Play(const char * name, bool loop)
 	{
 		AnimInstance* anim_instance = new AnimInstance();
 		anim_instance->anim = it->second;
-		anim_instance->time = timer->GetTimeInMs();
+		anim_instance->time = 0;
 		anim_instance->loop = loop;
 		if (!holes.empty()) {
 			id = holes.back();
@@ -136,12 +148,34 @@ void ModuleAnimations::BlendTo(unsigned int id, const char * name, unsigned int 
 {
 }
 
-bool ModuleAnimations::GetTransform(unsigned int id, const char * channel, float3 & positon, Quat & rotation) const
+bool ModuleAnimations::GetTransform(unsigned int id, const char * channel, float3 & position, Quat & rotation) const
 {
-	return false;
+	bool res = true;
+	AnimInstance* instance = instances[id];
+	Anim* animation = instance->anim;
+	aiString channel_name = aiString();
+	channel_name.Append(channel);
+	NodeAnimMap::iterator it = animation->channels.find(channel_name);
+	NodeAnim* node = (it != animation->channels.end()) ? animation->channels[channel_name]:nullptr;
+	if (res = (node != nullptr &&instance != nullptr)) 
+	{
+		float pos_key = float(instance->time * (node->num_positions - 1)) / float(animation->duration);
+		float rot_key = float(instance->time * (node->num_rotations - 1)) / float(animation->duration);
+
+		unsigned int pos_index = unsigned(pos_key);
+		unsigned int rot_index = unsigned(rot_key);
+
+		float pos_lambda = pos_key - float(pos_index);
+		float rot_lambda = rot_key - float(rot_index);
+
+		position = InterpFloat3(node->positions[pos_index], node->positions[pos_index + 1], pos_lambda);
+		rotation = InterpQuaternion(node->rotations[rot_index], node->rotations[rot_index + 1], rot_lambda);
+	}
+	
+	return res;
 }
 
-float3 ModuleAnimations::InterpVector3(const float3 & first, const float3 & second, float lambda) const
+float3 ModuleAnimations::InterpFloat3(const float3 & first, const float3 & second, float lambda) const
 {
 	return first * (1.0f - lambda) + second * lambda;
 }

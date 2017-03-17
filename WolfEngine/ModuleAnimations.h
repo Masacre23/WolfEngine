@@ -11,6 +11,13 @@
 
 class Timer;
 
+struct LessString
+{
+	bool operator()(const aiString& left, const aiString& right) const
+	{
+		return ::strcmp(left.data, right.data) < 0;
+	}
+};
 struct NodeAnim
 {
 	aiString name;
@@ -20,11 +27,13 @@ struct NodeAnim
 	unsigned int num_rotations = 0;
 };
 
+typedef std::map<aiString, NodeAnim*, LessString> NodeAnimMap;
+
 struct Anim
 {
 	unsigned int duration = 0;
 	unsigned int num_channels = 0;
-	NodeAnim** channels = nullptr;
+	NodeAnimMap channels;
 };
 
 struct AnimInstance
@@ -40,13 +49,6 @@ struct AnimInstance
 
 class ModuleAnimations : public Module
 {
-	struct LessString
-	{
-		bool operator()(const aiString& left, const aiString& right) const
-		{
-			return ::strcmp(left.data, right.data) < 0;
-		}
-	};
 
 	typedef std::map<aiString, Anim*, LessString> AnimMap;
 	typedef std::vector<AnimInstance*> InstanceList;
@@ -64,10 +66,10 @@ public:
 	void Stop(unsigned int id);
 	void BlendTo(unsigned int id, const char* name, unsigned int blend_time);
 
-	bool GetTransform(unsigned int id, const char* channel, float3& positon, Quat& rotation) const;
+	bool GetTransform(unsigned int id, const char* channel, float3& position, Quat& rotation) const;
 
 private:
-	float3 InterpVector3(const float3& first, const float3& second, float lambda) const;
+	float3 InterpFloat3(const float3& first, const float3& second, float lambda) const;
 	Quat InterpQuaternion(const Quat& first, const Quat& second, float lambda) const;
 
 private:
