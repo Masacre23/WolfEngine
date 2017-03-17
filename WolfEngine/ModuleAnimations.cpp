@@ -1,4 +1,5 @@
 #include "ModuleAnimations.h"
+#include "Timer.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -7,15 +8,18 @@
 
 ModuleAnimations::ModuleAnimations() : Module(MODULE_ANIMATION)
 {
+	timer = new Timer();
+	timer->Start();
 }
-
 
 ModuleAnimations::~ModuleAnimations()
 {
+	CleanUp();
 }
 
 update_status ModuleAnimations::Update(float dt)
 {
+
 	return UPDATE_CONTINUE;
 }
 
@@ -33,7 +37,7 @@ bool ModuleAnimations::CleanUp()
 		RELEASE(it->second);
 	}
 	animations.clear();
-
+	RELEASE(timer);
 	return true;
 }
 
@@ -59,19 +63,27 @@ void ModuleAnimations::Load(const char * name, const char * file)
 				anim->duration = (unsigned int)scene_animation->mDuration / ticks_per_miliseconds;
 				anim->num_channels = scene_animation->mNumChannels;
 				anim->channels = new NodeAnim*[anim->num_channels];
-				for (unsigned int j = 0; j <= anim->num_channels; ++j)
+				for (unsigned int j = 0; j < anim->num_channels; ++j)
 				{
+
 					aiNodeAnim* scene_nodeanim = scene_animation->mChannels[j];
 					NodeAnim* node_anim = new NodeAnim();
 					node_anim->name = scene_nodeanim->mNodeName.data;
 					node_anim->num_positions = scene_nodeanim->mNumPositionKeys;
-					node_anim->positions = new aiVector3D[node_anim->num_positions];
-					for (unsigned int k = 0; k <= node_anim->num_positions; ++k)
-						node_anim->positions[k] = scene_nodeanim->mPositionKeys[k].mValue;
+					node_anim->positions = new float3[node_anim->num_positions];
+					for (unsigned int k = 0; k < node_anim->num_positions; ++k)
+					{
+						aiVector3D position_aux = scene->mAnimations[i]->mChannels[j]->mPositionKeys[k].mValue;
+						node_anim->positions[k] = { position_aux.x, position_aux.y, position_aux.z };
+					}
 					node_anim->num_rotations = scene_nodeanim->mNumRotationKeys;
-					node_anim->rotations = new aiQuaternion[node_anim->num_rotations];
-					for (unsigned int k = 0; k <= node_anim->num_rotations; ++k)
-						node_anim->rotations[k] = scene_nodeanim->mRotationKeys[k].mValue;
+					node_anim->rotations = new Quat[node_anim->num_rotations];
+					for (unsigned int k = 0; k < node_anim->num_rotations; ++k) 
+					{
+						aiQuaternion rotation_aux = scene->mAnimations[i]->mChannels[j]->mRotationKeys[k].mValue;
+						node_anim->rotations[k] = { rotation_aux.x, rotation_aux.y, rotation_aux.z, rotation_aux.w };
+					}
+						
 					anim->channels[j] = node_anim;
 				}
 				animations[animation_name] = anim;
@@ -86,13 +98,38 @@ void ModuleAnimations::Load(const char * name, const char * file)
 	aiReleaseImport(scene);
 }
 
-unsigned int ModuleAnimations::Play(const char * name)
+unsigned int ModuleAnimations::Play(const char * name, bool loop)
 {
-	return 0;
+	unsigned int id = 0;
+	aiString animation_name = aiString();
+	animation_name.Append(name);
+	AnimMap::iterator it = animations.find(animation_name);
+	if (it != animations.end())
+	{
+		AnimInstance* anim_instance = new AnimInstance();
+		anim_instance->anim = it->second;
+		anim_instance->time = timer->GetTimeInMs();
+		anim_instance->loop = loop;
+		if (!holes.empty()) {
+			id = holes.back();
+			holes.pop_back();
+			instances[id] = anim_instance;
+		}
+		else {
+			id = anim_next_id++;
+			instances.push_back(anim_instance);
+		}
+	}
+	return id;
 }
 
 void ModuleAnimations::Stop(unsigned int id)
 {
+	if (instances[id] != nullptr)
+	{
+		instances[id] = nullptr;
+		holes.push_back(id);
+	}
 }
 
 void ModuleAnimations::BlendTo(unsigned int id, const char * name, unsigned int blend_time)

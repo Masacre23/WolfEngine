@@ -9,11 +9,13 @@
 
 #define MODULE_ANIMATION "ModuleAnimation"
 
+class Timer;
+
 struct NodeAnim
 {
 	aiString name;
-	aiVector3D* positions = nullptr;
-	aiQuaternion* rotations = nullptr;
+	float3* positions = nullptr;
+	Quat* rotations = nullptr;
 	unsigned int num_positions = 0;
 	unsigned int num_rotations = 0;
 };
@@ -27,7 +29,7 @@ struct Anim
 
 struct AnimInstance
 {
-	unsigned int anim;
+	Anim* anim;
 	unsigned int time = 0;
 	bool loop = true;
 
@@ -50,10 +52,6 @@ class ModuleAnimations : public Module
 	typedef std::vector<AnimInstance*> InstanceList;
 	typedef std::vector<unsigned int> HoleList;
 
-	AnimMap animations;
-	InstanceList intances;
-	HoleList holes;
-
 public:
 	ModuleAnimations();
 	~ModuleAnimations();
@@ -62,7 +60,7 @@ public:
 	bool CleanUp();
 	
 	void Load(const char* name, const char* file);
-	unsigned int Play(const char* name);
+	unsigned int Play(const char* name, bool loop = false);
 	void Stop(unsigned int id);
 	void BlendTo(unsigned int id, const char* name, unsigned int blend_time);
 
@@ -72,6 +70,12 @@ private:
 	float3 InterpVector3(const float3& first, const float3& second, float lambda) const;
 	Quat InterpQuaternion(const Quat& first, const Quat& second, float lambda) const;
 
+private:
+	AnimMap animations;
+	InstanceList instances;
+	HoleList holes;
+	unsigned int anim_next_id = 0;
+	Timer* timer;
 };
 
 #endif // !MODULEANIMATION_H
