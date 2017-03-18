@@ -56,3 +56,15 @@ void ComponentAnim::Play(bool loop)
 	anim_id = App->animations->Play(anim_name.C_Str(), loop);
 }
 
+void ComponentAnim::Stop()
+{
+	if(anim_id != -1)
+		App->animations->Stop(anim_id);
+	anim_id = -1;
+}
+
+bool ComponentAnim::IsPlaying()
+{
+	return anim_id != -1;
+}
+

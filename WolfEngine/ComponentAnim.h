@@ -16,6 +16,8 @@ public:
 
 	void SetName(const char* name);
 	void Play(bool loop);
+	void Stop();
+	bool IsPlaying();
 
 private:
 	aiString anim_name;

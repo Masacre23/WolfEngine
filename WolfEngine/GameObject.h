@@ -33,12 +33,15 @@ public:
 	int GetNumComponents() const { return components.size(); }
 	int GetNumChilds() const { return childs.size(); }
 	const Component* GetComponent(Component::Type type) const;
+	const std::vector<Component*> GetComponents(Component::Type type) const;
 
 	bool IsActive() const { return active; }
 
 	void SetTransform(const float3& position, const float3& scaling, const Quat& rotation);
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadAnim(const char * name, const char * file);
+
+	void ChangeAnim();
 
 	float4x4 GetGlobalTransformMatrix();
 

@@ -276,6 +276,17 @@ const Component * GameObject::GetComponent(Component::Type type) const
 	return ret;
 }
 
+const std::vector<Component*> GameObject::GetComponents(Component::Type type) const
+{
+	std::vector<Component*> ret;
+	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+	{
+		if ((*it)->GetType() == type && (*it)->IsActive())
+			ret.push_back(*it);
+	}
+	return ret;
+}
+
 void GameObject::SetTransform(const float3& position, const float3& scaling, const Quat& rotation)
 {
 	if (transform == nullptr)
@@ -299,7 +310,22 @@ void GameObject::LoadAnim(const char * name, const char * file)
 	App->animations->Load(name, file);
 	ComponentAnim* anim = (ComponentAnim*)CreateComponent(Component::Type::ANIMATION);
 	anim->SetName(name);
-	anim->Play(true);
+}
+
+void GameObject::ChangeAnim()
+{
+	std::vector<Component*> components_anim = GetComponents(Component::Type::ANIMATION);
+	bool anim = false;
+	for (std::vector<Component*>::const_iterator it = components_anim.cbegin(); it != components_anim.cend(); ++it)
+	{
+		if (((ComponentAnim*)(*it))->IsPlaying())
+			((ComponentAnim*)(*it))->Stop();
+		else if (!anim)
+		{
+			((ComponentAnim*)(*it))->Play(true);
+			anim = true;
+		}
+	}
 }
 
 float4x4 GameObject::GetGlobalTransformMatrix()

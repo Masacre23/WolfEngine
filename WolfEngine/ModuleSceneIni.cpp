@@ -5,6 +5,7 @@
 #include "ModuleLevel.h"
 #include "ModuleAnimations.h"
 #include "ModuleEditor.h"
+#include "ModuleInput.h"
 #include "GameObject.h"
 #include "PanelInterface.h"
 
@@ -23,10 +24,13 @@ bool ModuleSceneIni::Start()
 	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
 	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
-	GameObject* pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
+	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
 
 	if (pilot != nullptr)
+	{
 		pilot->LoadAnim("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
+		pilot->LoadAnim("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
+	}	
 
 	return res;
 }
@@ -46,6 +50,12 @@ update_status ModuleSceneIni::Update(float dt)
 	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 
 	App->level->Draw();
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		pilot->ChangeAnim();
+	}
+
 
 	return UPDATE_CONTINUE;
 }
