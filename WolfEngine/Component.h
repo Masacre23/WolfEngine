@@ -14,6 +14,7 @@ public:
 		MESH,
 		MATERIAL,
 		CAMERA,
+		ANIMATION,
 		UNKNOWN
 	};
 

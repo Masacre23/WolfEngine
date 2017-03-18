@@ -68,7 +68,7 @@ void ModuleAnimations::Load(const char * name, const char * file)
 	{
 		if (scene->HasAnimations())
 		{
-			for (unsigned int i = 0; i <= scene->mNumAnimations; ++i)
+			for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
 			{
 				aiAnimation* scene_animation = scene->mAnimations[i];
 				Anim* anim = new Anim();
@@ -159,17 +159,30 @@ bool ModuleAnimations::GetTransform(unsigned int id, const char * channel, float
 	NodeAnim* node = (it != animation->channels.end()) ? animation->channels[channel_name]:nullptr;
 	if (res = (node != nullptr &&instance != nullptr)) 
 	{
-		float pos_key = float(instance->time * (node->num_positions - 1)) / float(animation->duration);
-		float rot_key = float(instance->time * (node->num_rotations - 1)) / float(animation->duration);
+		if(!instance->loop && (instance->time >= animation->duration))
+		{
+			position = node->positions[node->num_positions - 1];
+			rotation = node->rotations[node->num_rotations - 1];
+		}
+		else
+		{
+			float pos_key = float(instance->time * (node->num_positions - 1)) / float(animation->duration);
+			float rot_key = float(instance->time * (node->num_rotations - 1)) / float(animation->duration);
 
-		unsigned int pos_index = unsigned(pos_key);
-		unsigned int rot_index = unsigned(rot_key);
+			unsigned int pos_index = unsigned(pos_key);
+			unsigned int rot_index = unsigned(rot_key);
+			unsigned int pos_index_sec = (pos_index + 1) % node->num_positions;
+			unsigned int rot_index_sec = (rot_index + 1) % node->num_rotations;
 
-		float pos_lambda = pos_key - float(pos_index);
-		float rot_lambda = rot_key - float(rot_index);
+			float pos_lambda = pos_key - float(pos_index);
+			float rot_lambda = rot_key - float(rot_index);
+			
+			pos_index = pos_index % node->num_positions;
+			rot_index = rot_index % node->num_rotations;
 
-		position = InterpFloat3(node->positions[pos_index], node->positions[pos_index + 1], pos_lambda);
-		rotation = InterpQuaternion(node->rotations[rot_index], node->rotations[rot_index + 1], rot_lambda);
+			position = InterpFloat3(node->positions[pos_index], node->positions[pos_index_sec], pos_lambda);
+			rotation = InterpQuaternion(node->rotations[rot_index], node->rotations[rot_index_sec], rot_lambda);
+		}
 	}
 	
 	return res;

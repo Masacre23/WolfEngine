@@ -234,6 +234,9 @@
     <ClCompile Include="ComponentCamera.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentAnim.cpp">
+      <Filter>Game Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -537,6 +540,9 @@
       <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="ComponentCamera.h">
+      <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentAnim.h">
       <Filter>Game Object</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,6 +18,7 @@ struct LessString
 		return ::strcmp(left.data, right.data) < 0;
 	}
 };
+
 struct NodeAnim
 {
 	aiString name;

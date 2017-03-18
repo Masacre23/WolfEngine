@@ -27,13 +27,13 @@ public:
 
 	GameObject* CreateGameObject(GameObject* parent = nullptr, const std::string& name = "GameObject");
 
-	void ImportScene(const char* folder, const char* file);
+	GameObject* ImportScene(const char* folder, const char* file);
 
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
 
 private:
-	void RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path);
+	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path);
 
 	void GetGLError(const char* string) const;
 

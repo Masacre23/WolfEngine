@@ -3,10 +3,12 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "ComponentAnim.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include "Application.h"
+#include "ModuleAnimations.h"
 #include "ModuleLevel.h"
 #include "OpenGL.h"
 
@@ -32,6 +34,9 @@ GameObject::~GameObject()
 bool GameObject::Update()
 {
 	bbox.TransformAsAABB(GetGlobalTransformMatrix());
+	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
+		if ((*it)->IsActive())
+			(*it)->OnUpdate();
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		if ((*it)->IsActive())
 			(*it)->Update();
@@ -192,7 +197,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 4, "Update factory code");
+	static_assert(Component::Type::UNKNOWN == 5, "Update factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -243,6 +248,9 @@ Component* GameObject::CreateComponent(Component::Type type)
 	case Component::CAMERA:
 		ret = new ComponentCamera(this);
 		break;
+	case Component::ANIMATION:
+		ret = new ComponentAnim(this);
+		break;
 	case Component::UNKNOWN:
 		break;
 	default:
@@ -284,6 +292,14 @@ void GameObject::LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, con
 	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
 	aiMaterial* scene_material = scene->mMaterials[scene_mesh->mMaterialIndex];
 	material->Load(scene_material, folder_path);
+}
+
+void GameObject::LoadAnim(const char * name, const char * file)
+{
+	App->animations->Load(name, file);
+	ComponentAnim* anim = (ComponentAnim*)CreateComponent(Component::Type::ANIMATION);
+	anim->SetName(name);
+	anim->Play(true);
 }
 
 float4x4 GameObject::GetGlobalTransformMatrix()

@@ -23,9 +23,10 @@ bool ModuleSceneIni::Start()
 	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
 	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
-	App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
+	GameObject* pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
 
-	App->animations->Load("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
+	if (pilot != nullptr)
+		pilot->LoadAnim("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 
 	return res;
 }

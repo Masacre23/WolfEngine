@@ -59,8 +59,9 @@ GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string&
 	return ret;
 }
 
-void ModuleLevel::ImportScene(const char * folder, const char * file)
+GameObject* ModuleLevel::ImportScene(const char * folder, const char * file)
 {
+	GameObject* res = nullptr;
 	aiString folder_path = aiString();
 	folder_path.Append(folder);
 
@@ -71,13 +72,14 @@ void ModuleLevel::ImportScene(const char * folder, const char * file)
 
 	if (scene != nullptr)
 	{
-		RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path);
+		res = RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path);
 	}
 
 	aiReleaseImport(scene);
+	return res;
 }
 
-void ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path)
+GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path)
 {
 	GameObject* new_object = new GameObject(parent, scene_node->mName.data);
 
@@ -110,6 +112,7 @@ void ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scen
 
 	for (int i = 0; i < scene_node->mNumChildren; i++)
 		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path);
+	return new_object;
 }
 
 void ModuleLevel::GetGLError(const char* string) const
