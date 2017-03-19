@@ -43,7 +43,7 @@ public:
 
 	void ChangeAnim();
 
-	float4x4 GetGlobalTransformMatrix();
+	const float4x4& GetGlobalTransformMatrix();
 
 private:
 	void RecursiveDrawHierarchy() const;

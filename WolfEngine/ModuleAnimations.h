@@ -70,15 +70,14 @@ public:
 	bool GetTransform(unsigned int id, const char* channel, float3& position, Quat& rotation) const;
 
 private:
-	float3 InterpFloat3(const float3& first, const float3& second, float lambda) const;
-	Quat InterpQuaternion(const Quat& first, const Quat& second, float lambda) const;
+	float3& InterpFloat3(const float3& first, const float3& second, float lambda) const;
+	Quat& InterpQuaternion(const Quat& first, const Quat& second, float lambda) const;
 
 private:
 	AnimMap animations;
 	InstanceList instances;
 	HoleList holes;
 	unsigned int anim_next_id = 0;
-	Timer* timer;
 };
 
 #endif // !MODULEANIMATION_H

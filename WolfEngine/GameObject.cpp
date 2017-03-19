@@ -328,13 +328,15 @@ void GameObject::ChangeAnim()
 	}
 }
 
-float4x4 GameObject::GetGlobalTransformMatrix()
+const float4x4& GameObject::GetGlobalTransformMatrix()
 {
 	float4x4 ret = float4x4::identity;
-	if (parent != nullptr){
+	if (parent != nullptr)
+	{
 		ret.Mul(parent->GetGlobalTransformMatrix());
 	}
-	if (transform != nullptr) {
+	if (transform != nullptr)
+	{
 		ret.Mul(((ComponentTransform *)transform)->GetTransformMatrix());
 	}
 	return ret;

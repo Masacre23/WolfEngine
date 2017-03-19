@@ -1,5 +1,4 @@
 #include "ModuleAnimations.h"
-#include "Timer.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -8,23 +7,19 @@
 
 ModuleAnimations::ModuleAnimations() : Module(MODULE_ANIMATION)
 {
-	timer = new Timer();
-	timer->Start();
 }
 
 ModuleAnimations::~ModuleAnimations()
 {
-	CleanUp();
 }
 
 update_status ModuleAnimations::Update(float dt)
 {
-	unsigned int delta_time = timer->DeltaTime();
 	for (InstanceList::iterator it = instances.begin(); it != instances.end(); ++it)
 	{
 		if (*it != nullptr)
 		{
-			(*it)->time += delta_time;
+			(*it)->time += 1000*dt;
 		}
 	}
 	return UPDATE_CONTINUE;
@@ -50,7 +45,6 @@ bool ModuleAnimations::CleanUp()
 	animations.clear();
 	instances.clear();
 	holes.clear();
-	RELEASE(timer);
 	return true;
 }
 
@@ -122,12 +116,14 @@ unsigned int ModuleAnimations::Play(const char * name, bool loop)
 		anim_instance->anim = it->second;
 		anim_instance->time = 0;
 		anim_instance->loop = loop;
-		if (!holes.empty()) {
+		if (!holes.empty()) 
+		{
 			id = holes.back();
 			holes.pop_back();
 			instances[id] = anim_instance;
 		}
-		else {
+		else 
+		{
 			id = anim_next_id++;
 			instances.push_back(anim_instance);
 		}
@@ -156,8 +152,8 @@ bool ModuleAnimations::GetTransform(unsigned int id, const char * channel, float
 	aiString channel_name = aiString();
 	channel_name.Append(channel);
 	NodeAnimMap::iterator it = animation->channels.find(channel_name);
-	NodeAnim* node = (it != animation->channels.end()) ? animation->channels[channel_name]:nullptr;
-	if (res = (node != nullptr &&instance != nullptr)) 
+	NodeAnim* node = (it != animation->channels.end()) ? animation->channels[channel_name] : nullptr;
+	if (res = (node != nullptr && instance != nullptr)) 
 	{
 		if(!instance->loop && (instance->time >= animation->duration))
 		{
@@ -188,12 +184,12 @@ bool ModuleAnimations::GetTransform(unsigned int id, const char * channel, float
 	return res;
 }
 
-float3 ModuleAnimations::InterpFloat3(const float3 & first, const float3 & second, float lambda) const
+float3& ModuleAnimations::InterpFloat3(const float3& first, const float3& second, float lambda) const
 {
 	return first * (1.0f - lambda) + second * lambda;
 }
 
-Quat ModuleAnimations::InterpQuaternion(const Quat & first, const Quat & second, float lambda) const
+Quat& ModuleAnimations::InterpQuaternion(const Quat& first, const Quat& second, float lambda) const
 {
 	Quat result;
 	float dot = first.x * second.x + first.y * second.y + first.z * second.z + first.w * second.w;

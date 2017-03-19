@@ -11,15 +11,13 @@ public:
 	~ComponentTransform();
 
 	const float3& GetPosition() const { return position; }
-	const float4x4& GetTransform() const { return float4x4::FromTRS(position, rotation, scale); }
+	const float4x4& GetTransformMatrix() const { return float4x4::FromTRS(position, rotation, scale).Transposed(); }
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
 
 	bool OnUpdate();
 	bool OnDraw() const;
 	bool OnEditor(int selection_mask, int id);
-
-	float4x4 GetTransformMatrix();
 
 public:
 	float3 position = float3::zero;
