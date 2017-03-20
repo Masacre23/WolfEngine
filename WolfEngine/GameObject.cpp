@@ -67,7 +67,7 @@ void GameObject::Draw() const
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
-		if ((*it)->IsActive())
+		if ((*it)->active)
 			(*it)->Draw();
 
 	glPopMatrix();
