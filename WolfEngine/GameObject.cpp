@@ -310,22 +310,13 @@ void GameObject::LoadAnim(const char * name, const char * file)
 	App->animations->Load(name, file);
 	ComponentAnim* anim = (ComponentAnim*)CreateComponent(Component::Type::ANIMATION);
 	anim->SetName(name);
+	anim->Play(true);
 }
 
-void GameObject::ChangeAnim()
+void GameObject::ChangeAnim(const char* name, unsigned int duration)
 {
-	std::vector<Component*> components_anim = GetComponents(Component::Type::ANIMATION);
-	bool anim = false;
-	for (std::vector<Component*>::const_iterator it = components_anim.cbegin(); it != components_anim.cend(); ++it)
-	{
-		if (((ComponentAnim*)(*it))->IsPlaying())
-			((ComponentAnim*)(*it))->Stop();
-		else if (!anim)
-		{
-			((ComponentAnim*)(*it))->Play(true);
-			anim = true;
-		}
-	}
+	const Component* component_anim = GetComponent(Component::Type::ANIMATION);
+	((ComponentAnim*)component_anim)->BlendTo(name, duration);
 }
 
 const float4x4& GameObject::GetGlobalTransformMatrix()
