@@ -19,7 +19,7 @@ struct aiString;
 class GameObject
 {
 public:
-	GameObject(GameObject* parent, const std::string& name = "GameObject");
+	GameObject(GameObject* parent, GameObject* root_object, const std::string& name = "GameObject");
 	~GameObject();
 
 	bool Update();
@@ -34,6 +34,7 @@ public:
 	int GetNumChilds() const { return childs.size(); }
 	const Component* GetComponent(Component::Type type) const;
 	const std::vector<Component*> GetComponents(Component::Type type) const;
+	const GameObject* FindByName(const std::string& name) const;
 
 	bool IsActive() const { return active; }
 
@@ -43,7 +44,7 @@ public:
 
 	void ChangeAnim();
 
-	const float4x4& GetGlobalTransformMatrix();
+	const float4x4& GetGlobalTransformMatrix() const;
 
 private:
 	void RecursiveDrawHierarchy() const;
@@ -61,9 +62,11 @@ public:
 
 	bool selected = false;
 
+	GameObject* root = nullptr;
+
 private:
 	GameObject* parent = nullptr;
-	bool active;
+	bool active = true;
 };
 
 #endif // !GAMEOBJECT_H

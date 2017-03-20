@@ -20,7 +20,7 @@ bool ModuleLevel::Init()
 {
 	LOG("Init level.");
 
-	root = new GameObject(nullptr, "Root");
+	root = CreateGameObject(nullptr, "Root");
 
 	return true;
 }
@@ -49,12 +49,12 @@ void ModuleLevel::Draw() const
 		(*it)->DrawHierarchy();
 }
 
-GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string& name)
+GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string& name, GameObject* root_object)
 {
 	if (parent == nullptr)
 		parent = root;
 
-	GameObject* ret = new GameObject(parent, name);
+	GameObject* ret = new GameObject(parent, root_object, name);
 
 	return ret;
 }
@@ -72,16 +72,18 @@ GameObject* ModuleLevel::ImportScene(const char * folder, const char * file)
 
 	if (scene != nullptr)
 	{
-		res = RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path);
+		res = RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path, nullptr);
 	}
 
 	aiReleaseImport(scene);
 	return res;
 }
 
-GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path)
+GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object)
 {
-	GameObject* new_object = new GameObject(parent, scene_node->mName.data);
+	GameObject* new_object = CreateGameObject(parent, scene_node->mName.data, root_scene_object);
+	if (root_scene_object == nullptr)
+		root_scene_object = new_object;
 
 	//Create transformation component
 	aiVector3D ai_position;
@@ -100,7 +102,7 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 		//Create one new game object for each mesh
 		for (int i = 0; i < scene_node->mNumMeshes; i++)
 		{
-			mesh_object = new GameObject(new_object, scene_node->mName.data);
+			mesh_object = CreateGameObject(new_object, scene_node->mName.data, root_scene_object);
 			mesh_object->LoadMeshFromScene(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
 		}
 	}
@@ -111,7 +113,7 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 	}
 
 	for (int i = 0; i < scene_node->mNumChildren; i++)
-		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path);
+		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path, root_scene_object);
 	return new_object;
 }
 

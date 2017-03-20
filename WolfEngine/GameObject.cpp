@@ -12,8 +12,11 @@
 #include "ModuleLevel.h"
 #include "OpenGL.h"
 
-GameObject::GameObject(GameObject* parent, const std::string& name) : name(name)
+GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::string& name) : name(name), root(root_object)
 {
+	if (root_object == nullptr)
+		root = this;
+
 	SetParent(parent);
 	components.push_back(transform = new ComponentTransform(this));
 
@@ -33,7 +36,7 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
-	bbox.TransformAsAABB(GetGlobalTransformMatrix());
+	//bbox.TransformAsAABB(GetGlobalTransformMatrix());
 	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
 		if ((*it)->IsActive())
 			(*it)->OnUpdate();
@@ -287,6 +290,21 @@ const std::vector<Component*> GameObject::GetComponents(Component::Type type) co
 	return ret;
 }
 
+const GameObject* GameObject::FindByName(const std::string& name) const
+{
+	const GameObject* ret = nullptr;
+
+	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); it++)
+	{
+		if ((*it)->name == name)
+			ret = (*it);
+		else
+			ret = (*it)->FindByName(name);
+	}
+
+	return ret;
+}
+
 void GameObject::SetTransform(const float3& position, const float3& scaling, const Quat& rotation)
 {
 	if (transform == nullptr)
@@ -328,7 +346,7 @@ void GameObject::ChangeAnim()
 	}
 }
 
-const float4x4& GameObject::GetGlobalTransformMatrix()
+const float4x4& GameObject::GetGlobalTransformMatrix() const
 {
 	float4x4 ret = float4x4::identity;
 	if (parent != nullptr)

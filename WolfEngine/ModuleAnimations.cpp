@@ -208,6 +208,7 @@ Quat& ModuleAnimations::InterpQuaternion(const Quat& first, const Quat& second, 
 		result.z = first.z * (1.0f - lambda) + second.z * -lambda;
 		result.w = first.w * (1.0f - lambda) + second.w * -lambda;
 	}
+	result.Normalize();
 
 	return result;
 }

@@ -25,7 +25,7 @@ public:
 
 	void Draw() const;
 
-	GameObject* CreateGameObject(GameObject* parent = nullptr, const std::string& name = "GameObject");
+	GameObject* CreateGameObject(GameObject* parent = nullptr, const std::string& name = "GameObject", GameObject* root_object = nullptr);
 
 	GameObject* ImportScene(const char* folder, const char* file);
 
@@ -33,7 +33,7 @@ public:
 	const GameObject* GetRoot() const { return root; }
 
 private:
-	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path);
+	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object);
 
 	void GetGLError(const char* string) const;
 

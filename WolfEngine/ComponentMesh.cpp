@@ -14,21 +14,35 @@ ComponentMesh::ComponentMesh(GameObject* parent) : Component(Component::Type::ME
 ComponentMesh::~ComponentMesh()
 {
 	RELEASE_ARRAY(vertices);
+	RELEASE_ARRAY(vertices_bind);
 	RELEASE_ARRAY(normals);
 	RELEASE_ARRAY(tex_coords);
 	RELEASE_ARRAY(indices);
+
+	if (has_bones)
+	{
+		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+		{
+			RELEASE_ARRAY((*it)->weights);
+			RELEASE(*it);
+		}
+		bones.clear();
+	}
 }
 
-void ComponentMesh::Load(aiMesh * mesh)
+void ComponentMesh::Load(aiMesh* mesh)
 {
 	num_vertices = mesh->mNumVertices;
 	vertices = new float[3 * num_vertices];
+	vertices_bind = new float[3 * num_vertices];
 	unsigned c = 0;
 	for (size_t i = 0; i < num_vertices; ++i)
 		for (size_t j = 0; j < 3; ++j)
 			vertices[c++] = mesh->mVertices[i][j];
 	if (c != 3 * mesh->mNumVertices)
 		LOG("Error loading meshes: Incorrect number of vertices");
+
+	memcpy(vertices_bind, vertices, 3 * num_vertices * sizeof(float));
 
 	//Creating BoundingBox from vertices points
 	parent->bbox.SetNegativeInfinity();
@@ -67,10 +81,58 @@ void ComponentMesh::Load(aiMesh * mesh)
 			indices[c++] = mesh->mFaces[j].mIndices[k];
 	if (c != 3 * mesh->mNumFaces)
 		LOG("Error loading meshes: Incorrect number of indices");
+
+	if (mesh->HasBones())
+	{
+		has_bones = true;
+		for (int i = 0; i < mesh->mNumBones; i++)
+		{
+			aiBone* scene_bone = mesh->mBones[i];
+			Bone* bone = new Bone;
+			bone->name = scene_bone->mName;
+
+			aiVector3D ai_scaling;
+			aiVector3D ai_position;
+			aiQuaternion ai_rotation;
+			scene_bone->mOffsetMatrix.Decompose(ai_scaling, ai_rotation, ai_position);
+			float3 position = float3(ai_position.x, ai_position.y, ai_position.z);
+			float3 scaling = float3(ai_scaling.x, ai_scaling.y, ai_scaling.z);
+			Quat rotation = Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w);
+			float4x4(rotation, position);
+			bone->bind = float4x4(rotation, position);
+			bone->num_weights = scene_bone->mNumWeights;
+			bone->weights = new Weight[bone->num_weights];
+			for (int j = 0; j < bone->num_weights; j++)
+			{
+				bone->weights[j].weight = scene_bone->mWeights[j].mWeight;
+				bone->weights[j].vertex = scene_bone->mWeights[j].mVertexId;
+			}
+			bones.push_back(bone);
+		}
+	}
 }
 
 bool ComponentMesh::OnUpdate()
 {
+	if (has_bones)
+	{
+		//for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+		//{
+		//	const GameObject* bone_object = parent->root->FindByName((*it)->name.data);
+		//	float4x4 animation_transform = bone_object->GetGlobalTransformMatrix();
+		//	for (int i = 0; i < (*it)->num_weights; i++)
+		//	{
+		//		unsigned index = (*it)->weights[i].vertex;
+		//		float4 vertex_bind = float3(vertices_bind[3 * index]).ToPos4();
+		//		float3 vertex_end = ((*it)->bind.Mul(animation_transform).Mul(vertex_bind).Mul((*it)->weights[i].weight)).Float3Part();
+		//		//vertices[3 * index] = *(vertex_end.ptr());
+		//		vertices[3 * index] = vertex_end.x;
+		//		vertices[3 * index + 1] = vertex_end.y;
+		//		vertices[3 * index + 2] = vertex_end.z;
+		//	}
+		//}
+	}
+
 	return true;
 }
 

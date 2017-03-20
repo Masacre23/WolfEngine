@@ -9,8 +9,6 @@
 
 #define MODULE_ANIMATION "ModuleAnimation"
 
-class Timer;
-
 struct LessString
 {
 	bool operator()(const aiString& left, const aiString& right) const
