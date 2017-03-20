@@ -60,10 +60,11 @@ public:
 	ComponentMaterial* material = nullptr;
 
 	bool selected = false;
+	bool active = true;
 
 private:
 	GameObject* parent = nullptr;
-	bool active;
+	
 };
 
 #endif // !GAMEOBJECT_H
