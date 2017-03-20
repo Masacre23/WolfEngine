@@ -3,8 +3,10 @@
 
 #include "Component.h"
 #include "Math.h"
+#include <assimp/types.h>
 
 struct aiMesh;
+//struct aiString;
 
 class ComponentMesh : public Component
 {
@@ -16,7 +18,10 @@ public:
 
 	bool OnUpdate();
 	bool OnDraw() const;
-	bool OnEditor(int selection_mask, int id);
+	bool OnEditor();
+
+public:
+	aiString folder_path;
 
 private:
 	float* vertices = nullptr;

@@ -101,11 +101,18 @@ bool ComponentMesh::OnDraw() const
 	return true;
 }
 
-bool ComponentMesh::OnEditor(int selection_mask, int id)
+bool ComponentMesh::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Mesh"))
 	{
 		ImGui::Checkbox("Active", &enable);
+
+		ImGui::SameLine();
+
+		if(ImGui::Button("Delete"))
+			this->~ComponentMesh();
+
+		ImGui::Text(folder_path.C_Str());
 	}
 
 	return ImGui::IsItemClicked();

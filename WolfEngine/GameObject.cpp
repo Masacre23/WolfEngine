@@ -299,6 +299,7 @@ void GameObject::LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, con
 {
 	ComponentMesh* mesh = (ComponentMesh*)CreateComponent(Component::Type::MESH);
 	mesh->Load(scene_mesh);
+	mesh->folder_path = folder_path;
 
 	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
 	aiMaterial* scene_material = scene->mMaterials[scene_mesh->mMaterialIndex];
