@@ -15,11 +15,32 @@ ModuleAnimations::~ModuleAnimations()
 
 update_status ModuleAnimations::Update(float dt)
 {
+	unsigned int dt_ms = 1000 * dt;
 	for (InstanceList::iterator it = instances.begin(); it != instances.end(); ++it)
 	{
 		if (*it != nullptr)
 		{
-			(*it)->time += 1000*dt;
+			AnimInstance* instance = (*it);
+			if (instance->next != nullptr)
+			{
+				while (instance->next != nullptr) {
+					instance->blend_time += dt_ms;
+					if (instance->blend_time > instance->blend_duration)
+					{
+						unsigned int dt = instance->blend_time - instance->blend_duration;
+						instance->time = dt;
+						RELEASE(instance->next);
+					}
+					else
+					{
+						instance = instance->next;
+					}
+				}
+			}
+			else 
+			{
+				instance->time += dt_ms;
+			}
 		}
 	}
 	return UPDATE_CONTINUE;
@@ -135,52 +156,91 @@ void ModuleAnimations::Stop(unsigned int id)
 {
 	if (instances[id] != nullptr)
 	{
-		instances[id] = nullptr;
+		RELEASE(instances[id]);
 		holes.push_back(id);
 	}
 }
 
 void ModuleAnimations::BlendTo(unsigned int id, const char * name, unsigned int blend_time)
 {
+	AnimInstance* instance = instances[id];
+	if (instance != nullptr)
+	{
+		aiString animation_name = aiString();
+		animation_name.Append(name);
+		AnimMap::iterator it = animations.find(animation_name);
+		if (it != animations.end())
+		{
+			AnimInstance* new_instance = new AnimInstance();
+			new_instance->anim = it->second;
+			new_instance->time = 0;
+			new_instance->loop = instance->loop;
+			new_instance->next = instance;
+			new_instance->blend_duration = blend_time;
+			new_instance->blend_time = 0;
+			instances[id] = new_instance;
+		}
+	}
 }
 
 bool ModuleAnimations::GetTransform(unsigned int id, const char * channel, float3 & position, Quat & rotation) const
 {
 	bool res = true;
 	AnimInstance* instance = instances[id];
+	if (res = instance != nullptr)
+	{
+		res = GetTransform(instance, channel, position, rotation);
+	}
+	
+	return res;
+}
+
+bool ModuleAnimations::GetTransform(AnimInstance * instance, const char * channel, float3 & position, Quat & rotation) const
+{
+	bool res = true;
 	Anim* animation = instance->anim;
 	aiString channel_name = aiString();
 	channel_name.Append(channel);
 	NodeAnimMap::iterator it = animation->channels.find(channel_name);
-	NodeAnim* node = (it != animation->channels.end()) ? animation->channels[channel_name] : nullptr;
-	if (res = (node != nullptr && instance != nullptr)) 
+	NodeAnim* node = (it != animation->channels.end()) ? it->second : nullptr;
+	if (res = node != nullptr)
 	{
-		if(!instance->loop && (instance->time >= animation->duration))
+		if (instance->next == nullptr)
 		{
-			position = node->positions[node->num_positions - 1];
-			rotation = node->rotations[node->num_rotations - 1];
+			if (!instance->loop && (instance->time >= animation->duration))
+			{
+				position = node->positions[node->num_positions - 1];
+				rotation = node->rotations[node->num_rotations - 1];
+			}
+			else
+			{
+				float pos_key = float(instance->time * (node->num_positions - 1)) / float(animation->duration);
+				float rot_key = float(instance->time * (node->num_rotations - 1)) / float(animation->duration);
+
+				unsigned int pos_index = unsigned(pos_key);
+				unsigned int rot_index = unsigned(rot_key);
+				unsigned int pos_index_sec = (pos_index + 1) % node->num_positions;
+				unsigned int rot_index_sec = (rot_index + 1) % node->num_rotations;
+
+				float pos_lambda = pos_key - float(pos_index);
+				float rot_lambda = rot_key - float(rot_index);
+
+				pos_index = pos_index % node->num_positions;
+				rot_index = rot_index % node->num_rotations;
+
+				position = InterpFloat3(node->positions[pos_index], node->positions[pos_index_sec], pos_lambda);
+				rotation = InterpQuaternion(node->rotations[rot_index], node->rotations[rot_index_sec], rot_lambda);
+			}
 		}
 		else
 		{
-			float pos_key = float(instance->time * (node->num_positions - 1)) / float(animation->duration);
-			float rot_key = float(instance->time * (node->num_rotations - 1)) / float(animation->duration);
-
-			unsigned int pos_index = unsigned(pos_key);
-			unsigned int rot_index = unsigned(rot_key);
-			unsigned int pos_index_sec = (pos_index + 1) % node->num_positions;
-			unsigned int rot_index_sec = (rot_index + 1) % node->num_rotations;
-
-			float pos_lambda = pos_key - float(pos_index);
-			float rot_lambda = rot_key - float(rot_index);
-			
-			pos_index = pos_index % node->num_positions;
-			rot_index = rot_index % node->num_rotations;
-
-			position = InterpFloat3(node->positions[pos_index], node->positions[pos_index_sec], pos_lambda);
-			rotation = InterpQuaternion(node->rotations[rot_index], node->rotations[rot_index_sec], rot_lambda);
+			float lambda = float(instance->blend_time) / float(instance->blend_duration);
+			res = GetTransform(instance->next, channel, position, rotation);
+			position = InterpFloat3(position, node->positions[0], lambda);
+			rotation = InterpQuaternion(rotation, node->rotations[0], lambda);
 		}
 	}
-	
+
 	return res;
 }
 
@@ -208,6 +268,8 @@ Quat& ModuleAnimations::InterpQuaternion(const Quat& first, const Quat& second, 
 		result.z = first.z * (1.0f - lambda) + second.z * -lambda;
 		result.w = first.w * (1.0f - lambda) + second.w * -lambda;
 	}
+
+	result.Normalize();
 
 	return result;
 }

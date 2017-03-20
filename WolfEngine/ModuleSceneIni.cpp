@@ -29,7 +29,8 @@ bool ModuleSceneIni::Start()
 	if (pilot != nullptr)
 	{
 		pilot->LoadAnim("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
-		pilot->LoadAnim("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
+		App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
+		App->animations->Load("ArmyPilot_Walk", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Walk.fbx");
 	}	
 
 	return res;
@@ -46,6 +47,8 @@ bool ModuleSceneIni::CleanUp()
 // Draw the elements of the scene
 update_status ModuleSceneIni::Update(float dt)
 {
+	static int animation = 0;
+
 	App->renderer->DrawCube(App->textures->texture_debug, { 2.0f, 0.0f, 0.0f });
 	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 
@@ -53,7 +56,13 @@ update_status ModuleSceneIni::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		pilot->ChangeAnim();
+		animation = (animation + 1) % 3;
+		if (animation == 0) 
+			pilot->ChangeAnim(anim_idle, 200); 
+		else if (animation == 1)
+			pilot->ChangeAnim(anim_walk, 200);
+		else
+			pilot->ChangeAnim(anim_run, 200);
 	}
 
 

@@ -41,7 +41,7 @@ public:
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadAnim(const char * name, const char * file);
 
-	void ChangeAnim();
+	void ChangeAnim(const char* name, unsigned int duration);
 
 	const float4x4& GetGlobalTransformMatrix();
 

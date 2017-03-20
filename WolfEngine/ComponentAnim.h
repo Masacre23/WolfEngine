@@ -18,6 +18,7 @@ public:
 	void Play(bool loop);
 	void Stop();
 	bool IsPlaying();
+	void BlendTo(const char* name, unsigned int duration);
 
 private:
 	aiString anim_name;

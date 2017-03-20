@@ -39,6 +39,11 @@ struct Anim
 
 struct AnimInstance
 {
+	AnimInstance()
+	{
+		RELEASE(this->next);
+	}
+
 	Anim* anim;
 	unsigned int time = 0;
 	bool loop = true;
@@ -70,6 +75,7 @@ public:
 	bool GetTransform(unsigned int id, const char* channel, float3& position, Quat& rotation) const;
 
 private:
+	bool GetTransform(AnimInstance* instance, const char* channel, float3& position, Quat& rotation) const;
 	float3& InterpFloat3(const float3& first, const float3& second, float lambda) const;
 	Quat& InterpQuaternion(const Quat& first, const Quat& second, float lambda) const;
 

@@ -19,6 +19,9 @@ public:
 
 private:
 	GameObject* pilot;
+	const char* anim_idle = "ArmyPilot_Idle";
+	const char* anim_walk = "ArmyPilot_Walk";
+	const char* anim_run = "ArmyPilot_Run_Forwards";
 };
 
 #endif
