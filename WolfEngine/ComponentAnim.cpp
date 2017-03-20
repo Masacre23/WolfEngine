@@ -68,3 +68,8 @@ bool ComponentAnim::IsPlaying()
 	return anim_id != -1;
 }
 
+void ComponentAnim::BlendTo(const char * name, unsigned int duration)
+{
+	App->animations->BlendTo(anim_id, name, duration);
+}
+

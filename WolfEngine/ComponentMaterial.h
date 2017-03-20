@@ -16,7 +16,7 @@ public:
 
 	bool OnUpdate();
 	bool OnDraw() const;
-	bool OnEditor(int selection_mask, int id);
+	bool OnEditor();
 
 private:
 	float ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };

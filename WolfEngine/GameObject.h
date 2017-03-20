@@ -42,7 +42,7 @@ public:
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadAnim(const char * name, const char * file);
 
-	void ChangeAnim();
+	void ChangeAnim(const char* name, unsigned int duration);
 
 	const float4x4& GetGlobalTransformMatrix() const;
 
@@ -61,12 +61,13 @@ public:
 	ComponentMaterial* material = nullptr;
 
 	bool selected = false;
+	bool active = true;
 
 	GameObject* root = nullptr;
 
 private:
 	GameObject* parent = nullptr;
-	bool active = true;
+	
 };
 
 #endif // !GAMEOBJECT_H

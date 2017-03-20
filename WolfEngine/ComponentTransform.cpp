@@ -34,7 +34,7 @@ bool ComponentTransform::OnDraw() const
 	return true;
 }
 
-bool ComponentTransform::OnEditor(int selection_mask, int id)
+bool ComponentTransform::OnEditor()
 {
 	//ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
 	//bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, "Transform");

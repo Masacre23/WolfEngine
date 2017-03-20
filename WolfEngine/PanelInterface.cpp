@@ -6,6 +6,8 @@
 #include "PanelHierachy.h"
 #include "ComponentTransform.h"
 
+#define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
+
 PanelInterface::PanelInterface(bool active) : Panel("Interface", active)
 {
 	hierachy = new PanelHierachy();
@@ -23,29 +25,29 @@ void PanelInterface::Draw()
 	ImGui::SetNextWindowPos(ImVec2(App->window->GetScreenWidth() * 4 / 5, 20));
 	ImGui::SetNextWindowSize(ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() - App->window->GetScreenHeight() / 3 - 20));
 	ImGui::Begin("Inspector", &b, ImVec2(App->window->GetScreenWidth() / 5, App->window->GetScreenHeight() / 1.58f), -1.0f, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
-	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
-	int node_clicked = -1;
-	static int selection_mask = (1 << 2);
+	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents
+
 	if(go != nullptr)
 		go->selected = false;
-	go = hierachy->DrawInterfaceHierachy();	
+	go = hierachy->DrawInterfaceHierachy();	//This returns the selected object
 
 	if (go != nullptr)
 	{
 		go->selected = true;
+
+		ImGui::Checkbox(" ", &go->active); //WARNING: Don't delete space
+		ImGui::SameLine();
+
+		char buf[1024];
+		strcpy(buf, go->name.c_str());
+        ImGui::InputText("", buf, IM_ARRAYSIZE(buf));
+	
+		go->name = buf;
+
 		for (int i = 0; i < go->GetNumComponents(); ++i)
 		{
-			if (go->components[i]->OnEditor(selection_mask, i))
-				node_clicked = i;			
+			go->components[i]->OnEditor();
 		}	
-	}
-	if (node_clicked != -1)
-	{
-		// Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
-		if (ImGui::GetIO().KeyCtrl)
-			selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
-		else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
-			selection_mask = (1 << node_clicked);           // Click to single-select
 	}
 
 	ImGui::PopStyleVar();

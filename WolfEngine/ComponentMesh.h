@@ -7,6 +7,7 @@
 #include <assimp/types.h>
 
 struct aiMesh;
+//struct aiString;
 
 struct Weight
 {
@@ -32,7 +33,10 @@ public:
 
 	bool OnUpdate();
 	bool OnDraw() const;
-	bool OnEditor(int selection_mask, int id);
+	bool OnEditor();
+
+public:
+	aiString folder_path;
 
 private:
 	float* vertices_bind = nullptr;

@@ -25,7 +25,7 @@ public:
 	virtual void Enable() { enable = true; }
 	virtual bool OnUpdate() { return true; }
 	virtual bool OnDraw() const { return true; }
-	virtual bool OnEditor(int selection_mask, int id) { return true; }
+	virtual bool OnEditor() { return true; }
 	virtual void Disable() { enable = false; }
 
 	Type GetType() const { return type; }

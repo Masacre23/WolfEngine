@@ -64,15 +64,20 @@ bool ComponentMaterial::OnDraw() const
 	glMaterialf(GL_FRONT, GL_SHININESS, shiness);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
-
+	
 	return true;
 }
 
-bool ComponentMaterial::OnEditor(int selection_mask, int id)
+bool ComponentMaterial::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Material"))
 	{
 		ImGui::Checkbox("Active", &enable);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Delete"))
+			this->~ComponentMaterial();
 	}
 
 	return ImGui::IsItemClicked();
