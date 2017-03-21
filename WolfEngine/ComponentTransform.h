@@ -12,6 +12,7 @@ public:
 
 	const float3& GetPosition() const { return position; }
 	const float4x4& GetTransformMatrix() const { return float4x4::FromTRS(position, rotation, scale).Transposed(); }
+	const float4x4& GetBoneTransformMatrix() const { return float4x4(rotation, position).Transposed(); }
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
 

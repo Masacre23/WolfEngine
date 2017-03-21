@@ -298,7 +298,7 @@ const GameObject* GameObject::FindByName(const std::string& name) const
 	{
 		if ((*it)->name == name)
 			ret = (*it);
-		else
+		else if (ret == nullptr)
 			ret = (*it)->FindByName(name);
 	}
 
@@ -332,6 +332,15 @@ void GameObject::LoadAnim(const char * name, const char * file)
 	anim->Play(true);
 }
 
+void GameObject::LoadBones()
+{
+	if (mesh != nullptr)
+		mesh->LoadBones();
+
+	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->LoadBones();
+}
+
 void GameObject::ChangeAnim(const char* name, unsigned int duration)
 {
 	const Component* component_anim = GetComponent(Component::Type::ANIMATION);
@@ -347,7 +356,26 @@ const float4x4& GameObject::GetGlobalTransformMatrix() const
 	}
 	if (transform != nullptr)
 	{
-		ret.Mul(((ComponentTransform *)transform)->GetTransformMatrix());
+		ret.Mul(transform->GetTransformMatrix());
 	}
 	return ret;
+}
+
+const float4x4 & GameObject::GetGlobalBoneTransformMatrix() const
+{
+	float4x4 ret = float4x4::identity;
+	if (parent != nullptr && parent != root)
+	{
+		ret.Mul(parent->GetGlobalBoneTransformMatrix());
+	}
+	if (transform != nullptr)
+	{
+		ret.Mul(transform->GetBoneTransformMatrix());
+	}
+	return ret;
+}
+
+const float4x4 & GameObject::GetTransformMatrix() const
+{
+	return transform->GetTransformMatrix();
 }

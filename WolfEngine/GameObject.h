@@ -41,10 +41,14 @@ public:
 	void SetTransform(const float3& position, const float3& scaling, const Quat& rotation);
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadAnim(const char * name, const char * file);
+	void LoadBones();
 
 	void ChangeAnim(const char* name, unsigned int duration);
 
 	const float4x4& GetGlobalTransformMatrix() const;
+	const float4x4& GetGlobalBoneTransformMatrix() const;
+
+	const float4x4& GetTransformMatrix() const;
 
 private:
 	void RecursiveDrawHierarchy() const;

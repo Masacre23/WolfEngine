@@ -74,6 +74,7 @@ GameObject* ModuleLevel::ImportScene(const char * folder, const char * file)
 	{
 		res = RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path, nullptr);
 	}
+	res->LoadBones();
 
 	aiReleaseImport(scene);
 	return res;

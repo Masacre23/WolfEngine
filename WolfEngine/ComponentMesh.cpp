@@ -98,8 +98,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 			float3 position = float3(ai_position.x, ai_position.y, ai_position.z);
 			float3 scaling = float3(ai_scaling.x, ai_scaling.y, ai_scaling.z);
 			Quat rotation = Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w);
-			float4x4(rotation, position);
-			bone->bind = float4x4(rotation, position);
+			bone->bind = float4x4(rotation, position).Transposed();
 			bone->num_weights = scene_bone->mNumWeights;
 			bone->weights = new Weight[bone->num_weights];
 			for (int j = 0; j < bone->num_weights; j++)
@@ -112,26 +111,37 @@ void ComponentMesh::Load(aiMesh* mesh)
 	}
 }
 
-bool ComponentMesh::OnUpdate()
+void ComponentMesh::LoadBones()
 {
 	if (has_bones)
 	{
-		//for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
-		//{
-		//	const GameObject* bone_object = parent->root->FindByName((*it)->name.data);
-		//	float4x4 animation_transform = bone_object->GetGlobalTransformMatrix();
-		//	for (int i = 0; i < (*it)->num_weights; i++)
-		//	{
-		//		unsigned index = (*it)->weights[i].vertex;
-		//		float4 vertex_bind = float3(vertices_bind[3 * index]).ToPos4();
-		//		float3 vertex_end = ((*it)->bind.Mul(animation_transform).Mul(vertex_bind).Mul((*it)->weights[i].weight)).Float3Part();
-		//		//vertices[3 * index] = *(vertex_end.ptr());
-		//		vertices[3 * index] = vertex_end.x;
-		//		vertices[3 * index + 1] = vertex_end.y;
-		//		vertices[3 * index + 2] = vertex_end.z;
-		//	}
-		//}
+		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+		{
+			(*it)->bone_object = parent->root->FindByName((*it)->name.data);
+		}
 	}
+}
+
+bool ComponentMesh::OnUpdate()
+{
+	//if (has_bones)
+	//{
+	//	for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+	//	{
+	//		float4x4 animation_transform = (*it)->bone_object->GetGlobalBoneTransformMatrix();
+	//		for (int i = 0; i < (*it)->num_weights; i++)
+	//		{
+	//			unsigned index = (*it)->weights[i].vertex;
+	//			float4 vertex_bind = float3(vertices_bind[3 * index], vertices_bind[3 * index + 1], vertices_bind[3 * index + 2]).ToPos4();
+	//			//float3 vertex_end = (*it)->weights[i].weight * (animation_transform * (*it)->bind * vertex_bind).Float3Part();
+	//			float4 vertex_end = (*it)->weights[i].weight * (vertex_bind * (*it)->bind * animation_transform);
+	//			//float3 vertex_end = ((*it)->bind.Mul(animation_transform).Mul(vertex_bind).Mul((*it)->weights[i].weight)).Float3Part();
+	//			vertices[3 * index] = vertex_end.x;
+	//			vertices[3 * index + 1] = vertex_end.y;
+	//			vertices[3 * index + 2] = vertex_end.z;
+	//		}
+	//	}
+	//}
 
 	return true;
 }

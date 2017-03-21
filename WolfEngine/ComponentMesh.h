@@ -18,6 +18,7 @@ struct Weight
 struct Bone
 {
 	aiString name;
+	const GameObject* bone_object = nullptr;
 	Weight* weights = nullptr;
 	unsigned num_weights = 0;
 	float4x4 bind;
@@ -30,6 +31,7 @@ public:
 	~ComponentMesh();
 
 	void Load(aiMesh* mesh);
+	void LoadBones();
 
 	bool OnUpdate();
 	bool OnDraw() const;
