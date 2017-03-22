@@ -23,7 +23,8 @@ update_status ModuleAnimations::Update(float dt)
 			AnimInstance* instance = (*it);
 			if (instance->next != nullptr)
 			{
-				while (instance->next != nullptr) {
+				while (instance->next != nullptr) 
+				{
 					instance->blend_time += dt_ms;
 					if (instance->blend_time > instance->blend_duration)
 					{

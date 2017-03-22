@@ -305,12 +305,20 @@ const GameObject* GameObject::FindByName(const std::string& name) const
 	return ret;
 }
 
-void GameObject::SetTransform(const float3& position, const float3& scaling, const Quat& rotation)
+void GameObject::SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation)
 {
 	if (transform == nullptr)
 		transform = (ComponentTransform*)CreateComponent(Component::Type::TRANSFORM);
 
-	((ComponentTransform*)transform)->Load(position, scaling, rotation);
+	transform->Load(position, scaling, rotation);
+}
+
+void GameObject::SetLocalTransformNoScale(const float3& position, const Quat& rotation)
+{
+	if (transform == nullptr)
+		SetLocalTransform(position, float3::one, rotation);
+
+	transform->Load(position, rotation);
 }
 
 void GameObject::LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path)
@@ -347,35 +355,37 @@ void GameObject::ChangeAnim(const char* name, unsigned int duration)
 	((ComponentAnim*)component_anim)->BlendTo(name, duration);
 }
 
-const float4x4& GameObject::GetGlobalTransformMatrix() const
+void GameObject::CalculateGlobalTransformMatrix(float4x4& global_transform) const
 {
-	float4x4 ret = float4x4::identity;
 	if (parent != nullptr)
 	{
-		ret.Mul(parent->GetGlobalTransformMatrix());
+		float4x4 parent_transform = float4x4::identity;
+		parent->CalculateGlobalTransformMatrix(parent_transform);
+		global_transform = global_transform * parent_transform;
 	}
 	if (transform != nullptr)
 	{
-		ret.Mul(transform->GetTransformMatrix());
+		global_transform = global_transform * transform->GetLocalTransformMatrix();
 	}
-	return ret;
 }
 
-const float4x4 & GameObject::GetGlobalBoneTransformMatrix() const
+void GameObject::CalculateGlobalTransformMatrixNoRotation(float4x4& global_transform) const
 {
-	float4x4 ret = float4x4::identity;
-	if (parent != nullptr && parent != root)
+	if (parent != nullptr)
 	{
-		ret.Mul(parent->GetGlobalBoneTransformMatrix());
+		float4x4 parent_transform = float4x4::identity;
+		parent->CalculateGlobalTransformMatrixNoRotation(parent_transform);
+		global_transform = global_transform * parent_transform;
 	}
 	if (transform != nullptr)
 	{
-		ret.Mul(transform->GetBoneTransformMatrix());
+		float4x4 local_transform = float4x4::identity;
+		transform->CalculateLocalTransformMatrixNoRotation(local_transform);
+		global_transform = global_transform * local_transform;
 	}
-	return ret;
 }
 
-const float4x4 & GameObject::GetTransformMatrix() const
+const float4x4& GameObject::GetLocalTransformMatrix() const
 {
-	return transform->GetTransformMatrix();
+	return transform->GetLocalTransformMatrix();
 }

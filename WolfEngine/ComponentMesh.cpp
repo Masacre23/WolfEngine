@@ -91,14 +91,8 @@ void ComponentMesh::Load(aiMesh* mesh)
 			Bone* bone = new Bone;
 			bone->name = scene_bone->mName;
 
-			aiVector3D ai_scaling;
-			aiVector3D ai_position;
-			aiQuaternion ai_rotation;
-			scene_bone->mOffsetMatrix.Decompose(ai_scaling, ai_rotation, ai_position);
-			float3 position = float3(ai_position.x, ai_position.y, ai_position.z);
-			float3 scaling = float3(ai_scaling.x, ai_scaling.y, ai_scaling.z);
-			Quat rotation = Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w);
-			bone->bind = float4x4(rotation, position).Transposed();
+			memcpy(bone->bind.v, &scene_bone->mOffsetMatrix.a1, 16 * sizeof(float));
+
 			bone->num_weights = scene_bone->mNumWeights;
 			bone->weights = new Weight[bone->num_weights];
 			for (int j = 0; j < bone->num_weights; j++)
@@ -124,24 +118,29 @@ void ComponentMesh::LoadBones()
 
 bool ComponentMesh::OnUpdate()
 {
-	//if (has_bones)
-	//{
-	//	for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
-	//	{
-	//		float4x4 animation_transform = (*it)->bone_object->GetGlobalBoneTransformMatrix();
-	//		for (int i = 0; i < (*it)->num_weights; i++)
-	//		{
-	//			unsigned index = (*it)->weights[i].vertex;
-	//			float4 vertex_bind = float3(vertices_bind[3 * index], vertices_bind[3 * index + 1], vertices_bind[3 * index + 2]).ToPos4();
-	//			//float3 vertex_end = (*it)->weights[i].weight * (animation_transform * (*it)->bind * vertex_bind).Float3Part();
-	//			float4 vertex_end = (*it)->weights[i].weight * (vertex_bind * (*it)->bind * animation_transform);
-	//			//float3 vertex_end = ((*it)->bind.Mul(animation_transform).Mul(vertex_bind).Mul((*it)->weights[i].weight)).Float3Part();
-	//			vertices[3 * index] = vertex_end.x;
-	//			vertices[3 * index + 1] = vertex_end.y;
-	//			vertices[3 * index + 2] = vertex_end.z;
-	//		}
-	//	}
-	//}
+	if (has_bones)
+	{
+		memset(vertices, 0, 3 * num_vertices * sizeof(float));
+
+		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+		{
+			float4x4 animation_transform = float4x4::identity;
+			(*it)->bone_object->CalculateGlobalTransformMatrixNoRotation(animation_transform);
+			animation_transform = animation_transform *(*it)->bind;
+
+			for (int j = 0; j < (*it)->num_weights; j++)
+			{
+				unsigned index = (*it)->weights[j].vertex;
+
+				float3 vertex_bind(&vertices_bind[3 * index]);
+				float3 vertex_end = animation_transform.TransformPos(vertex_bind) * (*it)->weights[j].weight;
+				
+				vertices[3 * index] += vertex_end.x;
+				vertices[3 * index + 1] += vertex_end.y;
+				vertices[3 * index + 2] += vertex_end.z;
+			}
+		}
+	}
 
 	return true;
 }
@@ -152,7 +151,7 @@ bool ComponentMesh::OnDraw() const
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 
-	if (has_normals)
+	if (has_normals && !has_bones)
 	{
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glNormalPointer(GL_FLOAT, 0, normals);

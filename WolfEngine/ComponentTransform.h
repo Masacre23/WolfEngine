@@ -11,19 +11,25 @@ public:
 	~ComponentTransform();
 
 	const float3& GetPosition() const { return position; }
-	const float4x4& GetTransformMatrix() const { return float4x4::FromTRS(position, rotation, scale).Transposed(); }
-	const float4x4& GetBoneTransformMatrix() const { return float4x4(rotation, position).Transposed(); }
+	const float4x4& GetLocalTransformMatrix() const { return local_transform; }
+	void CalculateLocalTransformMatrixNoRotation(float4x4& local_transform) const;
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
+	void Load(const float3& position, const Quat& rotation);
 
 	bool OnUpdate();
 	bool OnDraw() const;
 	bool OnEditor();
 
-public:
+private:
+	void RecalculateLocalTransform();
+
+private:
 	float3 position = float3::zero;
 	float3 scale = float3::one;
 	Quat rotation = Quat::identity;
+
+	float4x4 local_transform = float4x4::identity;
 };
 
 #endif

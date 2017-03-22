@@ -94,7 +94,7 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 	float3 position = float3(ai_position.x, ai_position.y, ai_position.z);
 	float3 scaling = float3(ai_scaling.x, ai_scaling.y, ai_scaling.z);
 	Quat rotation = Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w);
-	new_object->SetTransform(position, scaling, rotation);
+	new_object->SetLocalTransform(position, scaling, rotation);
 
 	//Create mesh and materials
 	if (scene_node->mNumMeshes > 1)

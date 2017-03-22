@@ -38,17 +38,17 @@ public:
 
 	bool IsActive() const { return active; }
 
-	void SetTransform(const float3& position, const float3& scaling, const Quat& rotation);
+	void SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation);
+	void SetLocalTransformNoScale(const float3& position, const Quat& rotation);
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadAnim(const char * name, const char * file);
 	void LoadBones();
 
 	void ChangeAnim(const char* name, unsigned int duration);
 
-	const float4x4& GetGlobalTransformMatrix() const;
-	const float4x4& GetGlobalBoneTransformMatrix() const;
-
-	const float4x4& GetTransformMatrix() const;
+	void CalculateGlobalTransformMatrix(float4x4& global_transform) const;
+	void CalculateGlobalTransformMatrixNoRotation(float4x4& global_transform) const;
+	const float4x4& GetLocalTransformMatrix() const;
 
 private:
 	void RecursiveDrawHierarchy() const;

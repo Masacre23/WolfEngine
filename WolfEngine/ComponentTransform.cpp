@@ -14,11 +14,26 @@ ComponentTransform::~ComponentTransform()
 {
 }
 
+void ComponentTransform::CalculateLocalTransformMatrixNoRotation(float4x4 & local_transform) const
+{
+	local_transform = float4x4::FromTRS(position, rotation, float3::one);
+}
+
 void ComponentTransform::Load(const float3& position, const float3& scale, const Quat& rotation)
 {
 	this->position = position;
 	this->scale = scale;
 	this->rotation = rotation;
+
+	RecalculateLocalTransform();
+}
+
+void ComponentTransform::Load(const float3 & position, const Quat & rotation)
+{
+	this->position = position;
+	this->rotation = rotation;
+
+	RecalculateLocalTransform();
 }
 
 bool ComponentTransform::OnUpdate()
@@ -28,7 +43,7 @@ bool ComponentTransform::OnUpdate()
 
 bool ComponentTransform::OnDraw() const
 {
-	float* transform = float4x4::FromTRS(position, rotation, scale).Transposed().ptr();
+	float* transform = local_transform.Transposed().ptr();
 	glMultMatrixf(transform);
 	
 	return true;
@@ -55,8 +70,15 @@ bool ComponentTransform::OnEditor()
 		ImGui::DragFloat3("Scale", sca, 0.1f, 0.0f);
 		scale = float3(sca[0], sca[1], sca[2]);
 
+		RecalculateLocalTransform();
+
 		//ImGui::TreePop();
 	}
 
 	return ImGui::IsItemClicked();
+}
+
+void ComponentTransform::RecalculateLocalTransform()
+{ 
+	local_transform = float4x4::FromTRS(position, rotation, scale); 
 }
