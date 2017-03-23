@@ -6,6 +6,7 @@
 #include "Globals.h"
 
 class GameObject;
+class MyQuadTree;
 
 class ModuleSceneIni : public Module
 {
@@ -22,6 +23,7 @@ private:
 	const char* anim_idle = "ArmyPilot_Idle";
 	const char* anim_walk = "ArmyPilot_Walk";
 	const char* anim_run = "ArmyPilot_Run_Forwards";
+	MyQuadTree* quad_tree = nullptr;
 };
 
 #endif

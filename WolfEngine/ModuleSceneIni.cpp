@@ -8,6 +8,7 @@
 #include "ModuleInput.h"
 #include "GameObject.h"
 #include "PanelInterface.h"
+#include "MyQuadTree.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -39,6 +40,10 @@ bool ModuleSceneIni::Start()
 		camera->CreateComponent(Component::Type::CAMERA);
 	}
 
+	AABB bbox = AABB();
+	bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(50.0f, 50.0f, 50.0f));
+	quad_tree = new MyQuadTree(bbox);
+
 	return res;
 }
 
@@ -46,6 +51,7 @@ bool ModuleSceneIni::Start()
 bool ModuleSceneIni::CleanUp()
 {
 	LOG("Unloading initial scene");
+	RELEASE(quad_tree);
 
 	return true;
 }
@@ -71,6 +77,8 @@ update_status ModuleSceneIni::Update(float dt)
 			pilot->ChangeAnim(anim_run, 200);
 	}
 
+	quad_tree->Insert(pilot);
+	quad_tree->Draw();
 
 	return UPDATE_CONTINUE;
 }

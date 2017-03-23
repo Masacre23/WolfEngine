@@ -237,6 +237,9 @@
     <ClCompile Include="ComponentAnim.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
+    <ClCompile Include="MyQuadTree.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
     <ClCompile Include="Quadtree.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
@@ -549,6 +552,9 @@
       <Filter>Game Object</Filter>
     </ClInclude>
     <ClInclude Include="Quadtree.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="MyQuadTree.h">
       <Filter>Clases</Filter>
     </ClInclude>
   </ItemGroup>
