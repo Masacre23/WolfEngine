@@ -12,7 +12,6 @@ public:
 
 	const float3& GetPosition() const { return position; }
 	const float4x4& GetLocalTransformMatrix() const { return local_transform; }
-	void CalculateLocalTransformMatrixNoRotation(float4x4& local_transform) const;
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
 	void Load(const float3& position, const Quat& rotation);

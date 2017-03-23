@@ -28,6 +28,13 @@ ComponentMesh::~ComponentMesh()
 		}
 		bones.clear();
 	}
+
+	glDeleteBuffers(1, (GLuint*) &(vertices_id));
+	if (has_normals)
+		glDeleteBuffers(1, (GLuint*) &(normals_id));
+	if (has_tex_coords)
+		glDeleteBuffers(1, (GLuint*) &(texture_id));
+	glDeleteBuffers(1, (GLuint*) &(indices_id));
 }
 
 void ComponentMesh::Load(aiMesh* mesh)
@@ -44,6 +51,10 @@ void ComponentMesh::Load(aiMesh* mesh)
 
 	memcpy(vertices_bind, vertices, 3 * num_vertices * sizeof(float));
 
+	glGenBuffers(1, (GLuint*) &(vertices_id));
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
+
 	//Creating BoundingBox from vertices points
 	parent->bbox.SetNegativeInfinity();
 	parent->bbox.Enclose((float3*)vertices, num_vertices);
@@ -52,12 +63,19 @@ void ComponentMesh::Load(aiMesh* mesh)
 	if (has_normals) 
 	{
 		normals = new float[3 * num_vertices];
+		normals_bind = new float[3 * num_vertices];
 		c = 0;
 		for (size_t i = 0; i < num_vertices; ++i)
 			for (size_t j = 0; j < 3; ++j)
 				normals[c++] = mesh->mNormals[i][j];
 		if (c != 3 * mesh->mNumVertices)
 			LOG("Error loading meshes: Incorrect number of normals");
+
+		memcpy(normals_bind, normals, 3 * num_vertices * sizeof(float));
+
+		glGenBuffers(1, (GLuint*) &(normals_id));
+		glBindBuffer(GL_ARRAY_BUFFER, normals_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices, normals, GL_STATIC_DRAW);
 	}
 
 	has_tex_coords = mesh->HasTextureCoords(0);
@@ -70,6 +88,10 @@ void ComponentMesh::Load(aiMesh* mesh)
 				tex_coords[c++] = mesh->mTextureCoords[0][i][j];
 		if (c != 2 * mesh->mNumVertices)
 			LOG("Error loading meshes: Incorrect number of texture coordinates");
+
+		glGenBuffers(1, (GLuint*) &(texture_id));
+		glBindBuffer(GL_ARRAY_BUFFER, texture_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, tex_coords, GL_STATIC_DRAW);
 	}
 
 	num_indices = 3 * mesh->mNumFaces;
@@ -81,6 +103,10 @@ void ComponentMesh::Load(aiMesh* mesh)
 			indices[c++] = mesh->mFaces[j].mIndices[k];
 	if (c != 3 * mesh->mNumFaces)
 		LOG("Error loading meshes: Incorrect number of indices");
+
+	glGenBuffers(1, (GLuint*) &(indices_id));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 
 	if (mesh->HasBones())
 	{
@@ -121,23 +147,33 @@ bool ComponentMesh::OnUpdate()
 	if (has_bones)
 	{
 		memset(vertices, 0, 3 * num_vertices * sizeof(float));
+		if (has_normals)
+			memset(normals, 0, 3 * num_vertices * sizeof(float));
 
 		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
 		{
 			float4x4 animation_transform = float4x4::identity;
-			(*it)->bone_object->CalculateGlobalTransformMatrixNoRotation(animation_transform);
+			(*it)->bone_object->CalculateBoneGlobalTransformMatrix(animation_transform);
 			animation_transform = animation_transform *(*it)->bind;
 
 			for (int j = 0; j < (*it)->num_weights; j++)
 			{
 				unsigned index = (*it)->weights[j].vertex;
 
-				float3 vertex_bind(&vertices_bind[3 * index]);
-				float3 vertex_end = animation_transform.TransformPos(vertex_bind) * (*it)->weights[j].weight;
-				
+				float3 vertex_end = animation_transform.TransformPos(float3(&vertices_bind[3 * index])) * (*it)->weights[j].weight;
+
 				vertices[3 * index] += vertex_end.x;
 				vertices[3 * index + 1] += vertex_end.y;
 				vertices[3 * index + 2] += vertex_end.z;
+
+				if (has_normals)
+				{
+					float3 normals_end = animation_transform.TransformPos(float3(&normals_bind[3 * index])) * (*it)->weights[j].weight;
+
+					normals[3 * index] += normals_end.x;
+					normals[3 * index + 1] += normals_end.y;
+					normals[3 * index + 2] += normals_end.z;
+				}
 			}
 		}
 	}
@@ -147,23 +183,39 @@ bool ComponentMesh::OnUpdate()
 
 bool ComponentMesh::OnDraw() const
 {
+	if (has_bones)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
+		if (has_normals)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, normals_id);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices, normals, GL_STATIC_DRAW);
+		}
+	}
+		
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);	
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
-
-	if (has_normals && !has_bones)
+	if (has_normals)
 	{
 		glEnableClientState(GL_NORMAL_ARRAY);
-		glNormalPointer(GL_FLOAT, 0, normals);
+		glEnable(GL_LIGHTING);
+		glBindBuffer(GL_ARRAY_BUFFER, normals_id);
+		glNormalPointer(GL_FLOAT, 0, NULL);
 	}
+	else
+		glDisable(GL_LIGHTING);
 		
 	if (has_tex_coords)
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
+		glBindBuffer(GL_ARRAY_BUFFER, texture_id);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
-		
-	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);

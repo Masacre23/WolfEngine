@@ -46,7 +46,8 @@ void ModuleLevel::Draw() const
 	root->Draw();
 
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
-		(*it)->DrawHierarchy();
+		if ((*it)->IsActive())
+			(*it)->DrawHierarchy();
 }
 
 GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string& name, GameObject* root_object)

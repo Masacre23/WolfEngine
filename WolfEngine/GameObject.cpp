@@ -70,7 +70,7 @@ void GameObject::Draw() const
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
-		if ((*it)->active)
+		if ((*it)->IsActive())
 			(*it)->Draw();
 
 	glPopMatrix();
@@ -94,12 +94,15 @@ void GameObject::DrawHierarchy() const
 
 	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
 	{
-		float3 child_transform = (*it)->transform->GetPosition();
-		glBegin(GL_LINES);
-		glVertex3f(0.0f, 0.0f, 0.0f);
-		glVertex3f(child_transform.x, child_transform.y, child_transform.z);
-		glEnd();
-		(*it)->RecursiveDrawHierarchy();
+		if ((*it)->IsActive())
+		{
+			float3 child_transform = (*it)->transform->GetPosition();
+			glBegin(GL_LINES);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(child_transform.x, child_transform.y, child_transform.z);
+			glEnd();
+			(*it)->RecursiveDrawHierarchy();
+		}	
 	}
 
 	glPopMatrix();
@@ -369,19 +372,17 @@ void GameObject::CalculateGlobalTransformMatrix(float4x4& global_transform) cons
 	}
 }
 
-void GameObject::CalculateGlobalTransformMatrixNoRotation(float4x4& global_transform) const
+void GameObject::CalculateBoneGlobalTransformMatrix(float4x4& global_transform) const
 {
-	if (parent != nullptr)
+	if (parent != nullptr && parent != root)
 	{
 		float4x4 parent_transform = float4x4::identity;
-		parent->CalculateGlobalTransformMatrixNoRotation(parent_transform);
+		parent->CalculateBoneGlobalTransformMatrix(parent_transform);
 		global_transform = global_transform * parent_transform;
 	}
 	if (transform != nullptr)
 	{
-		float4x4 local_transform = float4x4::identity;
-		transform->CalculateLocalTransformMatrixNoRotation(local_transform);
-		global_transform = global_transform * local_transform;
+		global_transform = global_transform * transform->GetLocalTransformMatrix();
 	}
 }
 

@@ -47,7 +47,7 @@ public:
 	void ChangeAnim(const char* name, unsigned int duration);
 
 	void CalculateGlobalTransformMatrix(float4x4& global_transform) const;
-	void CalculateGlobalTransformMatrixNoRotation(float4x4& global_transform) const;
+	void CalculateBoneGlobalTransformMatrix(float4x4& global_transform) const;
 	const float4x4& GetLocalTransformMatrix() const;
 
 private:

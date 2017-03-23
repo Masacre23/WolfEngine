@@ -14,11 +14,6 @@ ComponentTransform::~ComponentTransform()
 {
 }
 
-void ComponentTransform::CalculateLocalTransformMatrixNoRotation(float4x4 & local_transform) const
-{
-	local_transform = float4x4::FromTRS(position, rotation, float3::one);
-}
-
 void ComponentTransform::Load(const float3& position, const float3& scale, const Quat& rotation)
 {
 	this->position = position;

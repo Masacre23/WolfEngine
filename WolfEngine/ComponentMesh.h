@@ -41,11 +41,17 @@ public:
 	aiString folder_path;
 
 private:
+	unsigned vertices_id = 0;
+	unsigned normals_id = 0;
+	unsigned texture_id = 0;
+	unsigned indices_id = 0;
+
 	float* vertices_bind = nullptr;
 	float* vertices = nullptr;
 	bool has_tex_coords = false;
 	float* tex_coords = nullptr;
 	bool has_normals = false;
+	float* normals_bind = nullptr;
 	float* normals = nullptr;
 	unsigned num_vertices = 0;
 	unsigned* indices = nullptr;
