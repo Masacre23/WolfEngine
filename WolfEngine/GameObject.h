@@ -33,7 +33,7 @@ public:
 	int GetNumComponents() const { return components.size(); }
 	int GetNumChilds() const { return childs.size(); }
 	const Component* GetComponent(Component::Type type) const;
-	const std::vector<Component*> GetComponents(Component::Type type) const;
+	void GetComponents(Component::Type type, std::vector<Component*>& components) const;
 	const GameObject* FindByName(const std::string& name) const;
 
 	bool IsActive() const { return active; }
@@ -46,8 +46,8 @@ public:
 
 	void ChangeAnim(const char* name, unsigned int duration);
 
-	void CalculateGlobalTransformMatrix(float4x4& global_transform) const;
-	void CalculateBoneGlobalTransformMatrix(float4x4& global_transform) const;
+	void RecursiveGetGlobalTransformMatrix(float4x4& global_transform) const;
+	void RecursiveGetBoneGlobalTransformMatrix(float4x4& global_transform) const;
 	const float4x4& GetLocalTransformMatrix() const;
 
 private:

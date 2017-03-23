@@ -10,6 +10,10 @@ public:
 	ComponentCamera(GameObject* parent = nullptr);
 	~ComponentCamera();
 
+	bool OnUpdate();
+	bool OnDraw() const;
+	bool OnEditor();
+
 	void SetFOV(float fov);
 	void SetAspectRatio(float aspect_ratio);
 	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);

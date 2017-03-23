@@ -1,13 +1,50 @@
 #include "ComponentCamera.h"
+#include "GameObject.h"
+#include "ComponentTransform.h"
+#include "OpenGL.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl_gl3.h"
 
 ComponentCamera::ComponentCamera(GameObject* parent) : Component(Component::Type::CAMERA, parent)
 {
 	frustum = new Frustum();
+
+	frustum->type = FrustumType::PerspectiveFrustum;
+	frustum->pos = float3::zero;
+	frustum->front = float3::unitZ;
+	frustum->up = float3::unitY;
+
+	frustum->nearPlaneDistance = 0.1f;
+	frustum->farPlaneDistance = 5000.0f;
+	frustum->verticalFov = DEG_TO_RAD * 59.0f;
+	SetAspectRatio(1.5f);
 }
 
 ComponentCamera::~ComponentCamera()
 {
 	RELEASE(frustum);
+}
+
+bool ComponentCamera::OnUpdate()
+{
+	SetPosition(parent->transform->GetPosition());
+
+	return true;
+}
+
+bool ComponentCamera::OnDraw() const
+{
+	return true;
+}
+
+bool ComponentCamera::OnEditor()
+{
+	if (ImGui::CollapsingHeader("Camera"))
+	{
+		ImGui::Checkbox("Active", &enable);
+	}
+
+	return ImGui::IsItemClicked();
 }
 
 void ComponentCamera::SetFOV(float fov)

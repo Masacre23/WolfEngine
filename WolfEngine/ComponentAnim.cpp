@@ -15,14 +15,19 @@ ComponentAnim::~ComponentAnim()
 {
 }
 
-bool ComponentAnim::OnUpdate()
+bool ComponentAnim::OnEditor(int selection_mask, int id)
 {
-	
-	if (anim_id != -1) 
+	return false;
+}
+
+bool ComponentAnim::OnAnimationUpdate()
+{
+
+	if (anim_id != -1)
 	{
 		std::vector<GameObject*> nodes;
 		nodes.push_back(parent);
-		while (nodes.size() != 0) 
+		while (nodes.size() != 0)
 		{
 			GameObject* node = nodes.back();
 			nodes.pop_back();
@@ -38,11 +43,6 @@ bool ComponentAnim::OnUpdate()
 		}
 	}
 	return true;
-}
-
-bool ComponentAnim::OnEditor(int selection_mask, int id)
-{
-	return false;
 }
 
 void ComponentAnim::SetName(const char * name)

@@ -25,7 +25,7 @@ public:
 
 	void Draw() const;
 
-	GameObject* CreateGameObject(GameObject* parent = nullptr, const std::string& name = "GameObject", GameObject* root_object = nullptr);
+	GameObject* CreateGameObject(const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 
 	GameObject* ImportScene(const char* folder, const char* file);
 

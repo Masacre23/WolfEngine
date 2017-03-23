@@ -20,7 +20,7 @@ bool ModuleLevel::Init()
 {
 	LOG("Init level.");
 
-	root = CreateGameObject(nullptr, "Root");
+	root = CreateGameObject("Root");
 
 	return true;
 }
@@ -50,7 +50,7 @@ void ModuleLevel::Draw() const
 			(*it)->DrawHierarchy();
 }
 
-GameObject* ModuleLevel::CreateGameObject(GameObject* parent, const std::string& name, GameObject* root_object)
+GameObject* ModuleLevel::CreateGameObject(const std::string& name, GameObject* parent, GameObject* root_object)
 {
 	if (parent == nullptr)
 		parent = root;
@@ -83,7 +83,7 @@ GameObject* ModuleLevel::ImportScene(const char * folder, const char * file)
 
 GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object)
 {
-	GameObject* new_object = CreateGameObject(parent, scene_node->mName.data, root_scene_object);
+	GameObject* new_object = CreateGameObject(scene_node->mName.data, parent, root_scene_object);
 	if (root_scene_object == nullptr)
 		root_scene_object = new_object;
 
@@ -104,7 +104,7 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 		//Create one new game object for each mesh
 		for (int i = 0; i < scene_node->mNumMeshes; i++)
 		{
-			mesh_object = CreateGameObject(new_object, scene_node->mName.data, root_scene_object);
+			mesh_object = CreateGameObject(scene_node->mName.data, new_object, root_scene_object);
 			mesh_object->LoadMeshFromScene(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
 		}
 	}

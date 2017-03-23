@@ -33,6 +33,12 @@ bool ModuleSceneIni::Start()
 		App->animations->Load("ArmyPilot_Walk", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Walk.fbx");
 	}	
 
+	GameObject* camera = App->level->CreateGameObject("TestCamera");
+	if (camera != nullptr)
+	{
+		camera->CreateComponent(Component::Type::CAMERA);
+	}
+
 	return res;
 }
 

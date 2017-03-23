@@ -1,4 +1,8 @@
+#include "Application.h"
 #include "ModuleAnimations.h"
+#include "ModuleLevel.h"
+#include "GameObject.h"
+#include "ComponentAnim.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -15,35 +19,10 @@ ModuleAnimations::~ModuleAnimations()
 
 update_status ModuleAnimations::Update(float dt)
 {
-	unsigned int dt_ms = 1000 * dt;
-	for (InstanceList::iterator it = instances.begin(); it != instances.end(); ++it)
-	{
-		if (*it != nullptr)
-		{
-			AnimInstance* instance = (*it);
-			if (instance->next != nullptr)
-			{
-				while (instance->next != nullptr) 
-				{
-					instance->blend_time += dt_ms;
-					if (instance->blend_time > instance->blend_duration)
-					{
-						unsigned int dt = instance->blend_time - instance->blend_duration;
-						instance->time = dt;
-						RELEASE(instance->next);
-					}
-					else
-					{
-						instance = instance->next;
-					}
-				}
-			}
-			else 
-			{
-				instance->time += dt_ms;
-			}
-		}
-	}
+	UpdateInstances(dt);
+
+	RecursiveUpdateAnimation(App->level->GetRoot());
+
 	return UPDATE_CONTINUE;
 }
 
@@ -274,4 +253,54 @@ Quat& ModuleAnimations::InterpQuaternion(const Quat& first, const Quat& second, 
 	result.Normalize();
 
 	return result;
+}
+
+void ModuleAnimations::UpdateInstances(float dt)
+{
+	unsigned int dt_ms = 1000 * dt;
+	for (InstanceList::iterator it = instances.begin(); it != instances.end(); ++it)
+	{
+		if (*it != nullptr)
+		{
+			AnimInstance* instance = (*it);
+			if (instance->next != nullptr)
+			{
+				while (instance->next != nullptr)
+				{
+					instance->blend_time += dt_ms;
+					if (instance->blend_time > instance->blend_duration)
+					{
+						unsigned int dt = instance->blend_time - instance->blend_duration;
+						instance->time = dt;
+						RELEASE(instance->next);
+					}
+					else
+					{
+						instance = instance->next;
+					}
+				}
+			}
+			else
+			{
+				instance->time += dt_ms;
+			}
+		}
+	}
+}
+
+void ModuleAnimations::RecursiveUpdateAnimation(GameObject* game_object)
+{
+	for (std::vector<GameObject*>::iterator it = game_object->childs.begin(); it != game_object->childs.end(); ++it)
+		if ((*it)->IsActive())
+			RecursiveUpdateAnimation(*it);
+
+	for (std::vector<Component*>::const_iterator it = game_object->components.cbegin(); it != game_object->components.cend(); ++it)
+	{
+		if ((*it)->GetType() == Component::Type::ANIMATION && (*it)->IsActive())
+		{
+			ComponentAnim* animation = (ComponentAnim*)(*it);
+			animation->OnAnimationUpdate();
+		}
+	}
+
 }

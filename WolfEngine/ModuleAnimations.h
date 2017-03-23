@@ -9,6 +9,8 @@
 
 #define MODULE_ANIMATION "ModuleAnimation"
 
+class GameObject;
+
 struct LessString
 {
 	bool operator()(const aiString& left, const aiString& right) const
@@ -76,6 +78,9 @@ private:
 	bool GetTransform(AnimInstance* instance, const char* channel, float3& position, Quat& rotation) const;
 	float3& InterpFloat3(const float3& first, const float3& second, float lambda) const;
 	Quat& InterpQuaternion(const Quat& first, const Quat& second, float lambda) const;
+
+	void UpdateInstances(float dt);
+	void RecursiveUpdateAnimation(GameObject* game_object);
 
 private:
 	AnimMap animations;

@@ -269,7 +269,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 	return ret;
 }
 
-const Component * GameObject::GetComponent(Component::Type type) const
+const Component* GameObject::GetComponent(Component::Type type) const
 {
 	Component* ret = nullptr;
 
@@ -282,15 +282,14 @@ const Component * GameObject::GetComponent(Component::Type type) const
 	return ret;
 }
 
-const std::vector<Component*> GameObject::GetComponents(Component::Type type) const
+void GameObject::GetComponents(Component::Type type, std::vector<Component*>& components) const
 {
-	std::vector<Component*> ret;
+	components.clear();
 	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 	{
 		if ((*it)->GetType() == type && (*it)->IsActive())
-			ret.push_back(*it);
+			components.push_back(*it);
 	}
-	return ret;
 }
 
 const GameObject* GameObject::FindByName(const std::string& name) const
@@ -358,12 +357,12 @@ void GameObject::ChangeAnim(const char* name, unsigned int duration)
 	((ComponentAnim*)component_anim)->BlendTo(name, duration);
 }
 
-void GameObject::CalculateGlobalTransformMatrix(float4x4& global_transform) const
+void GameObject::RecursiveGetGlobalTransformMatrix(float4x4& global_transform) const
 {
 	if (parent != nullptr)
 	{
 		float4x4 parent_transform = float4x4::identity;
-		parent->CalculateGlobalTransformMatrix(parent_transform);
+		parent->RecursiveGetGlobalTransformMatrix(parent_transform);
 		global_transform = global_transform * parent_transform;
 	}
 	if (transform != nullptr)
@@ -372,12 +371,12 @@ void GameObject::CalculateGlobalTransformMatrix(float4x4& global_transform) cons
 	}
 }
 
-void GameObject::CalculateBoneGlobalTransformMatrix(float4x4& global_transform) const
+void GameObject::RecursiveGetBoneGlobalTransformMatrix(float4x4& global_transform) const
 {
 	if (parent != nullptr && parent != root)
 	{
 		float4x4 parent_transform = float4x4::identity;
-		parent->CalculateBoneGlobalTransformMatrix(parent_transform);
+		parent->RecursiveGetBoneGlobalTransformMatrix(parent_transform);
 		global_transform = global_transform * parent_transform;
 	}
 	if (transform != nullptr)

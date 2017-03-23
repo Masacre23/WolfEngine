@@ -153,7 +153,7 @@ bool ComponentMesh::OnUpdate()
 		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
 		{
 			float4x4 animation_transform = float4x4::identity;
-			(*it)->bone_object->CalculateBoneGlobalTransformMatrix(animation_transform);
+			(*it)->bone_object->RecursiveGetBoneGlobalTransformMatrix(animation_transform);
 			animation_transform = animation_transform *(*it)->bind;
 
 			for (int j = 0; j < (*it)->num_weights; j++)

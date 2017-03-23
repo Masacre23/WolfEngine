@@ -37,6 +37,8 @@ private:
 	void DrawBasePlane();
 	void DrawAxis();
 
+	bool SetVsync(bool vsync);
+
 	bool ConstantConfig();
 	bool GetGLError() const;
 

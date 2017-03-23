@@ -11,15 +11,7 @@ ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
 	editor_camera = new ComponentCamera();
 
-	editor_camera->frustum->type = FrustumType::PerspectiveFrustum;
-	editor_camera->frustum->pos = float3::zero;
-	editor_camera->frustum->front = float3::unitZ;
-	editor_camera->frustum->up = float3::unitY;
-
-	editor_camera->frustum->nearPlaneDistance = 0.1f;
-	editor_camera->frustum->farPlaneDistance = 5000.0f;
-	editor_camera->frustum->verticalFov = DEG_TO_RAD * 59.0f;
-	editor_camera->SetAspectRatio(1.5f);
+	main_camera = editor_camera;
 }
 
 ModuleCamera::~ModuleCamera()

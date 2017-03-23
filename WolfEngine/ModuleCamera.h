@@ -33,9 +33,9 @@ private:
 	float speed_rotation = 0.5f;
 	float speed_translation = 1.0f;
 	float extra_speed_zoom = 10.0f;
-	Frustum* frustum;
 	
 	ComponentCamera* editor_camera = nullptr;
+	ComponentCamera* main_camera = nullptr;
 };
 
 #endif // !MODULECAMERA_H

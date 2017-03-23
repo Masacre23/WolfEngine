@@ -11,8 +11,9 @@ public:
 	ComponentAnim(GameObject* parent);
 	~ComponentAnim();
 
-	bool OnUpdate();
 	bool OnEditor(int selection_mask, int id);
+
+	bool OnAnimationUpdate();
 
 	void SetName(const char* name);
 	void Play(bool loop);

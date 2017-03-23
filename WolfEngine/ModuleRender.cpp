@@ -100,6 +100,10 @@ bool ModuleRender::Init()
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
 		ret = ret && GetGLError();
+
+		SetVsync(VSYNC);
+
+		ret = ret && GetGLError();
 	}
 
 	return ret;
@@ -306,6 +310,14 @@ void ModuleRender::DrawAxis()
 	glColor3f(1.0f, 1.0f, 1.0f);
 
 	glEnd();
+}
+
+bool ModuleRender::SetVsync(bool vsync)
+{
+	bool ret = true;
+	if (SDL_GL_SetSwapInterval(vsync ? 1 : 0))
+		LOG("Error during Vsync setting: %s", SDL_GetError());
+	return ret;
 }
 
 bool ModuleRender::ConstantConfig()
