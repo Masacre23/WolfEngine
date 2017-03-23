@@ -237,6 +237,9 @@
     <ClCompile Include="ComponentAnim.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
+    <ClCompile Include="MyQuadTree.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -544,6 +547,9 @@
     </ClInclude>
     <ClInclude Include="ComponentAnim.h">
       <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MyQuadTree.h">
+      <Filter>Clases</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
