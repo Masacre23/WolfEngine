@@ -7,6 +7,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "Math.h"
+#include "Quadtree.h"
 
 ModuleLevel::ModuleLevel() : Module(MODULE_LEVEL)
 {
@@ -21,6 +22,8 @@ bool ModuleLevel::Init()
 	LOG("Init level.");
 
 	root = CreateGameObject("Root");
+
+	quadtree = new Quadtree(AABB(float3(-100, -20, -100), float3(100, 20, 100)));
 
 	return true;
 }
@@ -38,12 +41,16 @@ bool ModuleLevel::CleanUp()
 
 	RELEASE(root);
 
+	RELEASE(quadtree);
+
 	return true;
 }
 
 void ModuleLevel::Draw() const
 {
 	root->Draw();
+
+	//quadtree->Draw();
 
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
 		if ((*it)->IsActive())

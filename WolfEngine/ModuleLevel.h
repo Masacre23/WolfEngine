@@ -12,6 +12,7 @@ struct aiString;
 struct aiNode;
 
 class GameObject;
+class Quadtree;
 
 class ModuleLevel : public Module
 {
@@ -39,6 +40,7 @@ private:
 
 private:
 	GameObject* root = nullptr;
+	Quadtree* quadtree = nullptr;
 };
 
 #endif // !MODULELEVEL_H

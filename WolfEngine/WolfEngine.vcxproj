@@ -190,6 +190,7 @@
     <ClCompile Include="PanelInterface.cpp" />
     <ClCompile Include="PanelMenuBar.cpp" />
     <ClCompile Include="parson\parson.c" />
+    <ClCompile Include="Quadtree.cpp" />
     <ClCompile Include="TimerUs.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -293,6 +294,7 @@
     <ClInclude Include="PanelMenuBar.h" />
     <ClInclude Include="parson\parson.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Quadtree.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerUs.h" />
   </ItemGroup>

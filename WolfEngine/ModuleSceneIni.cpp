@@ -21,10 +21,10 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	LOG("Loading initial scene");
 
-	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
-	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
-	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
-	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
+	App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
+	App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
+	App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	//pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
 
 	if (pilot != nullptr)
 	{
