@@ -9,14 +9,20 @@
 
 ModuleCamera::ModuleCamera() : Module(MODULE_CAMERA)
 {
-	editor_camera = new ComponentCamera();
-
-	main_camera = editor_camera;
 }
 
 ModuleCamera::~ModuleCamera()
 {
-	RELEASE(editor_camera);
+}
+
+bool ModuleCamera::Init()
+{
+	editor_camera = new ComponentCamera();
+	SetupFrustum(editor_camera);
+
+	main_camera = editor_camera;
+
+	return true;
 }
 
 bool ModuleCamera::Start()
@@ -24,9 +30,14 @@ bool ModuleCamera::Start()
 	float3 initial_pos = float3::zero;
 	if (App->parser->LoadObject(CAMERA_SECTION))
 	{
-		speed_rotation = App->parser->GetFloat("RotationSpeed");
-		speed_translation = App->parser->GetFloat("TranslationSpeed");
-		extra_speed_zoom = App->parser->GetFloat("ZoomSpeedFactor");
+		NEARPLANE = App->parser->GetFloat("NearPlane");
+		FARPLANE = App->parser->GetFloat("FarPlane");
+		VERTICALFOV = App->parser->GetFloat("VerticalFOV");
+		ASPECTRATIO = App->parser->GetFloat("AspectRatio");
+
+		SPEED_ROTATION = App->parser->GetFloat("RotationSpeed");
+		SPEED_TRANSLATION = App->parser->GetFloat("TranslationSpeed");
+		SPEED_ZOOM = App->parser->GetFloat("ZoomSpeedFactor");
 		App->parser->GetVector3("InitialPosition", &initial_pos);
 
 		App->parser->UnloadObject();
@@ -53,21 +64,21 @@ update_status ModuleCamera::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) movement += direction_up;
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) movement -= direction_up;
 	
-	movement += direction_forward * App->input->mouse_wheel.y * extra_speed_zoom;
+	movement += direction_forward * App->input->mouse_wheel.y * SPEED_ZOOM;
 
-	editor_camera->frustum->Translate(movement * speed_translation * (shift_pressed ? 2 : 1) * dt);
+	editor_camera->frustum->Translate(movement * SPEED_TRANSLATION * (shift_pressed ? 2 : 1) * dt);
 
 	// Camera rotation
 	int dx = App->input->mouse_motion.x;
 	int dy = App->input->mouse_motion.y;
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) 
 	{
-		float angle = -dy * speed_rotation * dt;
+		float angle = -dy * SPEED_ROTATION * dt;
 		Quat q = Quat::RotateAxisAngle(direction_right, angle);
 		editor_camera->frustum->up = q.Mul(editor_camera->frustum->up);
 		editor_camera->frustum->front = q.Mul(editor_camera->frustum->front);
 
-		angle = - dx * speed_rotation * dt;
+		angle = - dx * SPEED_ROTATION * dt;
 		q = Quat::RotateY(angle);
 		editor_camera->frustum->up = q.Mul(editor_camera->frustum->up);
 		editor_camera->frustum->front = q.Mul(editor_camera->frustum->front);
@@ -79,9 +90,12 @@ update_status ModuleCamera::Update(float dt)
 
 bool ModuleCamera::CleanUp()
 {
+	LOG("Releasing editor camera");
+
+	RELEASE(editor_camera);
+
 	return true;
 }
-
 void ModuleCamera::SetFOV(float fov)
 {
 	editor_camera->SetFOV(fov);
@@ -117,4 +131,10 @@ float* ModuleCamera::GetViewMatrix() const
 	return editor_camera->GetViewMatrix();
 }
 
-
+void ModuleCamera::SetupFrustum(ComponentCamera* camera)
+{
+	camera->frustum->nearPlaneDistance = NEARPLANE;
+	camera->frustum->farPlaneDistance = FARPLANE;
+	camera->frustum->verticalFov = DEG_TO_RAD * VERTICALFOV;
+	camera->SetAspectRatio(ASPECTRATIO);
+}

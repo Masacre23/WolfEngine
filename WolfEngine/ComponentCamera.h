@@ -26,6 +26,7 @@ public:
 
 public:
 	Frustum* frustum;
+	bool frustum_culling = false;
 };
 
 #endif // !COMPONENTCAMERA_H

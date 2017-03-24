@@ -8,6 +8,7 @@
 
 ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
 {
+	rotation_euler = rotation.ToEulerXYZ().Abs();
 }
 
 ComponentTransform::~ComponentTransform()
@@ -19,6 +20,7 @@ void ComponentTransform::Load(const float3& position, const float3& scale, const
 	this->position = position;
 	this->scale = scale;
 	this->rotation = rotation;
+	rotation_euler = rotation.ToEulerXYZ().Abs();
 
 	RecalculateLocalTransform();
 }
@@ -27,6 +29,7 @@ void ComponentTransform::Load(const float3 & position, const Quat & rotation)
 {
 	this->position = position;
 	this->rotation = rotation;
+	rotation_euler = rotation.ToEulerXYZ().Abs();
 
 	RecalculateLocalTransform();
 }
@@ -52,18 +55,14 @@ bool ComponentTransform::OnEditor()
 	
 	if (node_open)
 	{
-		float pos[3] = {position.x, position.y, position.z};
-		ImGui::DragFloat3("Position", pos, 0.1f);
-		position = float3(pos[0], pos[1], pos[2]);
+		ImGui::DragFloat3("Position", (float*)&position, 0.1f);
 
-		float3 rotation_euler = rotation.ToEulerXYZ() * RAD_TO_DEG;
-		float rot[3] = { rotation_euler.x, rotation_euler.y, rotation_euler.z };
-		ImGui::DragFloat3("Rotation", rot, 1.0f, -89.0f, 89.0f);
-		rotation = Quat::RotateX(rot[0] * DEG_TO_RAD).Mul(Quat::RotateY(rot[1] * DEG_TO_RAD)).Mul(Quat::RotateZ(rot[2] * DEG_TO_RAD));
+		float3 rot = rotation_euler * RAD_TO_DEG;
+		ImGui::DragFloat3("Rotation", (float*)&rot, 1.0f, -180.0f, 180.0f);
+		rotation_euler = rot * DEG_TO_RAD;
+		rotation = Quat::FromEulerXYZ(rotation_euler[0], rotation_euler[1], rotation_euler[2]);
 
-		float sca[3] = { scale.x, scale.y, scale.z };
-		ImGui::DragFloat3("Scale", sca, 0.1f, 0.0f);
-		scale = float3(sca[0], sca[1], sca[2]);
+		ImGui::DragFloat3("Scale", (float*)&scale, 0.1f);
 
 		RecalculateLocalTransform();
 

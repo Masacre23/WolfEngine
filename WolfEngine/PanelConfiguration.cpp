@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera.h"
+#include "ComponentCamera.h"
 #include "SDL\include\SDL.h"
 
 PanelConfiguration::PanelConfiguration(bool active) : Panel("Configuration", active)
@@ -56,8 +58,38 @@ void PanelConfiguration::Draw()
 
 		sprintf_s(title, 25, "Milliseconds %0.1f", ms_log.back());
 		ImGui::PlotHistogram("##milliseconds", &ms_log.front(), ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
-
 	}
+
+	if (ImGui::CollapsingHeader("Editor Camera"))
+	{
+		ComponentCamera* editor_camera = App->camera->editor_camera;
+
+		if (ImGui::Button("Default camera configuration"))
+			App->camera->SetupFrustum(editor_camera);
+
+		float near_plane = editor_camera->frustum->nearPlaneDistance;
+		if (ImGui::DragFloat("Near Plane", &near_plane, 0.1f, 0.1f, 1000.0f))
+		{
+			if (near_plane >= 0.1f && near_plane < editor_camera->frustum->farPlaneDistance)
+				editor_camera->frustum->nearPlaneDistance = near_plane;
+		}
+
+		float far_plane = editor_camera->frustum->farPlaneDistance;
+		if (ImGui::DragFloat("Far Plane", &far_plane, 1.0f, 10.0f, 10000.0f))
+		{
+			if (far_plane >= 10.0f && far_plane > editor_camera->frustum->nearPlaneDistance)
+				editor_camera->frustum->farPlaneDistance = far_plane;
+		}
+
+		float vertical_fov = editor_camera->frustum->verticalFov * RAD_TO_DEG;
+		if (ImGui::SliderFloat("Vertical FOV", &vertical_fov, 1.0f, 180.0f))
+			editor_camera->SetFOV(vertical_fov);
+
+		float aspect_ratio = editor_camera->frustum->AspectRatio();
+		if (ImGui::DragFloat("Aspect Ratio", &aspect_ratio, 0.1f, 0.1f, 1000.0f))
+			editor_camera->SetAspectRatio(aspect_ratio);
+	}
+
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		ImGui::Text("Icon: *default*");

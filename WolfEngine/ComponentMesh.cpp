@@ -75,7 +75,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 
 		glGenBuffers(1, (GLuint*) &(normals_id));
 		glBindBuffer(GL_ARRAY_BUFFER, normals_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices, normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, normals, GL_STATIC_DRAW);
 	}
 
 	has_tex_coords = mesh->HasTextureCoords(0);
@@ -106,7 +106,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 
 	glGenBuffers(1, (GLuint*) &(indices_id));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * num_indices, indices, GL_STATIC_DRAW);
 
 	if (mesh->HasBones())
 	{

@@ -1,3 +1,5 @@
+#include "Application.h"
+#include "ModuleCamera.h"
 #include "ComponentCamera.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
@@ -14,10 +16,11 @@ ComponentCamera::ComponentCamera(GameObject* parent) : Component(Component::Type
 	frustum->front = float3::unitZ;
 	frustum->up = float3::unitY;
 
-	frustum->nearPlaneDistance = 0.1f;
+	App->camera->SetupFrustum(this);
+	/*frustum->nearPlaneDistance = 0.1f;
 	frustum->farPlaneDistance = 5000.0f;
 	frustum->verticalFov = DEG_TO_RAD * 59.0f;
-	SetAspectRatio(1.5f);
+	SetAspectRatio(1.5f);*/
 }
 
 ComponentCamera::~ComponentCamera()
@@ -27,7 +30,8 @@ ComponentCamera::~ComponentCamera()
 
 bool ComponentCamera::OnUpdate()
 {
-	SetPosition(parent->transform->GetPosition());
+	if (parent != nullptr)
+		SetPosition(parent->transform->GetPosition());
 
 	return true;
 }
@@ -42,6 +46,31 @@ bool ComponentCamera::OnEditor()
 	if (ImGui::CollapsingHeader("Camera"))
 	{
 		ImGui::Checkbox("Active", &enable);
+
+		if (ImGui::Button("Default camera configuration"))
+			App->camera->SetupFrustum(this);
+
+		float near_plane = frustum->nearPlaneDistance;
+		if (ImGui::DragFloat("Near Plane", &near_plane, 0.1f, 0.1f, 1000.0f))
+		{
+			if (near_plane >= 0.1f && near_plane < frustum->farPlaneDistance)
+				frustum->nearPlaneDistance = near_plane;
+		}
+
+		float far_plane = frustum->farPlaneDistance;
+		if (ImGui::DragFloat("Far Plane", &far_plane, 1.0f, 10.0f, 10000.0f))
+		{
+			if (far_plane >= 10.0f && far_plane > frustum->nearPlaneDistance)
+				frustum->farPlaneDistance = far_plane;
+		}
+
+		float vertical_fov = frustum->verticalFov * RAD_TO_DEG;
+		if (ImGui::SliderFloat("Vertical FOV", &vertical_fov, 1.0f, 180.0f))
+			SetFOV(vertical_fov);
+
+		float aspect_ratio = frustum->AspectRatio();
+		if (ImGui::DragFloat("Aspect Ratio", &aspect_ratio, 0.1f, 0.1f, 1000.0f))
+			SetAspectRatio(aspect_ratio);
 	}
 
 	return ImGui::IsItemClicked();

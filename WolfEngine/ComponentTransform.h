@@ -27,6 +27,7 @@ private:
 	float3 position = float3::zero;
 	float3 scale = float3::one;
 	Quat rotation = Quat::identity;
+	float3 rotation_euler = float3::zero;
 
 	float4x4 local_transform = float4x4::identity;
 };

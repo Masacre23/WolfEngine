@@ -15,6 +15,7 @@ public:
 	ModuleCamera();
 	~ModuleCamera();
 
+	bool Init();
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
@@ -29,11 +30,19 @@ public:
 	float* GetProjectionMatrix() const;
 	float* GetViewMatrix() const;
 
+	void SetupFrustum(ComponentCamera* camera);
+
 private:
-	float speed_rotation = 0.5f;
-	float speed_translation = 1.0f;
-	float extra_speed_zoom = 10.0f;
+	float NEARPLANE = 0.1f;
+	float FARPLANE = 5000.0f;
+	float VERTICALFOV = 59.0f;
+	float ASPECTRATIO = 1.5f;
+
+	float SPEED_ROTATION = 0.5f;
+	float SPEED_TRANSLATION = 1.0f;
+	float SPEED_ZOOM = 10.0f;
 	
+public:
 	ComponentCamera* editor_camera = nullptr;
 	ComponentCamera* main_camera = nullptr;
 };
