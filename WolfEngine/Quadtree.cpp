@@ -3,6 +3,7 @@
 #include "Quadtree.h"
 #include "GameObject.h"
 #include "Math.h"
+#include "Color.h"
 
 Quadtree::Quadtree(const AABB& quadtree_limits)
 {
@@ -37,7 +38,7 @@ QuadtreeNode::~QuadtreeNode()
 
 void QuadtreeNode::Draw()
 {
-	App->renderer->DrawBoundingBox(node_box);
+	App->renderer->DrawBoundingBox(node_box, Colors::Aqua);
 
 	for (std::vector<QuadtreeNode*>::iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->Draw();

@@ -10,6 +10,7 @@
 #include "OpenGL.h"
 #include "Math.h"
 #include "JsonHandler.h"
+#include "Color.h"
 
 #pragma comment( lib, "Glew/libx86/glew32.lib" )
 #pragma comment (lib, "opengl32.lib")
@@ -132,10 +133,8 @@ update_status ModuleRender::PreUpdate(float dt)
 
 update_status ModuleRender::Update(float dt)
 {
-	glEnable(GL_COLOR_MATERIAL);
-	DrawBasePlane();
+	DrawBasePlane(Colors::White);
 	DrawAxis();
-	glDisable(GL_COLOR_MATERIAL);
 
 	return UPDATE_CONTINUE;
 }
@@ -224,6 +223,7 @@ void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnable(GL_COLOR_MATERIAL);
 
 	GLuint id_texture;
 	if (texture == App->textures->texture_checkers)
@@ -238,8 +238,6 @@ void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale
 	glTranslatef(translate.x, translate.y, translate.z);
 	glScalef(scale.x, scale.y, scale.z);
 	glRotatef(angle, rotation.x, rotation.y, rotation.z);
-	
-	glDepthRange(0.1, 0.9);
 
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -256,6 +254,7 @@ void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	glDisable(GL_COLOR_MATERIAL);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -263,66 +262,64 @@ void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale
 	glPopMatrix();
 }
 
-void ModuleRender::DrawBoundingBox(const AABB& bbox)
+void ModuleRender::DrawBoundingBox(const AABB& bbox, const Color& color)
 {
-	glLineWidth(2.0f);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
-	glBegin(GL_LINES);
+	float3 corners[8];
+	bbox.GetCornerPoints(corners);
 
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
-	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
-
-	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
-	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
-
-	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
-	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
-
-	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
-	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
-
-	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
-	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
-
-	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
-	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
-
-	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
-	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
-
-	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
-	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
-
-	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
-	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
-
-	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
-	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
-
-	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
-	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
-
-	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
-	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
-
-	glEnd();
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
+	DrawParallepiped(corners, color);
 }
 
-void ModuleRender::DrawBasePlane()
+void ModuleRender::DrawFrustum(const Frustum& frustum, const Color& color)
+{
+	float3 corners[8];
+	frustum.GetCornerPoints(corners);
+
+	DrawParallepiped(corners, color);
+}
+
+void ModuleRender::DrawAxis()
+{
+	float axis_length = 1.5f;
+
+	glDepthRange(0.0, 0.01);
+
+	glEnable(GL_COLOR_MATERIAL);
+	glBegin(GL_LINES);
+	glLineWidth(2.0f);
+
+	glColor3f(Colors::Red.r, Colors::Red.g, Colors::Red.b);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(axis_length, 0.0, 0.0);
+
+	glColor3f(Colors::Green.r, Colors::Green.g, Colors::Green.b);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, axis_length, 0.0);
+
+	glColor3f(Colors::Blue.r, Colors::Blue.g, Colors::Blue.b);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, axis_length);
+
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glEnd();
+	glDisable(GL_COLOR_MATERIAL);
+
+	glDepthRange(0.01, 1.0);
+
+}
+
+void ModuleRender::DrawBasePlane(const Color& color)
 {
 	float distance_between_lines = 1.0f;
 	float min_distance = -100.f;
 	float max_distance = 100.f;
 	int num_lines = ((int)((max_distance - min_distance) / distance_between_lines)) + 1;
 
-	glLineWidth(2.0f);
-	glDepthRange(0.1, 0.9);
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glEnable(GL_COLOR_MATERIAL);
+	//glDepthRange(0.1, 0.9);
 	glBegin(GL_LINES);
+	glLineWidth(2.0f);
+	glColor3f(color.r, color.g, color.b);
 	for (int i = 0; i < num_lines; i++)
 	{
 		glVertex3f(min_distance + i*distance_between_lines, 0.0, min_distance);
@@ -333,32 +330,59 @@ void ModuleRender::DrawBasePlane()
 		glVertex3f(min_distance, 0.0, min_distance + i*distance_between_lines);
 		glVertex3f(max_distance, 0.0, min_distance + i*distance_between_lines);
 	}
+	glColor3f(0.0f, 0.0f, 0.0f);
 	glEnd();
+	glDisable(GL_COLOR_MATERIAL);
 }
 
-void ModuleRender::DrawAxis()
+void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 {
-	float axis_length = 1.5f;
-
-	glLineWidth(2.0f);
-	glDepthRange(0.0, 0.1);
+	glLineWidth(1.0f);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
 	glBegin(GL_LINES);
-
-	glColor3f(3.0, 0.0f, 0.0f);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(axis_length, 0.0, 0.0);
 	
-	glColor3f(0.0f, 3.0, 0.0f);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, axis_length, 0.0);
+	glColor3f(color.r, color.g, color.b);
+	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
 
-	glColor3f(0.0f, 0.0f, 3.0f);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, axis_length);
+	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
 
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
 
+	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+
+	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+
+	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+
+	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+
+	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+
+	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+
+	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+
+	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+
+	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+
+	glColor3f(0.0f, 0.0f, 0.0f);
 	glEnd();
+	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
 }
 
 bool ModuleRender::SetVsync(bool vsync)

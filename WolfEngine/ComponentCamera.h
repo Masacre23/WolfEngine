@@ -18,6 +18,7 @@ public:
 	void SetAspectRatio(float aspect_ratio);
 	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
 	void SetPosition(const float3& position);
+	void SetOrientation(const Quat& rotation);
 
 	void LookAt(const float3& position);
 

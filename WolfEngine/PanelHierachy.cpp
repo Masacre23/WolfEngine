@@ -31,6 +31,8 @@ GameObject* PanelHierachy::DrawInterfaceHierachy()
 	for (int i = 0; i < App->level->GetRoot()->childs.size(); ++i)
 	{
 		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
+		if (App->level->GetRoot()->childs[i]->childs.size() == 0)
+			node_flags = node_flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, App->level->GetRoot()->childs[i]->name.c_str());
 		if (ImGui::IsItemClicked())
 		{

@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "GameObject.h"
+#include "Color.h"
 
 
 
@@ -30,7 +31,7 @@ void MyQuadTree::Draw()
 			for (int i = 0; i < 4; ++i)
 				quadnodes.push_back(node->children[i]);
 		}
-		App->renderer->DrawBoundingBox(node->limit);
+		App->renderer->DrawBoundingBox(node->limit, Colors::Aqua);
 	}
 }
 

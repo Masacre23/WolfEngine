@@ -1,11 +1,13 @@
 #include "Application.h"
 #include "ModuleCamera.h"
+#include "ModuleRender.h"
 #include "ComponentCamera.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "OpenGL.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Color.h"
 
 ComponentCamera::ComponentCamera(GameObject* parent) : Component(Component::Type::CAMERA, parent)
 {
@@ -17,10 +19,6 @@ ComponentCamera::ComponentCamera(GameObject* parent) : Component(Component::Type
 	frustum->up = float3::unitY;
 
 	App->camera->SetupFrustum(this);
-	/*frustum->nearPlaneDistance = 0.1f;
-	frustum->farPlaneDistance = 5000.0f;
-	frustum->verticalFov = DEG_TO_RAD * 59.0f;
-	SetAspectRatio(1.5f);*/
 }
 
 ComponentCamera::~ComponentCamera()
@@ -31,13 +29,18 @@ ComponentCamera::~ComponentCamera()
 bool ComponentCamera::OnUpdate()
 {
 	if (parent != nullptr)
+	{
 		SetPosition(parent->transform->GetPosition());
+		SetOrientation(parent->transform->GetRotation());
+	}		
 
 	return true;
 }
 
 bool ComponentCamera::OnDraw() const
 {
+	App->renderer->DrawFrustum(*frustum, Colors::Yellow);
+
 	return true;
 }
 
@@ -95,9 +98,15 @@ void ComponentCamera::SetPlaneDistances(float nearPlaneDistance, float farPlaneD
 	frustum->farPlaneDistance = farPlaneDistance;
 }
 
-void ComponentCamera::SetPosition(const float3 & position)
+void ComponentCamera::SetPosition(const float3& position)
 {
 	frustum->pos = position;
+}
+
+void ComponentCamera::SetOrientation(const Quat& rotation)
+{
+	frustum->front = rotation.Mul(float3::unitZ);
+	frustum->up = rotation.Mul(float3::unitY);
 }
 
 void ComponentCamera::LookAt(const float3 & position)

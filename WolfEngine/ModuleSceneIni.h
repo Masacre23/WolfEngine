@@ -2,7 +2,6 @@
 #define MODULESCENEINI_H
 
 #include "Module.h"
-#include "Animation.h"
 #include "Globals.h"
 
 class GameObject;

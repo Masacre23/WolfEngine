@@ -2,7 +2,6 @@
 #include "Globals.h"
 #include "parson\parson.h"
 #include "SDL/include/SDL_rect.h"
-#include "Animation.h"
 #include "Math.h"
 
 JSONParser::JSONParser(const char* file)

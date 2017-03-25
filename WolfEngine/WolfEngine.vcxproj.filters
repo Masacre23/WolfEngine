@@ -243,6 +243,9 @@
     <ClCompile Include="Quadtree.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -269,9 +272,6 @@
     <ClInclude Include="parson\parson.h">
       <Filter>3rd Party\parson</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Globals.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -279,9 +279,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="MemLeaks.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Point.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
@@ -556,6 +553,12 @@
     </ClInclude>
     <ClInclude Include="MyQuadTree.h">
       <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

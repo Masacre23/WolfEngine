@@ -1,7 +1,6 @@
 #ifndef JSONHANDLER_H
 #define JSONHANDLER_H
 
-#include "Point.h"
 #include "Globals.h"
 #include "MathGeoLib/src/Math/float3.h"
 

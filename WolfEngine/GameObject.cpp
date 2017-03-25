@@ -12,6 +12,7 @@
 #include "ModuleLevel.h"
 #include "ModuleRender.h"
 #include "OpenGL.h"
+#include "Color.h"
 
 GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::string& name) : name(name), root(root_object)
 {
@@ -52,12 +53,16 @@ void GameObject::Draw() const
 	glPushMatrix();
 
 	if (selected)
-		App->renderer->DrawBoundingBox(bbox);
+		App->renderer->DrawBoundingBox(bbox, Colors::Green);
+		
 
 	if (transform != nullptr)
 		if (transform->IsActive())
 			transform->OnDraw();
 	
+	if (selected)
+		App->renderer->DrawAxis();
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (material != nullptr)
@@ -70,6 +75,10 @@ void GameObject::Draw() const
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	const Component* camera = GetComponent(Component::Type::CAMERA);
+	if (camera != nullptr)
+		camera->OnDraw();
+
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		if ((*it)->IsActive())
 			(*it)->Draw();
@@ -80,12 +89,12 @@ void GameObject::Draw() const
 
 void GameObject::DrawHierarchy() const
 {
+	glDepthRange(0.0, 0.01);
 	glLineWidth(2.0f);
-	glDepthRange(0.0, 0.1);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	
-	glColor3f(0.0f, 0.0f, 1.0f);
+	glColor3f(Colors::Blue.r, Colors::Blue.g, Colors::Blue.b);
 
 	glPushMatrix();
 
@@ -108,8 +117,10 @@ void GameObject::DrawHierarchy() const
 
 	glPopMatrix();
 
+	glColor3f(0.0f, 0.0f, 0.0f);
 	glDisable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
+	glDepthRange(0.01, 1.0);
 }
 
 void GameObject::RecursiveDrawHierarchy() const
@@ -131,11 +142,6 @@ void GameObject::RecursiveDrawHierarchy() const
 	}
 
 	glPopMatrix();	
-}
-
-void GameObject::DrawAABBBox() const 
-{
-	
 }
 
 void GameObject::SetParent(GameObject * parent)

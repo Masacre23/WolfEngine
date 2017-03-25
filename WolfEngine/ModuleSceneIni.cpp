@@ -77,8 +77,8 @@ update_status ModuleSceneIni::Update(float dt)
 			pilot->ChangeAnim(anim_run, 200);
 	}
 
-	quad_tree->Insert(pilot);
-	quad_tree->Draw();
+	//quad_tree->Insert(pilot);
+	//quad_tree->Draw();
 
 	return UPDATE_CONTINUE;
 }

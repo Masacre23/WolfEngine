@@ -11,6 +11,7 @@ public:
 	~ComponentTransform();
 
 	const float3& GetPosition() const { return position; }
+	const Quat& GetRotation() const { return rotation; }
 	const float4x4& GetLocalTransformMatrix() const { return local_transform; }
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);

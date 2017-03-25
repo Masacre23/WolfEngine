@@ -52,7 +52,6 @@ public:
 
 private:
 	void RecursiveDrawHierarchy() const;
-	void DrawAABBBox() const;
 
 public:
 	AABB bbox;
