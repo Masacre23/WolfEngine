@@ -246,6 +246,9 @@
     <ClCompile Include="Color.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Billboard.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
     <ClCompile Include="Grass.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
@@ -562,6 +565,9 @@
     </ClInclude>
     <ClInclude Include="Point.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Clases</Filter>
     </ClInclude>
     <ClInclude Include="Grass.h">
       <Filter>Clases</Filter>

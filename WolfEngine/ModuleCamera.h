@@ -29,6 +29,7 @@ public:
 
 	float* GetProjectionMatrix() const;
 	float* GetViewMatrix() const;
+	float3 GetPosition() const;
 
 	void SetupFrustum(ComponentCamera* camera);
 

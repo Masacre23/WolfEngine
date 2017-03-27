@@ -131,6 +131,11 @@ float* ModuleCamera::GetViewMatrix() const
 	return editor_camera->GetViewMatrix();
 }
 
+float3 ModuleCamera::GetPosition() const
+{
+	return editor_camera->frustum->pos;
+}
+
 void ModuleCamera::SetupFrustum(ComponentCamera* camera)
 {
 	camera->frustum->nearPlaneDistance = NEARPLANE;
