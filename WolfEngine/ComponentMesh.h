@@ -46,8 +46,8 @@ private:
 	unsigned texture_id = 0;
 	unsigned indices_id = 0;
 
-	float* vertices_bind = nullptr;
-	float* vertices = nullptr;
+	float3* vertices_bind = nullptr;
+	float3* vertices = nullptr;
 	bool has_tex_coords = false;
 	float* tex_coords = nullptr;
 	bool has_normals = false;
@@ -58,7 +58,8 @@ private:
 	unsigned num_indices = 0;
 
 	bool has_bones = false;
-	std::vector<Bone*> bones;
+	int num_bones;
+	Bone* bones;
 };
 
 #endif

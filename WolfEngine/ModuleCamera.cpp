@@ -52,7 +52,7 @@ bool ModuleCamera::Start()
 update_status ModuleCamera::Update(float dt)
 {
 	float3 movement = float3::zero;
-	float3 direction_forward = editor_camera->frustum->front;
+	float3 direction_forward = editor_camera->frustum->Front();
 	float3 direction_right = editor_camera->frustum->WorldRight();
 	float3 direction_up = float3::unitY;
 	bool shift_pressed = (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT);
@@ -75,13 +75,13 @@ update_status ModuleCamera::Update(float dt)
 	{
 		float angle = -dy * SPEED_ROTATION * dt;
 		Quat q = Quat::RotateAxisAngle(direction_right, angle);
-		editor_camera->frustum->up = q.Mul(editor_camera->frustum->up);
-		editor_camera->frustum->front = q.Mul(editor_camera->frustum->front);
+		editor_camera->frustum->SetUp(q.Mul(editor_camera->frustum->Up()));
+		editor_camera->frustum->SetFront(q.Mul(editor_camera->frustum->Front()));
 
 		angle = - dx * SPEED_ROTATION * dt;
 		q = Quat::RotateY(angle);
-		editor_camera->frustum->up = q.Mul(editor_camera->frustum->up);
-		editor_camera->frustum->front = q.Mul(editor_camera->frustum->front);
+		editor_camera->frustum->SetUp(q.Mul(editor_camera->frustum->Up()));
+		editor_camera->frustum->SetFront(q.Mul(editor_camera->frustum->Front()));
 
 		
 	}
@@ -90,7 +90,7 @@ update_status ModuleCamera::Update(float dt)
 
 bool ModuleCamera::CleanUp()
 {
-	LOG("Releasing editor camera");
+	APPLOG("Releasing editor camera");
 
 	RELEASE(editor_camera);
 
@@ -133,8 +133,7 @@ float* ModuleCamera::GetViewMatrix() const
 
 void ModuleCamera::SetupFrustum(ComponentCamera* camera)
 {
-	camera->frustum->nearPlaneDistance = NEARPLANE;
-	camera->frustum->farPlaneDistance = FARPLANE;
-	camera->frustum->verticalFov = DEG_TO_RAD * VERTICALFOV;
+	camera->SetPlaneDistances(NEARPLANE, FARPLANE);
+	camera->SetFOV(DEG_TO_RAD * VERTICALFOV);
 	camera->SetAspectRatio(ASPECTRATIO);
 }

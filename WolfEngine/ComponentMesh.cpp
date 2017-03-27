@@ -21,12 +21,11 @@ ComponentMesh::~ComponentMesh()
 
 	if (has_bones)
 	{
-		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+		for (int i = 0; i < num_bones; i++)
 		{
-			RELEASE_ARRAY((*it)->weights);
-			RELEASE(*it);
+			RELEASE_ARRAY(bones[i].weights);
 		}
-		bones.clear();
+		RELEASE_ARRAY(bones);
 	}
 
 	glDeleteBuffers(1, (GLuint*) &(vertices_id));
@@ -40,16 +39,19 @@ ComponentMesh::~ComponentMesh()
 void ComponentMesh::Load(aiMesh* mesh)
 {
 	num_vertices = mesh->mNumVertices;
-	vertices = new float[3 * num_vertices];
-	vertices_bind = new float[3 * num_vertices];
+	vertices = new float3[num_vertices];
+	vertices_bind = new float3[num_vertices];
 	unsigned c = 0;
 	for (size_t i = 0; i < num_vertices; ++i)
 		for (size_t j = 0; j < 3; ++j)
-			vertices[c++] = mesh->mVertices[i][j];
+		{
+			vertices[i][j] = mesh->mVertices[i][j];
+			c++;
+		}
 	if (c != 3 * mesh->mNumVertices)
 		LOG("Error loading meshes: Incorrect number of vertices");
 
-	memcpy(vertices_bind, vertices, 3 * num_vertices * sizeof(float));
+	memcpy(vertices_bind, vertices, num_vertices * sizeof(float3));
 
 	glGenBuffers(1, (GLuint*) &(vertices_id));
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
@@ -111,22 +113,22 @@ void ComponentMesh::Load(aiMesh* mesh)
 	if (mesh->HasBones())
 	{
 		has_bones = true;
+		num_bones = mesh->mNumBones;
+		bones = new Bone[num_bones];
 		for (int i = 0; i < mesh->mNumBones; i++)
 		{
 			aiBone* scene_bone = mesh->mBones[i];
-			Bone* bone = new Bone;
-			bone->name = scene_bone->mName;
+			bones[i].name = scene_bone->mName;
 
-			memcpy(bone->bind.v, &scene_bone->mOffsetMatrix.a1, 16 * sizeof(float));
+			memcpy(bones[i].bind.v, &scene_bone->mOffsetMatrix.a1, 16 * sizeof(float));
 
-			bone->num_weights = scene_bone->mNumWeights;
-			bone->weights = new Weight[bone->num_weights];
-			for (int j = 0; j < bone->num_weights; j++)
+			bones[i].num_weights = scene_bone->mNumWeights;
+			bones[i].weights = new Weight[bones[i].num_weights];
+			for (int j = 0; j < bones[i].num_weights; j++)
 			{
-				bone->weights[j].weight = scene_bone->mWeights[j].mWeight;
-				bone->weights[j].vertex = scene_bone->mWeights[j].mVertexId;
+				bones[i].weights[j].weight = scene_bone->mWeights[j].mWeight;
+				bones[i].weights[j].vertex = scene_bone->mWeights[j].mVertexId;
 			}
-			bones.push_back(bone);
 		}
 	}
 }
@@ -135,9 +137,9 @@ void ComponentMesh::LoadBones()
 {
 	if (has_bones)
 	{
-		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+		for (int i = 0; i < num_bones; i++)
 		{
-			(*it)->bone_object = parent->root->FindByName((*it)->name.data);
+			bones[i].bone_object = parent->root->FindByName(bones[i].name.data);
 		}
 	}
 }
@@ -146,34 +148,33 @@ bool ComponentMesh::OnUpdate()
 {
 	if (has_bones)
 	{
-		memset(vertices, 0, 3 * num_vertices * sizeof(float));
+		memset(vertices, 0, num_vertices * sizeof(float3));
 		if (has_normals)
-			memset(normals, 0, 3 * num_vertices * sizeof(float));
+			memset(normals, 0, num_vertices * sizeof(float3));
 
-		for (std::vector<Bone*>::iterator it = bones.begin(); it != bones.end(); ++it)
+		float4x4 animation_transform = float4x4::identity;
+
+		for (int i = 0; i < num_bones; i++)
 		{
-			float4x4 animation_transform = float4x4::identity;
-			(*it)->bone_object->RecursiveGetBoneGlobalTransformMatrix(animation_transform);
-			animation_transform = animation_transform *(*it)->bind;
+			animation_transform = float4x4::identity;
+			bones[i].bone_object->RecursiveGetBoneGlobalTransformMatrix(animation_transform);
+			animation_transform = animation_transform * bones[i].bind;
 
-			for (int j = 0; j < (*it)->num_weights; j++)
+			for (int j = 0; j < bones[i].num_weights; j++)
 			{
-				unsigned index = (*it)->weights[j].vertex;
+				//vertices[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
 
-				float3 vertex_end = animation_transform.TransformPos(float3(&vertices_bind[3 * index])) * (*it)->weights[j].weight;
+				animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]);
+				vertices[bones[i].weights[j].vertex] = vertices_bind[bones[i].weights[j].vertex];
 
-				vertices[3 * index] += vertex_end.x;
-				vertices[3 * index + 1] += vertex_end.y;
-				vertices[3 * index + 2] += vertex_end.z;
-
-				if (has_normals)
+				/*if (has_normals)
 				{
 					float3 normals_end = animation_transform.TransformPos(float3(&normals_bind[3 * index])) * (*it)->weights[j].weight;
 
 					normals[3 * index] += normals_end.x;
 					normals[3 * index + 1] += normals_end.y;
 					normals[3 * index + 2] += normals_end.z;
-				}
+				}*/
 			}
 		}
 	}
@@ -186,7 +187,7 @@ bool ComponentMesh::OnDraw() const
 	if (has_bones)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, vertices, GL_STATIC_DRAW);
 		if (has_normals)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, normals_id);

@@ -5,6 +5,7 @@
 #include "ModuleCamera.h"
 #include "ComponentCamera.h"
 #include "SDL\include\SDL.h"
+#include "Math.h"
 
 PanelConfiguration::PanelConfiguration(bool active) : Panel("Configuration", active)
 {
@@ -67,21 +68,21 @@ void PanelConfiguration::Draw()
 		if (ImGui::Button("Default camera configuration"))
 			App->camera->SetupFrustum(editor_camera);
 
-		float near_plane = editor_camera->frustum->nearPlaneDistance;
+		float near_plane = editor_camera->frustum->NearPlaneDistance();
 		if (ImGui::DragFloat("Near Plane", &near_plane, 0.1f, 0.1f, 1000.0f))
 		{
-			if (near_plane >= 0.1f && near_plane < editor_camera->frustum->farPlaneDistance)
-				editor_camera->frustum->nearPlaneDistance = near_plane;
+			if (near_plane >= 0.1f && near_plane < editor_camera->frustum->FarPlaneDistance())
+				editor_camera->SetPlaneDistances(near_plane, editor_camera->frustum->FarPlaneDistance());
 		}
 
-		float far_plane = editor_camera->frustum->farPlaneDistance;
+		float far_plane = editor_camera->frustum->FarPlaneDistance();
 		if (ImGui::DragFloat("Far Plane", &far_plane, 1.0f, 10.0f, 10000.0f))
 		{
-			if (far_plane >= 10.0f && far_plane > editor_camera->frustum->nearPlaneDistance)
-				editor_camera->frustum->farPlaneDistance = far_plane;
+			if (far_plane >= 10.0f && far_plane > editor_camera->frustum->NearPlaneDistance())
+				editor_camera->SetPlaneDistances(editor_camera->frustum->NearPlaneDistance(), far_plane);
 		}
 
-		float vertical_fov = editor_camera->frustum->verticalFov * RAD_TO_DEG;
+		float vertical_fov = editor_camera->frustum->VerticalFov() * RAD_TO_DEG;
 		if (ImGui::SliderFloat("Vertical FOV", &vertical_fov, 1.0f, 180.0f))
 			editor_camera->SetFOV(vertical_fov);
 
