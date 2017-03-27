@@ -6,6 +6,7 @@
 
 class GameObject;
 class MyQuadTree;
+class Grass;
 
 class ModuleSceneIni : public Module
 {
@@ -23,6 +24,7 @@ private:
 	const char* anim_walk = "ArmyPilot_Walk";
 	const char* anim_run = "ArmyPilot_Run_Forwards";
 	MyQuadTree* quad_tree = nullptr;
+	Grass* grass = nullptr;
 };
 
 #endif
