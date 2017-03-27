@@ -3,14 +3,15 @@
 
 #include <list>
 #include "Math.h"
-
-class Billboard;
+#include "Billboard.h"
+#include "Application.h"
+#include "ModuleCamera.h"
 
 class Grass
 {
 public:
 	struct CompareDepth {
-		bool operator()(Billboard* b, Billboard* b2) { return b->position.normalize() < b2->position.normalize(); }
+		bool operator()(Billboard* b, Billboard* b2) { return (b->position - App->camera->GetPosition()).Length() < (b2->position - App->camera->GetPosition()).Length(); }
 	};
 
 	Grass(int lines, int cols);

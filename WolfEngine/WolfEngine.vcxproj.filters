@@ -246,10 +246,10 @@
     <ClCompile Include="Color.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Billboard.cpp">
+    <ClCompile Include="Grass.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
-    <ClCompile Include="Grass.cpp">
+    <ClCompile Include="Billboard.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
   </ItemGroup>
@@ -566,10 +566,10 @@
     <ClInclude Include="Point.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Billboard.h">
+    <ClInclude Include="Grass.h">
       <Filter>Clases</Filter>
     </ClInclude>
-    <ClInclude Include="Grass.h">
+    <ClInclude Include="Billboard.h">
       <Filter>Clases</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,6 +11,7 @@
 #include "PanelInterface.h"
 #include "MyQuadTree.h"
 #include "Billboard.h"
+#include "Grass.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -46,7 +47,11 @@ bool ModuleSceneIni::Start()
 	bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(50.0f, 50.0f, 50.0f));
 	quad_tree = new MyQuadTree(bbox);*/
 
-	grass = new Billboard(aiString("Resources/billboardgrass.png"), {0.0f, 0.0f, 0.0f}, 0.5, 0.5);
+	//grass = new Billboard(aiString("Resources/billboardgrass.png"), {0.0f, 0.0f, 0.0f}, 0.5, 0.5);
+
+	grass = new Grass(10, 10);
+
+	grass->Start();
 
 	return res;
 }
@@ -84,7 +89,8 @@ update_status ModuleSceneIni::Update(float dt)
 	//quad_tree->Insert(pilot);
 	//quad_tree->Draw();
 
-	grass->ComputeQuad(App->camera->GetPosition());
+	//grass->ComputeQuad(App->camera->GetPosition());
+	//grass->Draw();
 	grass->Draw();
 
 	return UPDATE_CONTINUE;
