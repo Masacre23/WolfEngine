@@ -246,6 +246,9 @@
     <ClCompile Include="Color.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Grass.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -559,6 +562,9 @@
     </ClInclude>
     <ClInclude Include="Point.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Grass.h">
+      <Filter>Clases</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
