@@ -99,7 +99,7 @@ void ModuleAnimations::Load(const char * name, const char * file)
 	}
 	else
 	{
-		LOG("Error loading animation: No animation found in path %s", file_path.data);
+		APPLOG("Error loading animation: No animation found in path %s", file_path.data);
 	}
 	
 	aiReleaseImport(scene);

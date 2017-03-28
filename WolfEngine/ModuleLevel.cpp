@@ -9,6 +9,8 @@
 #include "Math.h"
 #include "Quadtree.h"
 
+#pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
+
 ModuleLevel::ModuleLevel() : Module(MODULE_LEVEL)
 {
 }
@@ -19,7 +21,7 @@ ModuleLevel::~ModuleLevel()
 
 bool ModuleLevel::Init()
 {
-	LOG("Init level.");
+	APPLOG("Init level.");
 
 	root = CreateGameObject("Root");
 
@@ -37,7 +39,7 @@ update_status ModuleLevel::Update(float dt)
 
 bool ModuleLevel::CleanUp()
 {
-	LOG("Destroying GameObjects and clearing level.")
+	APPLOG("Destroying GameObjects and clearing level.")
 
 	RELEASE(root);
 
@@ -133,7 +135,7 @@ void ModuleLevel::GetGLError(const char* string) const
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR)
 	{
-		LOG("OpenGL error during %s: %s", string, gluErrorString(err));
+		APPLOG("OpenGL error during %s: %s", string, gluErrorString(err));
 		ret = false;
 	}
 

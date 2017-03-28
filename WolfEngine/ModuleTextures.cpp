@@ -21,7 +21,7 @@ ModuleTextures::~ModuleTextures()
 
 bool ModuleTextures::Init()
 {
-	LOG("Init Image library via DevIL library");
+	APPLOG("Init Image library via DevIL library");
 	bool ret = true;
 
 	ilInit();
@@ -36,7 +36,7 @@ bool ModuleTextures::Init()
 
 bool ModuleTextures::CleanUp()
 {
-	LOG("Freeing textures and Image library");
+	APPLOG("Freeing textures and Image library");
 
 	ilShutDown();
 
@@ -57,7 +57,7 @@ unsigned int ModuleTextures::LoadTexture(const aiString& path)
 
 		ILenum Error = ilGetError();
 		if (Error != IL_NO_ERROR)
-			LOG("Error %d: %s", Error, iluErrorString(Error));
+			APPLOG("Error %d: %s", Error, iluErrorString(Error));
 
 		ret = ilutGLBindTexImage();
 
@@ -65,16 +65,16 @@ unsigned int ModuleTextures::LoadTexture(const aiString& path)
 
 		Error = ilGetError();
 		if (Error != IL_NO_ERROR)
-			LOG("Error %d: %s", Error, iluErrorString(Error));
+			APPLOG("Error %d: %s", Error, iluErrorString(Error));
 
-		LOG("Load texture key %s with value %d", path.data, ret);
+		APPLOG("Load texture key %s with value %d", path.data, ret);
 
 		ilDeleteImage(imageId);
 	}
 	else
 	{
 		ret = textures[path];
-		LOG("Texture key %s already loaded with value %d", path.data, ret);
+		APPLOG("Texture key %s already loaded with value %d", path.data, ret);
 	}
 
 	return ret;

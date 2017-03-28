@@ -17,6 +17,8 @@ ComponentCamera::ComponentCamera(GameObject* parent) : Component(Component::Type
 	frustum->SetFront(float3::unitZ);
 	frustum->SetUp(float3::unitY);
 
+	frustum->SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
+
 	App->camera->SetupFrustum(this);
 }
 

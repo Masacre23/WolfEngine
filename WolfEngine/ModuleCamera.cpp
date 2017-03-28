@@ -60,31 +60,34 @@ update_status ModuleCamera::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) movement += direction_forward;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) movement -= direction_forward;
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) movement -= direction_right;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) movement += direction_right;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
+		movement += direction_right;
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) movement += direction_up;
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) movement -= direction_up;
 	
 	movement += direction_forward * App->input->mouse_wheel.y * SPEED_ZOOM;
-
-	editor_camera->frustum->Translate(movement * SPEED_TRANSLATION * (shift_pressed ? 2 : 1) * dt);
+	float3 translation = movement * SPEED_TRANSLATION * (shift_pressed ? 2 : 1) * dt;
 
 	// Camera rotation
 	int dx = App->input->mouse_motion.x;
 	int dy = App->input->mouse_motion.y;
+
+	float3 front = direction_forward;
+	float3 up = editor_camera->frustum->Up();
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) 
 	{
 		float angle = -dy * SPEED_ROTATION * dt;
 		Quat q = Quat::RotateAxisAngle(direction_right, angle);
-		editor_camera->frustum->SetUp(q.Mul(editor_camera->frustum->Up()));
-		editor_camera->frustum->SetFront(q.Mul(editor_camera->frustum->Front()));
+		up = q * up;
+		front = q * front;
 
 		angle = - dx * SPEED_ROTATION * dt;
 		q = Quat::RotateY(angle);
-		editor_camera->frustum->SetUp(q.Mul(editor_camera->frustum->Up()));
-		editor_camera->frustum->SetFront(q.Mul(editor_camera->frustum->Front()));
-
-		
+		up = q * up;
+		front = q * front;
 	}
+
+	editor_camera->frustum->SetFrame(editor_camera->frustum->Pos() + translation, front, up);
 	return UPDATE_CONTINUE;
 }
 
@@ -133,12 +136,11 @@ float* ModuleCamera::GetViewMatrix() const
 
 float3 ModuleCamera::GetPosition() const
 {
-	return editor_camera->frustum->pos;
+	return editor_camera->frustum->Pos();
 }
 
 void ModuleCamera::SetupFrustum(ComponentCamera* camera)
 {
 	camera->SetPlaneDistances(NEARPLANE, FARPLANE);
-	camera->SetFOV(DEG_TO_RAD * VERTICALFOV);
-	camera->SetAspectRatio(ASPECTRATIO);
+	camera->frustum->SetVerticalFovAndAspectRatio(DEG_TO_RAD * VERTICALFOV, ASPECTRATIO);
 }

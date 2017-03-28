@@ -33,9 +33,9 @@ Application::Application()
 
 	modules.push_back(scene_ini = new ModuleSceneIni());
 
-	LOG("App construction time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
-	LOG("App construction time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
-	LOG("App construction time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
+	APPLOG("App construction time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
+	APPLOG("App construction time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
+	APPLOG("App construction time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
 }
 
 Application::~Application()
@@ -67,9 +67,9 @@ bool Application::Init()
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
 
-	LOG("App initialization time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
-	LOG("App initialization time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
-	LOG("App initialization time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
+	APPLOG("App initialization time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
+	APPLOG("App initialization time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
+	APPLOG("App initialization time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
 
 	timer_function_ms.Start();
 	timer_function_us.Start();
@@ -82,9 +82,9 @@ bool Application::Init()
 
 	scene_ini->Enable();
 
-	LOG("App starting time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
-	LOG("App starting time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
-	LOG("App starting time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
+	APPLOG("App starting time (by Timer class) in ms: %u", timer_function_ms.GetTimeInMs());
+	APPLOG("App starting time (by TimerUs class) in ms: %llu", timer_function_us.GetTimeInMs());
+	APPLOG("App starting time (by TimerUs class) in us: %llu", timer_function_us.GetTimeInUs());
 
 	app_timer.Start();
 	return ret;

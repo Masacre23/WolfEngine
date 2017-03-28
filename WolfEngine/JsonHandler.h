@@ -2,7 +2,7 @@
 #define JSONHANDLER_H
 
 #include "Globals.h"
-#include "MathGeoLib/src/Math/float3.h"
+#include "Math.h"
 
 typedef struct json_object_t JSON_Object;
 typedef struct json_array_t  JSON_Array;

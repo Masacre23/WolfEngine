@@ -31,20 +31,20 @@ int main(int argc, char ** argv)
 		switch (state)
 		{
 		case MAIN_CREATION:
-			LOG("Application Creation ------------------");
+			APPLOG("Application Creation ------------------");
 			App = new Application();
 			state = MAIN_START;
 			break;
 		case MAIN_START:
-			LOG("Application Init ----------------------");
+			APPLOG("Application Init ----------------------");
 			if (App->Init() == false)
 			{
-				LOG("Application Init exits with error -----");
+				APPLOG("Application Init exits with error -----");
 				state = MAIN_FINISH;
 			}
 			else
 			{
-				LOG("Application Update --------------------");
+				APPLOG("Application Update --------------------");
 				state = MAIN_UPDATE;
 			}
 			break;
@@ -54,7 +54,7 @@ int main(int argc, char ** argv)
 			{
 				if (update_return == UPDATE_ERROR)
 				{
-					LOG("Application Update exits with error ---");
+					APPLOG("Application Update exits with error ---");
 					state = MAIN_EXIT;
 				}
 				if (update_return == UPDATE_STOP)
@@ -62,10 +62,10 @@ int main(int argc, char ** argv)
 			}
 			break;
 		case MAIN_FINISH:
-			LOG("Application CleanUp -------------------");
+			APPLOG("Application CleanUp -------------------");
 			if (App->CleanUp() == false)
 			{
-				LOG("Application CleanUp exits with error --");
+				APPLOG("Application CleanUp exits with error --");
 			}
 			else
 				main_return = EXIT_SUCCESS;

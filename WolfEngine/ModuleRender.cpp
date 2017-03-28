@@ -25,13 +25,13 @@ ModuleRender::~ModuleRender()
 
 bool ModuleRender::Init()
 {
-	LOG("Creating 3D Renderer context");
+	APPLOG("Creating 3D Renderer context");
 	bool ret = true;
 	Uint32 flags = 0;
 
 	if (ConstantConfig() == false)
 	{
-		LOG("Problem retrieving value from configuration file");
+		APPLOG("Problem retrieving value from configuration file");
 		ret = false;
 	}
 
@@ -39,7 +39,7 @@ bool ModuleRender::Init()
 	glcontext = SDL_GL_CreateContext(App->window->GetWindow());
 	if (glcontext == NULL)
 	{
-		LOG("GL Context could not be created! SDL_Error: %s\n", SDL_GetError());
+		APPLOG("GL Context could not be created! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 
@@ -47,19 +47,19 @@ bool ModuleRender::Init()
 	GLenum err = glewInit();
 	if (err != GL_NO_ERROR)
 	{
-		LOG("Error during Glew library init: %s\n", glewGetErrorString(err));
+		APPLOG("Error during Glew library init: %s\n", glewGetErrorString(err));
 		ret = false;
 	}
 	else
-		LOG("Using Glew %s", glewGetString(GLEW_VERSION));
+		APPLOG("Using Glew %s", glewGetString(GLEW_VERSION));
 
 	if (ret == true)
 	{
 		//Get hardware and drivers capabilities
-		LOG("Vendor: %s", glGetString(GL_VENDOR));
-		LOG("Renderer: %s", glGetString(GL_RENDERER));
-		LOG("OpenGL version supported %s", glGetString(GL_VERSION));
-		LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+		APPLOG("Vendor: %s", glGetString(GL_VENDOR));
+		APPLOG("Renderer: %s", glGetString(GL_RENDERER));
+		APPLOG("OpenGL version supported %s", glGetString(GL_VERSION));
+		APPLOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 		//Initialize Projection Matrix
 		glMatrixMode(GL_PROJECTION);
@@ -150,7 +150,7 @@ update_status ModuleRender::PostUpdate(float dt)
 
 bool ModuleRender::CleanUp()
 {
-	LOG("Destroying 3d renderer");
+	APPLOG("Destroying 3d renderer");
 
 	if (glcontext != NULL)
 		SDL_GL_DeleteContext(glcontext);
@@ -390,7 +390,7 @@ bool ModuleRender::SetVsync(bool vsync)
 {
 	bool ret = true;
 	if (SDL_GL_SetSwapInterval(vsync ? 1 : 0))
-		LOG("Error during Vsync setting: %s", SDL_GetError());
+		APPLOG("Error during Vsync setting: %s", SDL_GetError());
 	return ret;
 }
 
@@ -417,7 +417,7 @@ bool ModuleRender::GetGLError() const
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR)
 	{
-		LOG("Error during OpenGP init: %s", gluErrorString(err));
+		APPLOG("Error during OpenGP init: %s", gluErrorString(err));
 		ret = false;
 	}
 

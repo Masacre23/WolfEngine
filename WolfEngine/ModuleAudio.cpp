@@ -17,19 +17,19 @@ ModuleAudio::~ModuleAudio()
 
 bool ModuleAudio::Init()
 {
-	LOG("Loading Audio Mixer");
+	APPLOG("Loading Audio Mixer");
 	bool ret = true;
 	SDL_Init(0);
 
 	if (ConstantConfig() == false)
 	{
-		LOG("Problem retrieving value from configuration file");
+		APPLOG("Problem retrieving value from configuration file");
 		ret = false;
 	}
 
 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
 	{
-		LOG("SDL_INIT_AUDIO could not initialize! SDL_Error: %s\n", SDL_GetError());
+		APPLOG("SDL_INIT_AUDIO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 
@@ -38,13 +38,13 @@ bool ModuleAudio::Init()
 
 	if ((init & flags) != flags)
 	{
-		LOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
+		APPLOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
 		ret = false;
 	}
 
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	{
-		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+		APPLOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		ret = false;
 	}
 	else
@@ -58,7 +58,7 @@ bool ModuleAudio::Init()
 
 bool ModuleAudio::CleanUp()
 {
-	LOG("Freeing sound FX, closing Mixer and Audio subsystem");
+	APPLOG("Freeing sound FX, closing Mixer and Audio subsystem");
 
 	if (music != nullptr)
 		Mix_FreeMusic(music);
@@ -93,7 +93,7 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 
 	if (music == nullptr)
 	{
-		LOG("Cannot load music %s. Mix_GetError(): %s\n", path, Mix_GetError());
+		APPLOG("Cannot load music %s. Mix_GetError(): %s\n", path, Mix_GetError());
 		ret = false;
 	}
 	else
@@ -102,7 +102,7 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 		{
 			if (Mix_FadeInMusic(music, -1, (int) (fade_time * 1000.0f)) < 0)
 			{
-				LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
+				APPLOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
 				ret = false;
 			}
 		}
@@ -110,13 +110,13 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 		{
 			if (Mix_PlayMusic(music, -1) < 0)
 			{
-				LOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
+				APPLOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
 				ret = false;
 			}
 		}
 	}
 
-	LOG("Successfully playing %s", path);
+	APPLOG("Successfully playing %s", path);
 	return ret;
 }
 
@@ -137,7 +137,7 @@ unsigned int ModuleAudio::LoadFx(const char* path)
 
 	if (chunk == nullptr)
 	{
-		LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
+		APPLOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
 	}
 	else
 	{

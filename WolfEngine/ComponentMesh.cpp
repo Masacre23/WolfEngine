@@ -49,7 +49,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 			c++;
 		}
 	if (c != 3 * mesh->mNumVertices)
-		LOG("Error loading meshes: Incorrect number of vertices");
+		APPLOG("Error loading meshes: Incorrect number of vertices");
 
 	memcpy(vertices_bind, vertices, num_vertices * sizeof(float3));
 
@@ -71,7 +71,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 			for (size_t j = 0; j < 3; ++j)
 				normals[c++] = mesh->mNormals[i][j];
 		if (c != 3 * mesh->mNumVertices)
-			LOG("Error loading meshes: Incorrect number of normals");
+			APPLOG("Error loading meshes: Incorrect number of normals");
 
 		memcpy(normals_bind, normals, 3 * num_vertices * sizeof(float));
 
@@ -89,7 +89,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 			for (size_t j = 0; j < 2; ++j)
 				tex_coords[c++] = mesh->mTextureCoords[0][i][j];
 		if (c != 2 * mesh->mNumVertices)
-			LOG("Error loading meshes: Incorrect number of texture coordinates");
+			APPLOG("Error loading meshes: Incorrect number of texture coordinates");
 
 		glGenBuffers(1, (GLuint*) &(texture_id));
 		glBindBuffer(GL_ARRAY_BUFFER, texture_id);
@@ -104,7 +104,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 		for (size_t k = 0; k < 3; ++k)
 			indices[c++] = mesh->mFaces[j].mIndices[k];
 	if (c != 3 * mesh->mNumFaces)
-		LOG("Error loading meshes: Incorrect number of indices");
+		APPLOG("Error loading meshes: Incorrect number of indices");
 
 	glGenBuffers(1, (GLuint*) &(indices_id));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
@@ -162,10 +162,10 @@ bool ComponentMesh::OnUpdate()
 
 			for (int j = 0; j < bones[i].num_weights; j++)
 			{
-				//vertices[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
+				vertices[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
 
-				animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]);
-				vertices[bones[i].weights[j].vertex] = vertices_bind[bones[i].weights[j].vertex];
+				/*animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]);
+				vertices[bones[i].weights[j].vertex] = vertices_bind[bones[i].weights[j].vertex];*/
 
 				/*if (has_normals)
 				{

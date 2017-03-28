@@ -21,12 +21,12 @@ public:
 		{
 			active = Start();
 			if (active == false)
-				LOG("Module unable to start correctly: %s ---", name);
+				APPLOG("Module unable to start correctly: %s ---", name);
 			return active;
 		}
 		else
 		{
-			LOG("Module already active: %s --------------", name);
+			APPLOG("Module already active: %s --------------", name);
 			return true;
 		}
 
@@ -39,12 +39,12 @@ public:
 		{
 			active = !CleanUp();
 			if (active == true)
-				LOG("Module unable to cleanup correctly: %s -", name);
+				APPLOG("Module unable to cleanup correctly: %s -", name);
 			return !active;
 		}
 		else
 		{
-			LOG("Module already disabled: %s ------------", name);
+			APPLOG("Module already disabled: %s ------------", name);
 			return true;
 		}
 

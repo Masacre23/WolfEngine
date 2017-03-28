@@ -155,7 +155,7 @@ void GameObject::SetParent(GameObject * parent)
 		if (it != childs.end())
 		{
 			childs.erase(it);
-			LOG("Error detected: GameObject has a parent but it isn't in parent's childs' vector.")
+			APPLOG("Error detected: GameObject has a parent but it isn't in parent's childs' vector.")
 		}
 	}
 
@@ -178,11 +178,11 @@ Component* GameObject::CreateComponent(Component::Type type)
 		{
 			if (existing_component != transform)
 			{
-				LOG("Error in transform: Transform pointer different from transform component %s", name.c_str());
+				APPLOG("Error in transform: Transform pointer different from transform component %s", name.c_str());
 			}
 			else
 			{
-				LOG("Error adding component: Already a transform in %s", name.c_str());
+				APPLOG("Error adding component: Already a transform in %s", name.c_str());
 			}
 		}
 		else
@@ -194,7 +194,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 	case Component::MESH:
 		if (existing_component != nullptr)
 		{
-			LOG("Error adding component: Already a mesh in %s", name.c_str());
+			APPLOG("Error adding component: Already a mesh in %s", name.c_str());
 		}
 		else
 		{
@@ -205,7 +205,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 	case Component::MATERIAL:
 		if (existing_component != nullptr)
 		{
-			LOG("Error adding component: Already a material in %c", name.c_str());
+			APPLOG("Error adding component: Already a material in %c", name.c_str());
 		}
 		else
 		{

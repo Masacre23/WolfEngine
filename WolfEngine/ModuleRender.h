@@ -3,8 +3,7 @@
 
 #include "Module.h"
 #include "SDL/include/SDL_video.h"
-#include "MathGeoLib/src/Math/float3.h"
-#include "MathGeoLib/src/Geometry/Frustum.h"
+#include "Math.h"
 
 #define MODULE_RENDER "ModuleRender"
 #define RENDER_SECTION "Config.Modules.Render"
