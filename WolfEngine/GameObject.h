@@ -56,7 +56,8 @@ private:
 	void RecursiveUpdateTransforms(const float4x4& parent);
 
 public:
-	OBB transfom_bbox;
+	AABB initial_bbox;
+	OBB transform_bbox;
 	AABB bbox;
 	std::string name = "GameObject";
 	std::vector<Component*> components;

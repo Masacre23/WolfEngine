@@ -39,6 +39,8 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
+	transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
+	bbox.SetFrom(transform_bbox);
 	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
 		if ((*it)->IsActive())
 			(*it)->OnUpdate();
@@ -56,8 +58,8 @@ void GameObject::Draw() const
 
 		if (selected)
 		{
-			//App->renderer->DrawBoundingBox(bbox, Colors::Green);
-			App->renderer->DrawBoundingOBBBox(transfom_bbox, Colors::Blue);
+			App->renderer->DrawBoundingBox(bbox, Colors::Green);
+			App->renderer->DrawBoundingOBBBox(transform_bbox, Colors::Blue);
 		}
 			
 
