@@ -18,7 +18,7 @@ struct Weight
 struct Bone
 {
 	aiString name;
-	const GameObject* bone_object = nullptr;
+	GameObject* bone_object = nullptr;
 	Weight* weights = nullptr;
 	unsigned num_weights = 0;
 	float4x4 bind;
@@ -37,6 +37,8 @@ public:
 	bool OnDraw() const;
 	bool OnEditor();
 
+	void DrawNormals() const;
+
 public:
 	aiString folder_path;
 
@@ -51,8 +53,8 @@ private:
 	bool has_tex_coords = false;
 	float* tex_coords = nullptr;
 	bool has_normals = false;
-	float* normals_bind = nullptr;
-	float* normals = nullptr;
+	float3* normals_bind = nullptr;
+	float3* normals = nullptr;
 	unsigned num_vertices = 0;
 	unsigned* indices = nullptr;
 	unsigned num_indices = 0;

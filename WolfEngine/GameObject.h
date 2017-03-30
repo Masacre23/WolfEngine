@@ -34,7 +34,7 @@ public:
 	int GetNumChilds() const { return childs.size(); }
 	const Component* GetComponent(Component::Type type) const;
 	void GetComponents(Component::Type type, std::vector<Component*>& components) const;
-	const GameObject* FindByName(const std::string& name) const;
+	GameObject* FindByName(const std::string& name) const;
 
 	bool IsActive() const { return active; }
 
@@ -70,6 +70,7 @@ public:
 
 	bool selected = false;
 	bool active = true;
+	bool is_bone = false;
 
 	GameObject* root = nullptr;
 

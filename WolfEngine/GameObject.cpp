@@ -27,7 +27,7 @@ GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::s
 	App->time_controller->gameobjects.push_back(this);
 
 	//Init BoundingBox (in case some GameObjects don't have a MeshComponent)
-	bbox.SetNegativeInfinity();
+	initial_bbox.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()
@@ -44,12 +44,15 @@ bool GameObject::Update()
 {
 	transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
 	bbox.SetFrom(transform_bbox);
-	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
-		if ((*it)->IsActive())
-			(*it)->OnUpdate();
-	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
-		if ((*it)->IsActive())
-			(*it)->Update();
+	if (App->camera->InsideCulling(bbox))
+	{
+		for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
+			if ((*it)->IsActive())
+				(*it)->OnUpdate();
+		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
+			if ((*it)->IsActive())
+				(*it)->Update();
+	}
 	return true;
 }
 
@@ -64,8 +67,6 @@ void GameObject::Draw() const
 			App->renderer->DrawBoundingBox(bbox, Colors::Green);
 			App->renderer->DrawBoundingOBBBox(transform_bbox, Colors::Blue);
 		}
-			
-
 
 		if (transform != nullptr)
 			if (transform->IsActive())
@@ -86,11 +87,11 @@ void GameObject::Draw() const
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
+		glPopMatrix();
+
 		const Component* camera = GetComponent(Component::Type::CAMERA);
 		if (camera != nullptr)
 			camera->OnDraw();
-
-		glPopMatrix();
 
 		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 			if ((*it)->IsActive())
@@ -116,18 +117,21 @@ void GameObject::DrawHierarchy() const
 
 	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
 	{
-		if ((*it)->IsActive())
+		if ((*it)->IsActive() && (*it)->is_bone)
 		{
 			float3 child_transform = (*it)->transform->GetPosition();
 			glBegin(GL_LINES);
 			glVertex3f(0.0f, 0.0f, 0.0f);
 			glVertex3f(child_transform.x, child_transform.y, child_transform.z);
 			glEnd();
-			(*it)->RecursiveDrawHierarchy();
 		}	
 	}
 
 	glPopMatrix();
+
+	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
+		if ((*it)->IsActive())
+			(*it)->RecursiveDrawHierarchy();
 
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glDisable(GL_COLOR_MATERIAL);
@@ -145,15 +149,21 @@ void GameObject::RecursiveDrawHierarchy() const
 
 	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
 	{
-		float3 child_transform = (*it)->transform->GetPosition();
-		glBegin(GL_LINES);
-		glVertex3f(0.0f, 0.0f, 0.0f);
-		glVertex3f(child_transform.x, child_transform.y, child_transform.z);
-		glEnd();
-		(*it)->RecursiveDrawHierarchy();
+		if ((*it)->IsActive())
+		{
+			float3 child_transform = (*it)->transform->GetPosition();
+			glBegin(GL_LINES);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(child_transform.x, child_transform.y, child_transform.z);
+			glEnd();
+		}
 	}
 
 	glPopMatrix();	
+
+	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
+		if ((*it)->IsActive())
+			(*it)->RecursiveDrawHierarchy();
 }
 
 void GameObject::SetParent(GameObject * parent)
@@ -266,9 +276,9 @@ void GameObject::GetComponents(Component::Type type, std::vector<Component*>& co
 	}
 }
 
-const GameObject* GameObject::FindByName(const std::string& name) const
+GameObject* GameObject::FindByName(const std::string& name) const
 {
-	const GameObject* ret = nullptr;
+	GameObject* ret = nullptr;
 
 	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); it++)
 	{
