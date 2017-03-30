@@ -31,6 +31,7 @@ public:
 
 	void DrawCube(unsigned int texture, float3 transform = { 0, 0, 0 }, float3 scale = { 1, 1, 1 }, float angle = 0, float3 rotation = { 0, 0, 0 });
 	void DrawBoundingBox(const AABB& bbox, const Color& color);
+	void DrawBoundingOBBBox(const OBB & bbox, const Color & color);
 	void DrawFrustum(const Frustum& frustum, const Color& color);
 	void DrawAxis();
 

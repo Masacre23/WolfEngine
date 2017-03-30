@@ -39,7 +39,6 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
-	//bbox.TransformAsAABB(GetGlobalTransformMatrix());
 	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
 		if ((*it)->IsActive())
 			(*it)->OnUpdate();
@@ -56,7 +55,11 @@ void GameObject::Draw() const
 		glPushMatrix();
 
 		if (selected)
-			App->renderer->DrawBoundingBox(bbox, Colors::Green);
+		{
+			//App->renderer->DrawBoundingBox(bbox, Colors::Green);
+			App->renderer->DrawBoundingOBBBox(transfom_bbox, Colors::Blue);
+		}
+			
 
 
 		if (transform != nullptr)

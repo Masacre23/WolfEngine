@@ -54,6 +54,7 @@ private:
 	void RecursiveDrawHierarchy() const;
 
 public:
+	OBB transfom_bbox;
 	AABB bbox;
 	std::string name = "GameObject";
 	std::vector<Component*> components;
