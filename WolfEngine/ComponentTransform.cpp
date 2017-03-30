@@ -9,10 +9,18 @@
 ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
 {
 	rotation_euler = rotation.ToEulerXYZ().Abs();
+	RecalculateLocalTransform();
 }
 
 ComponentTransform::~ComponentTransform()
 {
+}
+
+const float4x4& ComponentTransform::UpdateTransform(const float4x4& parent)
+{
+	global_transform = parent * local_transform;
+
+	return global_transform;
 }
 
 void ComponentTransform::Load(const float3& position, const float3& scale, const Quat& rotation)
@@ -41,7 +49,7 @@ bool ComponentTransform::OnUpdate()
 
 bool ComponentTransform::OnDraw() const
 {
-	float* transform = local_transform.Transposed().ptr();
+	float* transform = global_transform.Transposed().ptr();
 	glMultMatrixf(transform);
 	
 	return true;

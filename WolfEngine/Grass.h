@@ -11,7 +11,7 @@ class Grass
 {
 public:
 	struct CompareDepth {
-		bool operator()(Billboard* b, Billboard* b2) { return (b->position - App->camera->GetPosition()).Length() < (b2->position - App->camera->GetPosition()).Length(); }
+		bool operator()(Billboard* b, Billboard* b2) { return (b->position - App->camera->GetPosition()).Length() > (b2->position - App->camera->GetPosition()).Length(); }
 	};
 
 	Grass(int lines, int cols);

@@ -82,11 +82,12 @@ void GameObject::Draw() const
 		if (camera != nullptr)
 			camera->OnDraw();
 
+		glPopMatrix();
+
 		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 			if ((*it)->IsActive())
 				(*it)->Draw();
 
-		glPopMatrix();
 	}
 }
 
@@ -322,35 +323,27 @@ void GameObject::ChangeAnim(const char* name, unsigned int duration)
 	((ComponentAnim*)component_anim)->BlendTo(name, duration);
 }
 
-void GameObject::RecursiveGetGlobalTransformMatrix(float4x4& global_transform) const
+void GameObject::UpdateGlobalTransforms()
 {
-	if (parent != nullptr)
-	{
-		float4x4 parent_transform = float4x4::identity;
-		parent->RecursiveGetGlobalTransformMatrix(parent_transform);
-		global_transform = global_transform * parent_transform;
-	}
-	if (transform != nullptr)
-	{
-		global_transform = global_transform * transform->GetLocalTransformMatrix();
-	}
+	float4x4 global = transform->GetGlobalTransformMatrix();
+
+	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->RecursiveUpdateTransforms(global);
 }
 
-void GameObject::RecursiveGetBoneGlobalTransformMatrix(float4x4& global_transform) const
+void GameObject::RecursiveUpdateTransforms(const float4x4& parent)
 {
-	if (parent != nullptr && parent != root)
-	{
-		float4x4 parent_transform = float4x4::identity;
-		parent->RecursiveGetBoneGlobalTransformMatrix(parent_transform);
-		global_transform = global_transform * parent_transform;
-	}
-	if (transform != nullptr)
-	{
-		global_transform = global_transform * transform->GetLocalTransformMatrix();
-	}
-}
+	float4x4 global = transform->UpdateTransform(parent);
 
+	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->RecursiveUpdateTransforms(global);
+}
 const float4x4& GameObject::GetLocalTransformMatrix() const
 {
 	return transform->GetLocalTransformMatrix();
+}
+
+const float4x4 & GameObject::GetGlobalTransformMatrix() const
+{
+	return transform->GetGlobalTransformMatrix();
 }

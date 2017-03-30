@@ -34,6 +34,8 @@ update_status ModuleLevel::Update(float dt)
 {
 	root->Update();
 
+	root->UpdateGlobalTransforms();
+
 	return UPDATE_CONTINUE;
 }
 

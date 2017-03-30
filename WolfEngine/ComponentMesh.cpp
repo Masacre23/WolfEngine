@@ -156,16 +156,13 @@ bool ComponentMesh::OnUpdate()
 
 		for (int i = 0; i < num_bones; i++)
 		{
-			animation_transform = float4x4::identity;
-			bones[i].bone_object->RecursiveGetBoneGlobalTransformMatrix(animation_transform);
+			animation_transform = bones[i].bone_object->GetGlobalTransformMatrix();
+			animation_transform = bones[i].bone_object->root->GetLocalTransformMatrix().Inverted() * animation_transform;
 			animation_transform = animation_transform * bones[i].bind;
 
 			for (int j = 0; j < bones[i].num_weights; j++)
 			{
 				vertices[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
-
-				/*animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]);
-				vertices[bones[i].weights[j].vertex] = vertices_bind[bones[i].weights[j].vertex];*/
 
 				/*if (has_normals)
 				{

@@ -41,7 +41,7 @@ bool ModuleSceneIni::Start()
 	if (camera != nullptr)
 	{
 		ComponentCamera* frustum_cam = (ComponentCamera*) camera->CreateComponent(Component::Type::CAMERA);
-		App->camera->frustum_camera = frustum_cam;
+		//App->camera->frustum_camera = frustum_cam;
 	}
 
 	//AABB bbox = AABB();
@@ -50,9 +50,9 @@ bool ModuleSceneIni::Start()
 
 	//grass = new Billboard(aiString("Resources/billboardgrass.png"), {0.0f, 0.0f, 0.0f}, 0.5, 0.5);
 
-	/*grass = new Grass(10, 10);
+	grass = new Grass(10, 10);
 
-	grass->Start();*/
+	grass->Start();
 
 	return res;
 }
