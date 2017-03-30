@@ -18,6 +18,7 @@ class ModuleTextures;
 class ModuleLevel;
 class ModuleAnimations;
 class ModuleAudio;
+class ModuleTimeController;
 
 class ModuleEditor;
 class ModuleSceneIni;
@@ -44,6 +45,7 @@ public:
 	ModuleCamera* camera;
 	ModuleTextures* textures;
 	ModuleAudio* audio;
+	ModuleTimeController* time_controller;
 	
 	ModuleEditor* editor;
 	ModuleSceneIni* scene_ini;

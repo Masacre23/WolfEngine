@@ -12,6 +12,7 @@
 #include "ModuleAnimations.h"
 #include "ModuleLevel.h"
 #include "ModuleRender.h"
+#include "ModuleTimeController.h"
 #include "OpenGL.h"
 #include "Color.h"
 
@@ -22,6 +23,8 @@ GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::s
 
 	SetParent(parent);
 	components.push_back(transform = new ComponentTransform(this));
+
+	App->time_controller->gameobjects.push_back(this);
 
 	//Init BoundingBox (in case some GameObjects don't have a MeshComponent)
 	bbox.SetNegativeInfinity();
@@ -39,7 +42,8 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
-	//bbox.TransformAsAABB(GetGlobalTransformMatrix());
+	transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
+	bbox.SetFrom(transform_bbox);
 	if (App->camera->InsideCulling(bbox))
 	{
 		for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
@@ -49,7 +53,6 @@ bool GameObject::Update()
 			if ((*it)->IsActive())
 				(*it)->Update();
 	}
-	
 	return true;
 }
 
@@ -60,7 +63,11 @@ void GameObject::Draw() const
 		glPushMatrix();
 
 		if (selected)
+		{
 			App->renderer->DrawBoundingBox(bbox, Colors::Green);
+			App->renderer->DrawBoundingOBBBox(transform_bbox, Colors::Blue);
+		}
+			
 
 
 		if (transform != nullptr)

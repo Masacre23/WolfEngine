@@ -61,6 +61,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 	//Creating BoundingBox from vertices points
 	parent->bbox.SetNegativeInfinity();
 	parent->bbox.Enclose((float3*)vertices, num_vertices);
+	parent->initial_bbox = parent->bbox;
 
 	has_normals = mesh->HasNormals();
 	if (has_normals) 

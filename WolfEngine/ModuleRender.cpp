@@ -271,6 +271,14 @@ void ModuleRender::DrawBoundingBox(const AABB& bbox, const Color& color)
 	DrawParallepiped(corners, color);
 }
 
+void ModuleRender::DrawBoundingOBBBox(const OBB& bbox, const Color& color)
+{
+	float3 corners[8];
+	bbox.GetCornerPoints(corners);
+
+	DrawParallepiped(corners, color);
+}
+
 void ModuleRender::DrawFrustum(const Frustum& frustum, const Color& color)
 {
 	float3 corners[8];

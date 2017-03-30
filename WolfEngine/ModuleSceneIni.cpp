@@ -91,7 +91,7 @@ update_status ModuleSceneIni::Update(float dt)
 	//quad_tree->Draw();
 
 	//grass->ComputeQuad(App->camera->GetPosition());
-	//grass->Draw();
+	grass->Draw();
 
 	return UPDATE_CONTINUE;
 }

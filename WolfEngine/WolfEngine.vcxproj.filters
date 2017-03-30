@@ -147,6 +147,9 @@
     <ClCompile Include="Billboard.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleTimeController.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="Billboard.h">
       <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleTimeController.h">
+      <Filter>Core Modules</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
