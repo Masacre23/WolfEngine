@@ -30,6 +30,7 @@ private:
 public:
 	float4x4 local_transform = float4x4::identity;
 	float4x4 backup_local_transform = float4x4::identity;
+	float4x4 global_transform = float4x4::identity;
 
 private:
 	float3 position = float3::zero;
