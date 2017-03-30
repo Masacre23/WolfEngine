@@ -60,6 +60,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 	//Creating BoundingBox from vertices points
 	parent->bbox.SetNegativeInfinity();
 	parent->bbox.Enclose((float3*)vertices, num_vertices);
+	parent->transfom_bbox = parent->bbox.ToOBB();
 
 	has_normals = mesh->HasNormals();
 	if (has_normals) 
@@ -156,25 +157,13 @@ bool ComponentMesh::OnUpdate()
 
 		for (int i = 0; i < num_bones; i++)
 		{
-			animation_transform = float4x4::identity;
-			bones[i].bone_object->RecursiveGetBoneGlobalTransformMatrix(animation_transform);
+			animation_transform = bones[i].bone_object->GetGlobalTransformMatrix();
+			animation_transform = bones[i].bone_object->root->GetLocalTransformMatrix().Inverted() * animation_transform;
 			animation_transform = animation_transform * bones[i].bind;
 
 			for (int j = 0; j < bones[i].num_weights; j++)
 			{
 				vertices[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
-
-				/*animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]);
-				vertices[bones[i].weights[j].vertex] = vertices_bind[bones[i].weights[j].vertex];*/
-
-				/*if (has_normals)
-				{
-					float3 normals_end = animation_transform.TransformPos(float3(&normals_bind[3 * index])) * (*it)->weights[j].weight;
-
-					normals[3 * index] += normals_end.x;
-					normals[3 * index + 1] += normals_end.y;
-					normals[3 * index + 2] += normals_end.z;
-				}*/
 			}
 		}
 	}
