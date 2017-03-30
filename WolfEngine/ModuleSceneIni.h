@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Globals.h"
+#include <vector>
 
 class GameObject;
 class MyQuadTree;
@@ -20,6 +21,7 @@ public:
 
 private:
 	GameObject* pilot = nullptr;
+	std::vector<GameObject*> empty_game_objects;
 	const char* anim_idle = "ArmyPilot_Idle";
 	const char* anim_walk = "ArmyPilot_Walk";
 	const char* anim_run = "ArmyPilot_Run_Forwards";

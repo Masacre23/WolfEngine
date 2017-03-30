@@ -43,6 +43,7 @@ public:
 	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadAnim(const char * name, const char * file);
 	void LoadBones();
+	void SetAABB(AABB box);
 
 	void ChangeAnim(const char* name, unsigned int duration);
 

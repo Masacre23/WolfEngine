@@ -325,6 +325,13 @@ void GameObject::LoadBones()
 		(*it)->LoadBones();
 }
 
+void GameObject::SetAABB(AABB box)
+{
+	initial_bbox = box;
+	transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
+	bbox.SetFrom(transform_bbox);
+}
+
 void GameObject::ChangeAnim(const char* name, unsigned int duration)
 {
 	const Component* component_anim = GetComponent(Component::Type::ANIMATION);

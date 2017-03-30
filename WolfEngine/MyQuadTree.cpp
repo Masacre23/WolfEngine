@@ -10,6 +10,7 @@ MyQuadTree::MyQuadTree(AABB bbox)
 {
 	root = new QuadNode();
 	root->limit = bbox;
+	root->bucket = new GameObject*[BUCKET_SPACE];
 }
 
 MyQuadTree::~MyQuadTree()

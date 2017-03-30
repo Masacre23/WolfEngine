@@ -1,4 +1,4 @@
-#ifndef MYQUADTREE_H
+ #ifndef MYQUADTREE_H
 #define MYQUADTREE_H
 
 #include "Math.h"
