@@ -46,12 +46,14 @@ public:
 
 	void ChangeAnim(const char* name, unsigned int duration);
 
-	void RecursiveGetGlobalTransformMatrix(float4x4& global_transform) const;
-	void RecursiveGetBoneGlobalTransformMatrix(float4x4& global_transform) const;
+	void UpdateGlobalTransforms();
+
 	const float4x4& GetLocalTransformMatrix() const;
+	const float4x4& GetGlobalTransformMatrix() const;
 
 private:
 	void RecursiveDrawHierarchy() const;
+	void RecursiveUpdateTransforms(const float4x4& parent);
 
 public:
 	OBB transfom_bbox;

@@ -157,8 +157,8 @@ bool ComponentMesh::OnUpdate()
 
 		for (int i = 0; i < num_bones; i++)
 		{
-			animation_transform = float4x4::identity;
-			bones[i].bone_object->RecursiveGetBoneGlobalTransformMatrix(animation_transform);
+			animation_transform = bones[i].bone_object->GetGlobalTransformMatrix();
+			animation_transform = bones[i].bone_object->root->GetLocalTransformMatrix().Inverted() * animation_transform;
 			animation_transform = animation_transform * bones[i].bind;
 
 			for (int j = 0; j < bones[i].num_weights; j++)
