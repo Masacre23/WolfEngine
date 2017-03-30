@@ -27,7 +27,7 @@ GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::s
 	App->time_controller->gameobjects.push_back(this);
 
 	//Init BoundingBox (in case some GameObjects don't have a MeshComponent)
-	bbox.SetNegativeInfinity();
+	initial_bbox.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()
@@ -67,8 +67,6 @@ void GameObject::Draw() const
 			App->renderer->DrawBoundingBox(bbox, Colors::Green);
 			App->renderer->DrawBoundingOBBBox(transform_bbox, Colors::Blue);
 		}
-			
-
 
 		if (transform != nullptr)
 			if (transform->IsActive())

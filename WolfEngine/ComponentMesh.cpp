@@ -59,9 +59,8 @@ void ComponentMesh::Load(aiMesh* mesh)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, vertices, GL_STATIC_DRAW);
 
 	//Creating BoundingBox from vertices points
-	parent->bbox.SetNegativeInfinity();
-	parent->bbox.Enclose((float3*)vertices, num_vertices);
-	parent->initial_bbox = parent->bbox;
+	parent->initial_bbox.SetNegativeInfinity();
+	parent->initial_bbox.Enclose((float3*)vertices, num_vertices);
 
 	has_normals = mesh->HasNormals();
 	if (has_normals) 
