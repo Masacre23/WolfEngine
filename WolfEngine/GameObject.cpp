@@ -12,6 +12,7 @@
 #include "ModuleAnimations.h"
 #include "ModuleLevel.h"
 #include "ModuleRender.h"
+#include "ModuleTimeController.h"
 #include "OpenGL.h"
 #include "Color.h"
 
@@ -22,6 +23,8 @@ GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::s
 
 	SetParent(parent);
 	components.push_back(transform = new ComponentTransform(this));
+
+	App->time_controller->gameobjects.push_back(this);
 
 	//Init BoundingBox (in case some GameObjects don't have a MeshComponent)
 	bbox.SetNegativeInfinity();

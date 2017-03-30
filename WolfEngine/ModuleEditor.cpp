@@ -3,6 +3,7 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleLevel.h"
+#include "ModuleTimeController.h"
 #include "GameObject.h"
 #include "Panel.h"
 #include "PanelInterface.h"
@@ -111,6 +112,18 @@ update_status ModuleEditor::Update(float dt)
 
 	if (console->active)
 		console->Draw();
+
+	ImGui::Begin("", new bool(true), ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_ShowBorders);
+	if (ImGui::Button("Play"))
+	{
+		App->time_controller->Play();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Stop"))
+	{
+		App->time_controller->Stop();
+	}
+	ImGui::End();
 
 	return UPDATE_CONTINUE;
 }

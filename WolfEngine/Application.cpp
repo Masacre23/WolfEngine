@@ -11,6 +11,7 @@
 #include "TimerUs.h"
 #include "ModuleSceneIni.h"
 #include "ModuleEditor.h"
+#include "ModuleTimeController.h"
 
 Application::Application()
 {
@@ -30,6 +31,7 @@ Application::Application()
 	modules.push_back(camera = new ModuleCamera());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
+	modules.push_back(time_controller = new ModuleTimeController());
 
 	modules.push_back(scene_ini = new ModuleSceneIni());
 
