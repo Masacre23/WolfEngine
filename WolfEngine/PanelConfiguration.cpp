@@ -21,7 +21,7 @@ PanelConfiguration::~PanelConfiguration()
 
 void PanelConfiguration::Draw()
 {
-	ImGui::Begin("Configuration", &active);
+	ImGui::Begin("Configuration", &active, ImGuiWindowFlags_ShowBorders);
 	ImGui::Text("Options");
 
 	if (ImGui::CollapsingHeader("Application"))

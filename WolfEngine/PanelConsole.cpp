@@ -11,7 +11,7 @@ PanelConsole::~PanelConsole()
 
 void PanelConsole::Draw()
 {
-	ImGui::Begin("Console", &active);
+	ImGui::Begin("Console", &active, ImGuiWindowFlags_ShowBorders);
 	ImGui::TextUnformatted(Buf.begin());
 	if (ScrollToBottom)
 		ImGui::SetScrollHere(1.0f);

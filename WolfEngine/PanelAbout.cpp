@@ -13,7 +13,7 @@ PanelAbout::~PanelAbout()
 
 void PanelAbout::Draw()
 {
-	ImGui::Begin("About", &active);
+	ImGui::Begin("About", &active, ImGuiWindowFlags_ShowBorders);
 	ImGui::Text("Engine name: ");
 	ImGui::SameLine();
 	ImGui::TextColored(yellow, App->window->TITLE);
