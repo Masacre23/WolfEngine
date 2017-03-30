@@ -50,13 +50,16 @@ bool ModuleLevel::CleanUp()
 
 void ModuleLevel::Draw() const
 {
-	root->Draw();
-
 	//quadtree->Draw();
 
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
+	{
 		if ((*it)->IsActive())
+		{
+			(*it)->Draw();
 			(*it)->DrawHierarchy();
+		}
+	}
 }
 
 GameObject* ModuleLevel::CreateGameObject(const std::string& name, GameObject* parent, GameObject* root_object)

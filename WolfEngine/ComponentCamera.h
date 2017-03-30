@@ -22,14 +22,14 @@ public:
 
 	void LookAt(const float3& position);
 
+	bool IsInsideFrustum(const AABB& box) const;
+
 	float* GetProjectionMatrix() const;
 	float* GetViewMatrix() const;
 
 public:
 	Frustum* frustum;
 	bool frustum_culling = false;
-
-private:
 
 };
 

@@ -8,6 +8,7 @@
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include "Application.h"
+#include "ModuleCamera.h"
 #include "ModuleAnimations.h"
 #include "ModuleLevel.h"
 #include "ModuleRender.h"
@@ -50,41 +51,43 @@ bool GameObject::Update()
 
 void GameObject::Draw() const
 {
-	glPushMatrix();
+	if (App->camera->InsideCulling(bbox))
+	{
+		glPushMatrix();
 
-	if (selected)
-		App->renderer->DrawBoundingBox(bbox, Colors::Green);
-		
+		if (selected)
+			App->renderer->DrawBoundingBox(bbox, Colors::Green);
 
-	if (transform != nullptr)
-		if (transform->IsActive())
-			transform->OnDraw();
-	
-	if (selected)
-		App->renderer->DrawAxis();
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+		if (transform != nullptr)
+			if (transform->IsActive())
+				transform->OnDraw();
 
-	if (material != nullptr)
-		if (material->IsActive())
-			material->OnDraw();
+		if (selected)
+			App->renderer->DrawAxis();
 
-	if (mesh != nullptr)
-		if (mesh->IsActive())
-			mesh->OnDraw();
+		glBindTexture(GL_TEXTURE_2D, 0);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+		if (material != nullptr)
+			if (material->IsActive())
+				material->OnDraw();
 
-	const Component* camera = GetComponent(Component::Type::CAMERA);
-	if (camera != nullptr)
-		camera->OnDraw();
+		if (mesh != nullptr)
+			if (mesh->IsActive())
+				mesh->OnDraw();
 
-	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
-		if ((*it)->IsActive())
-			(*it)->Draw();
+		glBindTexture(GL_TEXTURE_2D, 0);
 
-	glPopMatrix();
+		const Component* camera = GetComponent(Component::Type::CAMERA);
+		if (camera != nullptr)
+			camera->OnDraw();
 
+		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
+			if ((*it)->IsActive())
+				(*it)->Draw();
+
+		glPopMatrix();
+	}
 }
 
 void GameObject::DrawHierarchy() const

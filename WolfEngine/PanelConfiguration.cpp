@@ -65,6 +65,8 @@ void PanelConfiguration::Draw()
 	{
 		ComponentCamera* editor_camera = App->camera->editor_camera;
 
+		ImGui::Checkbox("Frustum culling", &editor_camera->frustum_culling);
+
 		if (ImGui::Button("Default camera configuration"))
 			App->camera->SetupFrustum(editor_camera);
 

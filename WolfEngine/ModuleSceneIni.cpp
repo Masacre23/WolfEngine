@@ -37,15 +37,16 @@ bool ModuleSceneIni::Start()
 		App->animations->Load("ArmyPilot_Walk", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Walk.fbx");
 	}	
 
-	/*GameObject* camera = App->level->CreateGameObject("TestCamera");
+	GameObject* camera = App->level->CreateGameObject("TestCamera");
 	if (camera != nullptr)
 	{
-		camera->CreateComponent(Component::Type::CAMERA);
+		ComponentCamera* frustum_cam = (ComponentCamera*) camera->CreateComponent(Component::Type::CAMERA);
+		App->camera->frustum_camera = frustum_cam;
 	}
 
-	AABB bbox = AABB();
-	bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(50.0f, 50.0f, 50.0f));
-	quad_tree = new MyQuadTree(bbox);*/
+	//AABB bbox = AABB();
+	//bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(50.0f, 50.0f, 50.0f));
+	//quad_tree = new MyQuadTree(bbox);
 
 	//grass = new Billboard(aiString("Resources/billboardgrass.png"), {0.0f, 0.0f, 0.0f}, 0.5, 0.5);
 

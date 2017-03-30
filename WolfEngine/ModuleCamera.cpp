@@ -20,7 +20,7 @@ bool ModuleCamera::Init()
 	editor_camera = new ComponentCamera();
 	SetupFrustum(editor_camera);
 
-	main_camera = editor_camera;
+	frustum_camera = editor_camera;
 
 	return true;
 }
@@ -137,6 +137,14 @@ float* ModuleCamera::GetViewMatrix() const
 float3 ModuleCamera::GetPosition() const
 {
 	return editor_camera->frustum->Pos();
+}
+
+bool ModuleCamera::InsideCulling(const AABB& box) const
+{
+	if (frustum_camera->frustum_culling)
+		return frustum_camera->IsInsideFrustum(box);
+	else
+		return true;
 }
 
 void ModuleCamera::SetupFrustum(ComponentCamera* camera)

@@ -31,7 +31,13 @@ public:
 	float* GetViewMatrix() const;
 	float3 GetPosition() const;
 
+	bool InsideCulling(const AABB& box) const;
+
 	void SetupFrustum(ComponentCamera* camera);
+
+public:
+	ComponentCamera* editor_camera = nullptr;
+	ComponentCamera* frustum_camera = nullptr;
 
 private:
 	float NEARPLANE = 0.1f;
@@ -42,10 +48,7 @@ private:
 	float SPEED_ROTATION = 0.5f;
 	float SPEED_TRANSLATION = 1.0f;
 	float SPEED_ZOOM = 10.0f;
-	
-public:
-	ComponentCamera* editor_camera = nullptr;
-	ComponentCamera* main_camera = nullptr;
+
 };
 
 #endif // !MODULECAMERA_H

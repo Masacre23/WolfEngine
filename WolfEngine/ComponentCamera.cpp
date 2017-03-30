@@ -51,6 +51,8 @@ bool ComponentCamera::OnEditor()
 	{
 		ImGui::Checkbox("Active", &enable);
 
+		ImGui::Checkbox("Frustum culling", &frustum_culling);
+
 		if (ImGui::Button("Default camera configuration"))
 			App->camera->SetupFrustum(this);
 
@@ -116,6 +118,25 @@ void ComponentCamera::LookAt(const float3 & position)
 
 	frustum->SetFront(matrix.MulDir(frustum->Front()).Normalized());
 	frustum->SetUp(matrix.MulDir(frustum->Up()).Normalized());
+}
+
+bool ComponentCamera::IsInsideFrustum(const AABB& box) const
+{
+	float3 corners[8];
+	box.GetCornerPoints(corners);
+
+	Plane planes[6];
+	frustum->GetPlanes(planes);
+
+	for (int i = 0; i < 6; i++)
+	{
+		int out = 0;
+		for (int j = 0; j < 8; j++)
+			out += planes[i].IsOnPositiveSide(corners[j]);
+		if (out == 8)
+			return false;
+	}
+	return true;
 }
 
 float* ComponentCamera::GetProjectionMatrix() const
