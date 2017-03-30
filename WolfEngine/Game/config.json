@@ -5,7 +5,7 @@
 			"Width" : 1200, 
 			"Height" : 800
 			},
-		"FpsCap": 60
+		"FpsCap": 200
 	},
 	"Modules" : {
 		"Input" : {
@@ -20,7 +20,7 @@
 			"TitleWithInfoLength" : 200		
 		},
 		"Render" : { 
-			"Vsync" : true,
+			"Vsync" : false,
 			"DefaultBlitSpeed" : 1
 		},
 		"EditorCamera" : {
@@ -29,8 +29,8 @@
 			"VerticalFOV" : 59.0,
 			"AspectRatio" : 1.5,
 			"RotationSpeed" : 0.5,
-			"TranslationSpeed" : 1.0,
-			"ZoomSpeedFactor" : 10,
+			"TranslationSpeed" : 10.0,
+			"ZoomSpeedFactor" : 20,
 			"InitialPosition" : [-1.0, 2.0, 4.0]
 		},
 		"Audio" : {

@@ -4,6 +4,7 @@
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
 #include "GameObject.h"
+#include "Color.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
 
@@ -55,7 +56,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 
 	glGenBuffers(1, (GLuint*) &(vertices_id));
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, vertices, GL_STATIC_DRAW);
 
 	//Creating BoundingBox from vertices points
 	parent->bbox.SetNegativeInfinity();
@@ -64,20 +65,23 @@ void ComponentMesh::Load(aiMesh* mesh)
 	has_normals = mesh->HasNormals();
 	if (has_normals) 
 	{
-		normals = new float[3 * num_vertices];
-		normals_bind = new float[3 * num_vertices];
+		normals = new float3[num_vertices];
+		normals_bind = new float3[num_vertices];
 		c = 0;
 		for (size_t i = 0; i < num_vertices; ++i)
 			for (size_t j = 0; j < 3; ++j)
-				normals[c++] = mesh->mNormals[i][j];
+			{
+				normals[i][j] = mesh->mNormals[i][j];
+				c++;
+			}		
 		if (c != 3 * mesh->mNumVertices)
 			APPLOG("Error loading meshes: Incorrect number of normals");
 
-		memcpy(normals_bind, normals, 3 * num_vertices * sizeof(float));
+		memcpy(normals_bind, normals, num_vertices * sizeof(float3));
 
 		glGenBuffers(1, (GLuint*) &(normals_id));
 		glBindBuffer(GL_ARRAY_BUFFER, normals_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, normals, GL_STATIC_DRAW);
 	}
 
 	has_tex_coords = mesh->HasTextureCoords(0);
@@ -139,7 +143,13 @@ void ComponentMesh::LoadBones()
 	{
 		for (int i = 0; i < num_bones; i++)
 		{
-			bones[i].bone_object = parent->root->FindByName(bones[i].name.data);
+			GameObject* bone = parent->root->FindByName(bones[i].name.data);
+			if (bone != nullptr)
+			{
+				bones[i].bone_object = bone;
+				bones[i].bone_object->is_bone = true;
+			}
+			
 		}
 	}
 }
@@ -160,18 +170,14 @@ bool ComponentMesh::OnUpdate()
 			animation_transform = bones[i].bone_object->root->GetLocalTransformMatrix().Inverted() * animation_transform;
 			animation_transform = animation_transform * bones[i].bind;
 
+			float3x3 rotation = animation_transform.Float3x3Part();
+
 			for (int j = 0; j < bones[i].num_weights; j++)
 			{
 				vertices[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
 
-				/*if (has_normals)
-				{
-					float3 normals_end = animation_transform.TransformPos(float3(&normals_bind[3 * index])) * (*it)->weights[j].weight;
-
-					normals[3 * index] += normals_end.x;
-					normals[3 * index + 1] += normals_end.y;
-					normals[3 * index + 2] += normals_end.z;
-				}*/
+				if (has_normals)
+					normals[bones[i].weights[j].vertex] += rotation * normals_bind[bones[i].weights[j].vertex] * bones[i].weights[j].weight;
 			}
 		}
 	}
@@ -188,7 +194,7 @@ bool ComponentMesh::OnDraw() const
 		if (has_normals)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, normals_id);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices, normals, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, normals, GL_STATIC_DRAW);
 		}
 	}
 		
@@ -219,6 +225,8 @@ bool ComponentMesh::OnDraw() const
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	//DrawNormals();
+
 	return true;
 }
 
@@ -237,4 +245,24 @@ bool ComponentMesh::OnEditor()
 	}
 
 	return ImGui::IsItemClicked();
+}
+
+void ComponentMesh::DrawNormals() const
+{
+	glDisable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+
+	glColor3f(Colors::Yellow.r, Colors::Yellow.g, Colors::Yellow.b);
+
+	for (int i = 0; i < num_vertices; i++)
+	{
+		glBegin(GL_LINES);
+		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertex3f(vertices[i].x + normals[i].x, vertices[i].y + normals[i].y, vertices[i].z + normals[i].z);
+		glEnd();
+	}
+
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
 }
