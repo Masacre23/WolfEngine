@@ -27,7 +27,7 @@ bool ModuleSceneIni::Start()
 
 	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
-	/*App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	App->level->ImportScene("Resources/Models/street/", "Street.obj");
 	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
 
 	if (pilot != nullptr)
@@ -35,7 +35,7 @@ bool ModuleSceneIni::Start()
 		pilot->LoadAnim("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 		App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
 		App->animations->Load("ArmyPilot_Walk", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Walk.fbx");
-	}	*/
+	}	
 
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)
@@ -76,7 +76,7 @@ update_status ModuleSceneIni::Update(float dt)
 
 	App->level->Draw();
 
-	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		animation = (animation + 1) % 3;
 		if (animation == 0) 
@@ -85,7 +85,7 @@ update_status ModuleSceneIni::Update(float dt)
 			pilot->ChangeAnim(anim_walk, 200);
 		else
 			pilot->ChangeAnim(anim_run, 200);
-	}*/
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{

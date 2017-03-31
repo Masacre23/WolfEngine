@@ -119,10 +119,16 @@ update_status ModuleEditor::Update(float dt)
 		App->time_controller->Play();
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Stop"))
+	if (ImGui::Button("Pause"))
 	{
-		App->time_controller->Stop();
+		App->time_controller->Pause();
 	}
+	ImGui::SameLine();
+	if (ImGui::Button("Tick"))
+	{
+		App->time_controller->Tick();
+	}
+	ImGui::SliderFloat("Slower/Faster", &App->time_controller->vel, 0, 10);
 	ImGui::End();
 
 	return UPDATE_CONTINUE;

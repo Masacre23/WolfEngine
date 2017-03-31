@@ -25,13 +25,14 @@ Application::Application()
 	modules.push_back(input = new ModuleInput(parser));
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(renderer = new ModuleRender());
+	modules.push_back(camera = new ModuleCamera());
+	modules.push_back(time_controller = new ModuleTimeController());
 	modules.push_back(animations = new ModuleAnimations());
 	modules.push_back(level = new ModuleLevel());
 	modules.push_back(editor = new ModuleEditor());
-	modules.push_back(camera = new ModuleCamera());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
-	modules.push_back(time_controller = new ModuleTimeController());
+	
 
 	modules.push_back(scene_ini = new ModuleSceneIni());
 
@@ -98,22 +99,23 @@ update_status Application::Update()
 
 	// TODO 6
 	//  differential time since last frame 
-	dt = (float)update_timer.GetTimeInMs() / 1000.0f;
+	//dt = (float)update_timer.GetTimeInMs() / 1000.0f;
 	//LOG("dt: %f", dt);
 
-	update_timer.Start();
+	//update_timer.Start();
+	time_controller->UpdateDeltaTime();
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->PreUpdate(dt);
+			ret = (*it)->PreUpdate(time_controller->dt);
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->Update(dt);
+			ret = (*it)->Update(time_controller->dt);
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->PostUpdate(dt);
+			ret = (*it)->PostUpdate(time_controller->dt);
 
 	EndUpdate();
 
@@ -122,7 +124,7 @@ update_status Application::Update()
 
 void Application::EndUpdate()
 {
-	last_frame_ms = update_timer.GetTimeInMs();
+	last_frame_ms = time_controller->time->GetTimeInMs();
 
 	// TODO 4
 	// Amount of frames since startup
@@ -149,7 +151,7 @@ void Application::EndUpdate()
 	}
 	//LOG("Frames last second: %i", frames_last_sec);
 
-	App->window->SetFPStoWindow(total_frames, time_s, last_frame_ms, frames_last_sec, dt);
+	App->window->SetFPStoWindow(total_frames, time_s, last_frame_ms, frames_last_sec, time_controller->dt);
 
 	//Calculate the time for the next frame.
 	TimerUs delay_timer;

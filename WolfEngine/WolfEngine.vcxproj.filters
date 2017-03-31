@@ -164,9 +164,6 @@
     <ClInclude Include="ModuleTextures.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleWindow.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Main</Filter>
     </ClInclude>
@@ -294,6 +291,9 @@
       <Filter>Clases</Filter>
     </ClInclude>
     <ClInclude Include="ModuleTimeController.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleWindow.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
   </ItemGroup>
