@@ -27,7 +27,7 @@ bool ModuleSceneIni::Start()
 
 	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
-	App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	/*App->level->ImportScene("Resources/Models/street/", "Street.obj");
 	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
 
 	if (pilot != nullptr)
@@ -36,7 +36,7 @@ bool ModuleSceneIni::Start()
 		App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
 		App->animations->Load("ArmyPilot_Walk", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Walk.fbx");
 	}	
-
+*/
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)
 	//{
@@ -87,20 +87,21 @@ update_status ModuleSceneIni::Update(float dt)
 			pilot->ChangeAnim(anim_run, 200);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		float x = -10 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10 - -10)));
-		float z = -10 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10 - -10)));
+		float x = -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10)));
+		float z = -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10)));
 		GameObject* g = App->level->CreateGameObject("Empty");
 		empty_game_objects.push_back(g);
 		g->SetLocalTransform(float3(x, 0.0f, z), float3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f));
 		AABB box = AABB();
 		box.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(0.1f, 0.1f, 0.1f));
+		g->UpdateGlobalTransforms();
 		g->SetAABB(box);
 		quad_tree->Insert(g);
 	}
 
-	quad_tree->Draw();
+	quad_tree->Draw();*/
 
 	//grass->ComputeQuad(App->camera->GetPosition());
 	//grass->Draw();

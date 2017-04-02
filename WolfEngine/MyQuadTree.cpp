@@ -68,7 +68,7 @@ void MyQuadTree::Insert(GameObject * game_object)
 					for (int i = 0; i < 4; ++i)
 					{
 						node->children[i] = new QuadNode();
-						float3 center = float3(i%2 == 0 ? x_4:x_3_4, node->limit.CenterPoint().y, i<2 ? z_4:z_3_4);
+						float3 center = float3(node->limit.MinX() + (i%2 == 0 ? x_4:x_3_4), node->limit.CenterPoint().y, node->limit.MinZ() + (i<2 ? z_4:z_3_4));
 						node->children[i]->limit.SetFromCenterAndSize(center, size);
 						quadnodes.push_back(node->children[i]);
 						node->children[i]->bucket = new GameObject*[BUCKET_SPACE];

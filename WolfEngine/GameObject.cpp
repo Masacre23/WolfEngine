@@ -351,6 +351,7 @@ void GameObject::ChangeAnim(const char* name, unsigned int duration)
 void GameObject::UpdateGlobalTransforms()
 {
 	float4x4 global = transform->GetGlobalTransformMatrix();
+	global = transform->UpdateTransform(global);
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->RecursiveUpdateTransforms(global);
