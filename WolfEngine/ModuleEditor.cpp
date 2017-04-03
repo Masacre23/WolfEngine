@@ -128,7 +128,7 @@ update_status ModuleEditor::Update(float dt)
 	{
 		App->time_controller->Tick();
 	}
-	ImGui::SliderFloat("Slower/Faster", &App->time_controller->vel, 0, 10);
+	ImGui::SliderFloat("Slower/Faster", &App->time_controller->time_scale, 0, 10);
 	ImGui::End();
 
 	return UPDATE_CONTINUE;

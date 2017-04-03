@@ -16,7 +16,10 @@ ModuleTimeController::~ModuleTimeController()
 bool ModuleTimeController::Init()
 {
 	time = new Timer();
-	vel = 1;
+	frame_count = 0;
+	game_time = 0; 
+	time_scale = 1.0f;
+	delta_time = 0.0f;
 	Play();
 	return true;
 }
@@ -24,7 +27,7 @@ bool ModuleTimeController::Init()
 update_status ModuleTimeController::Update(float dt)
 {
 	if (state == PAUSE)
-		this->dt = 0;
+		this->delta_time = 0;
 	if (state == TICK)
 		state = PAUSE;
 	return UPDATE_CONTINUE;
@@ -64,8 +67,8 @@ void ModuleTimeController::Stop()
 
 void ModuleTimeController::UpdateDeltaTime()
 {
-	dt = (float)time->GetTimeInMs() / 1000.0f;
-	dt *= vel;
+	delta_time = (float)time->GetTimeInMs() / 1000.0f;
+	delta_time *= time_scale;
 	time->Start();
 }
 

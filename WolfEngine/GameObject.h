@@ -10,6 +10,7 @@ class Component;
 class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
+class ComponentBillboard;
 
 struct aiMesh;
 struct aiNode;
@@ -67,6 +68,7 @@ public:
 	ComponentTransform * transform = nullptr;
 	ComponentMesh* mesh = nullptr;
 	ComponentMaterial* material = nullptr;
+	ComponentBillboard* billboard = nullptr;
 
 	bool selected = false;
 	bool active = true;

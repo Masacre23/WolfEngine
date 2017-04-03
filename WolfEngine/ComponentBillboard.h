@@ -1,26 +1,28 @@
-#ifndef GRASS_H
-#define GRASS_H
+#ifndef COMPONENTBILLBOARD_H
+#define COMPONENTBILLBOARD_H
 
 #include <list>
 #include "Math.h"
 #include "Billboard.h"
 #include "Application.h"
 #include "ModuleCamera.h"
+#include "Component.h"
 
-class Grass
+class GameObject;
+
+class ComponentBillboard : public Component
 {
 public:
 	struct CompareDepth {
 		bool operator()(Billboard* b, Billboard* b2) { return (b->position - App->camera->GetPosition()).Length() > (b2->position - App->camera->GetPosition()).Length(); }
 	};
 
-	Grass(int lines, int cols);
-	~Grass();
+	ComponentBillboard(GameObject* parent, int lines, int cols);
+	~ComponentBillboard();
 
-	void Start();
-	void Draw();
-
-	//void UpdateRotation();
+	void Enable();
+	bool OnDraw()const;
+	bool OnEditor();
 
 public:
 	int lines;
@@ -29,9 +31,6 @@ public:
 
 	Billboard* billboard;
 	std::list<std::list<Billboard*>> grid;
-	/*std::vector<int> vertices;
-	std::vector<int> indices;
-	std::vector<float3> tex_coords;*/
 };
 
 #endif

@@ -99,23 +99,19 @@ update_status Application::Update()
 
 	// TODO 6
 	//  differential time since last frame 
-	//dt = (float)update_timer.GetTimeInMs() / 1000.0f;
-	//LOG("dt: %f", dt);
-
-	//update_timer.Start();
 	time_controller->UpdateDeltaTime();
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->PreUpdate(time_controller->dt);
+			ret = (*it)->PreUpdate(time_controller->delta_time);
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->Update(time_controller->dt);
+			ret = (*it)->Update(time_controller->delta_time);
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
-			ret = (*it)->PostUpdate(time_controller->dt);
+			ret = (*it)->PostUpdate(time_controller->delta_time);
 
 	EndUpdate();
 
@@ -128,13 +124,12 @@ void Application::EndUpdate()
 
 	// TODO 4
 	// Amount of frames since startup
-	total_frames++;
+	time_controller->frame_count++;
 	//LOG("Total frames: %i", total_frames);
 	frames_count++;
 
 	// Amount of time since game start
-	float time_s = ((float)app_timer.GetTimeInMs()) / 1000.0f;
-	//LOG("Time: %f s", time_s);
+	time_controller->game_time = ((float)app_timer.GetTimeInMs()) / 1000.0f;
 
 	// Average FPS for the whole game life.
 	//LOG("Average FPS: %f", ((float)total_frames) / time_s);
@@ -143,15 +138,14 @@ void Application::EndUpdate()
 	//LOG("Update time: %u ms", last_frame_ms);
 
 	// Amount of frames during the last second (the actual FPS)
-	if (time_s - prev_time > 1.0f)
+	if (time_controller->game_time - prev_time > 1.0f)
 	{
 		frames_last_sec = frames_count;
 		frames_count = 0;
-		prev_time = time_s;
+		prev_time = time_controller->game_time;
 	}
-	//LOG("Frames last second: %i", frames_last_sec);
 
-	App->window->SetFPStoWindow(total_frames, time_s, last_frame_ms, frames_last_sec, time_controller->dt);
+	App->window->SetFPStoWindow(time_controller->frame_count, time_controller->game_time, last_frame_ms, frames_last_sec, time_controller->delta_time);
 
 	//Calculate the time for the next frame.
 	TimerUs delay_timer;

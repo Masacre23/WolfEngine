@@ -4,6 +4,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
 #include "ComponentAnim.h"
+#include "ComponentBillboard.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -92,6 +93,10 @@ void GameObject::Draw() const
 		const Component* camera = GetComponent(Component::Type::CAMERA);
 		if (camera != nullptr)
 			camera->OnDraw();
+
+		if (billboard != nullptr)
+			if (billboard->IsActive())
+				billboard->OnDraw();
 
 		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 			if ((*it)->IsActive())
@@ -187,7 +192,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 5, "Update factory code");
+	static_assert(Component::Type::UNKNOWN == 6, "Update factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -240,6 +245,11 @@ Component* GameObject::CreateComponent(Component::Type type)
 		break;
 	case Component::ANIMATION:
 		ret = new ComponentAnim(this);
+		break;
+	case Component::BILLBOARD:
+		ret = new ComponentBillboard(this, 1, 1);
+		ret->Enable();
+		billboard = (ComponentBillboard*)ret;
 		break;
 	case Component::UNKNOWN:
 		break;

@@ -15,6 +15,7 @@ public:
 		MATERIAL,
 		CAMERA,
 		ANIMATION,
+		BILLBOARD,
 		UNKNOWN
 	};
 
@@ -39,4 +40,3 @@ protected:
 };
 
 #endif
-

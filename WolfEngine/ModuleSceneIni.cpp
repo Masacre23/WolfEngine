@@ -11,7 +11,6 @@
 #include "PanelInterface.h"
 #include "MyQuadTree.h"
 #include "Billboard.h"
-#include "Grass.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -27,7 +26,7 @@ bool ModuleSceneIni::Start()
 
 	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
-	/*App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	App->level->ImportScene("Resources/Models/street/", "Street.obj");
 	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae");
 
 	if (pilot != nullptr)
@@ -36,7 +35,7 @@ bool ModuleSceneIni::Start()
 		App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
 		App->animations->Load("ArmyPilot_Walk", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Walk.fbx");
 	}	
-*/
+
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)
 	//{
@@ -48,11 +47,8 @@ bool ModuleSceneIni::Start()
 	bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(10.0f, 10.0f, 10.0f));
 	quad_tree = new MyQuadTree(bbox);
 
-	//grass = new Billboard(aiString("Resources/billboardgrass.png"), {0.0f, 0.0f, 0.0f}, 0.5, 0.5);
-
-	//grass = new Grass(10, 10);
-
-	//grass->Start();
+	grass = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "grass");
+	grass->CreateComponent(Component::Type::BILLBOARD);
 
 	return res;
 }
@@ -87,7 +83,7 @@ update_status ModuleSceneIni::Update(float dt)
 			pilot->ChangeAnim(anim_run, 200);
 	}
 
-	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		float x = -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10)));
 		float z = -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10)));
@@ -100,11 +96,12 @@ update_status ModuleSceneIni::Update(float dt)
 		g->SetAABB(box);
 		quad_tree->Insert(g);
 	}
-
+	/*
 	quad_tree->Draw();*/
 
 	//grass->ComputeQuad(App->camera->GetPosition());
-	//grass->Draw();
+
+	grass->Draw();
 
 	return UPDATE_CONTINUE;
 }

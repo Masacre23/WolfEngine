@@ -57,7 +57,6 @@ public:
 private:
 	std::list<Module*> modules;
 	Timer app_timer;
-	int total_frames = 0;
 	int frames_count = 0;
 
 	Uint32 fps_cap = 60;
