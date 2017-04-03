@@ -70,18 +70,18 @@ update_status ModuleSceneIni::Update(float dt)
 	App->renderer->DrawCube(App->textures->texture_debug, { 2.0f, 0.0f, 0.0f });
 	App->renderer->DrawCube(App->textures->texture_checkers, { -2.0f, 0.0f, 0.0f });
 
-	App->level->Draw();
+	//App->level->Draw();
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		animation = (animation + 1) % 3;
-		if (animation == 0) 
-			pilot->ChangeAnim(anim_idle, 200); 
-		else if (animation == 1)
-			pilot->ChangeAnim(anim_walk, 200);
-		else
-			pilot->ChangeAnim(anim_run, 200);
-	}
+	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	//{
+	//	animation = (animation + 1) % 3;
+	//	if (animation == 0) 
+	//		pilot->ChangeAnim(anim_idle, 200); 
+	//	else if (animation == 1)
+	//		pilot->ChangeAnim(anim_walk, 200);
+	//	else
+	//		pilot->ChangeAnim(anim_run, 200);
+	//}
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
@@ -89,19 +89,20 @@ update_status ModuleSceneIni::Update(float dt)
 		float z = -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10)));
 		GameObject* g = App->level->CreateGameObject("Empty");
 		empty_game_objects.push_back(g);
-		g->SetLocalTransform(float3(x, 0.0f, z), float3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f));
+		g->SetLocalTransform(float3(x, 0.0f, z), float3(1.0f, 1.0f, 1.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f));
 		AABB box = AABB();
-		box.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(0.1f, 0.1f, 0.1f));
+		box.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(0.5f, 0.5f, 0.5f));
 		g->UpdateGlobalTransforms();
 		g->SetAABB(box);
 		quad_tree->Insert(g);
 	}
-	/*
-	quad_tree->Draw();*/
 
-	//grass->ComputeQuad(App->camera->GetPosition());
-
-	grass->Draw();
+	for(int i = 0; i < empty_game_objects.size(); i++)
+	{
+		empty_game_objects[i]->Draw();
+	}
+	
+	quad_tree->Draw();
 
 	return UPDATE_CONTINUE;
 }

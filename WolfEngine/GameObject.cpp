@@ -43,8 +43,12 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
-	transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
-	bbox.SetFrom(transform_bbox);
+	if(transform->transform_change)
+	{
+		transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
+		bbox.SetFrom(transform_bbox);
+	}
+
 	if (App->camera->InsideCulling(bbox))
 	{
 		for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
@@ -63,6 +67,7 @@ void GameObject::Draw() const
 	{
 		glPushMatrix();
 
+		App->renderer->DrawBoundingBox(bbox, Colors::Green);
 		if (selected)
 		{
 			App->renderer->DrawBoundingBox(bbox, Colors::Green);

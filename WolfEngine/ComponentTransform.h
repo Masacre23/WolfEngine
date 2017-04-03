@@ -31,10 +31,10 @@ public:
 	float4x4 local_transform = float4x4::identity;
 	float4x4 backup_local_transform = float4x4::identity;
 	float4x4 global_transform = float4x4::identity;
+	bool transform_change = false;
 
 private:
 	float3 position = float3::zero;
-	float3 backup_position = float3::zero;
 	float3 scale = float3::one;
 	Quat rotation = Quat::identity;
 	float3 rotation_euler = float3::zero;

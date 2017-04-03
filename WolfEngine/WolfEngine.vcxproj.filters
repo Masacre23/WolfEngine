@@ -148,7 +148,7 @@
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ComponentBillboard.cpp">
-      <Filter>Clases</Filter>
+      <Filter>Game Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -294,7 +294,7 @@
       <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="ComponentBillboard.h">
-      <Filter>Clases</Filter>
+      <Filter>Game Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

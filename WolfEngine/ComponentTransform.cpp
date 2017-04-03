@@ -58,7 +58,10 @@ bool ComponentTransform::OnDraw() const
 bool ComponentTransform::OnEditor()
 {
 	bool node_open = ImGui::CollapsingHeader("Transform");
-	
+	float3 last_position = position;
+	float3 last_scale = scale;
+	float3 last_rotation_euler = rotation_euler;
+
 	if (node_open)
 	{
 		ImGui::DragFloat3("Position", (float*)&position, 0.1f);
@@ -69,6 +72,8 @@ bool ComponentTransform::OnEditor()
 		rotation = Quat::FromEulerXYZ(rotation_euler[0], rotation_euler[1], rotation_euler[2]);
 
 		ImGui::DragFloat3("Scale", (float*)&scale, 0.1f);
+
+		transform_change = !(last_position.Equals(position) && last_rotation_euler.Equals(last_rotation_euler) && last_scale.Equals(last_scale));
 
 		RecalculateLocalTransform();
 	}
