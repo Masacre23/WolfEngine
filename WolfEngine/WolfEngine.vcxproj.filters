@@ -150,6 +150,9 @@
     <ClCompile Include="ComponentBillboard.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentParticleSystem.cpp">
+      <Filter>Game Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">

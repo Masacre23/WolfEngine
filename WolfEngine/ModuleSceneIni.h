@@ -26,6 +26,7 @@ private:
 	const char* anim_run = "ArmyPilot_Run_Forwards";
 	MyQuadTree* quad_tree = nullptr;
 	GameObject* grass = nullptr;
+	GameObject* rain = nullptr;
 };
 
 #endif
