@@ -28,7 +28,6 @@ public:
 	void Tick();
 	void Stop();
 	void UpdateDeltaTime();
-	float GetTime();
 	bool CleanUp();
 
 public:

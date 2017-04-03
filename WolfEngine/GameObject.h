@@ -11,6 +11,7 @@ class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
 class ComponentBillboard;
+class ComponentParticleSystem;
 
 struct aiMesh;
 struct aiNode;
@@ -69,6 +70,7 @@ public:
 	ComponentMesh* mesh = nullptr;
 	ComponentMaterial* material = nullptr;
 	ComponentBillboard* billboard = nullptr;
+	ComponentParticleSystem* particle_system = nullptr;
 
 	bool selected = false;
 	bool active = true;

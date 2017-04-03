@@ -16,6 +16,7 @@ public:
 		CAMERA,
 		ANIMATION,
 		BILLBOARD,
+		PARTICLE,
 		UNKNOWN
 	};
 

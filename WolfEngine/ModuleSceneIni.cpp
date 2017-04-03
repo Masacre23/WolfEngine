@@ -11,6 +11,7 @@
 #include "PanelInterface.h"
 #include "MyQuadTree.h"
 #include "Billboard.h"
+#include "ComponentParticleSystem.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
 {}
@@ -49,6 +50,9 @@ bool ModuleSceneIni::Start()
 
 	grass = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "grass");
 	grass->CreateComponent(Component::Type::BILLBOARD);
+
+	rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
+	rain->CreateComponent(Component::Type::PARTICLE);
 
 	return res;
 }

@@ -5,6 +5,7 @@
 #include "ComponentCamera.h"
 #include "ComponentAnim.h"
 #include "ComponentBillboard.h"
+#include "ComponentParticleSystem.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -97,6 +98,10 @@ void GameObject::Draw() const
 		if (billboard != nullptr)
 			if (billboard->IsActive())
 				billboard->OnDraw();
+
+		if(particle_system != nullptr)
+			if (particle_system->IsActive())
+				particle_system->OnDraw();
 
 		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 			if ((*it)->IsActive())
@@ -192,11 +197,11 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 6, "Update factory code");
+	static_assert(Component::Type::UNKNOWN == 7, "Update factory code");
 
 	const Component* existing_component = GetComponent(type);
 
-	Component* ret = nullptr;
+	Component* ret = nullptr; 
 
 	switch (type)
 	{
@@ -250,6 +255,11 @@ Component* GameObject::CreateComponent(Component::Type type)
 		ret = new ComponentBillboard(this, 1, 1);
 		ret->Enable();
 		billboard = (ComponentBillboard*)ret;
+		break;
+	case Component::PARTICLE:
+		ret = new ComponentParticleSystem(this);
+		particle_system = (ComponentParticleSystem*)ret;
+		particle_system->Init(10, aiVector2D(0, 0), 2, 2, "Resources/rainSprite.tga", aiVector2D(0,0));
 		break;
 	case Component::UNKNOWN:
 		break;
