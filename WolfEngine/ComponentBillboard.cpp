@@ -44,7 +44,8 @@ bool ComponentBillboard::OnDraw() const
 	//grid.back().back()->ComputeQuad(App->camera->GetPosition());
 //	grid.back().back()->Draw();
 
-	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.1f);
 	for (auto l = grid.begin(); l != grid.end(); ++l)
 	{
 		for (auto c = l->begin(); c != l->end(); ++c)
@@ -54,7 +55,7 @@ bool ComponentBillboard::OnDraw() const
 			b->Draw();
 		}
 	}
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
 
 	return true;
 }
