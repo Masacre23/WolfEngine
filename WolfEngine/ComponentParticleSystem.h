@@ -12,6 +12,7 @@ class Billboard;
 
 struct Particle
 {
+	Billboard* billboard;
 	float3 position;
 	float3 velocity;
 	unsigned lifetime;

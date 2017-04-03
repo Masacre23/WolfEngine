@@ -2,6 +2,8 @@
 #include "Billboard.h"
 #include "Application.h"
 #include "ModuleCamera.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl_gl3.h"
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject * parent) : Component(Component::Type::PARTICLE, parent)
 {
@@ -16,11 +18,11 @@ void ComponentParticleSystem::Init(unsigned max_particles, const aiVector2D & _e
 	for (int i = 0; i < max_particles; ++i)
 	{
 		Particle p = Particle();
-		p.position.x = App->camera->GetPosition().x;
-		p.position.y = App->camera->GetPosition().y;
-		p.position.z = App->camera->GetPosition().z;
+		p.position = App->camera->GetPosition();
+		p.billboard = new Billboard((aiString)texture_file, p.position, 1, 1);
+		p.lifetime = 0.1f;
+		p.velocity = float3(0,0,0);
 		particles.push_back(p);
-		billboards.push_back(Billboard((aiString)texture_file, p.position, 1, 1));
 	}
 }
 
@@ -37,13 +39,30 @@ bool ComponentParticleSystem::OnDraw()
 {
 	for (int i = 0; i < billboards.size(); ++i)
 	{
-		billboards[i].ComputeQuad(App->camera->GetPosition());
-		billboards[i].Draw();
+		particles[i].billboard->ComputeQuad(App->camera->GetPosition());
+		particles[i].billboard->Draw();
 	}
 	return false;
 }
 
 bool ComponentParticleSystem::OnEditor()
 {
-	return false;
+	if (ImGui::CollapsingHeader("Particle System"))
+	{
+		ImGui::Checkbox("Active", &enable);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Delete"))
+			this->~ComponentParticleSystem();
+
+		//ImGui::SliderInt("Lines", &lines, 1, 10);
+		//ImGui::SameLine();
+		//ImGui::SliderInt("Cols", &cols, 1, 10);
+
+		//if (ImGui::Button("Update"))
+		//	this->Enable();
+	}
+
+	return ImGui::IsItemClicked();
 }
