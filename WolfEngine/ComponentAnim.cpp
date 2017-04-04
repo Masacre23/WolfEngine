@@ -38,7 +38,7 @@ bool ComponentAnim::OnAnimationUpdate()
 			bool exits = App->animations->GetTransform(anim_id, node->name.c_str(), position, rotation);
 			if (exits)
 			{
-				node->SetLocalTransformNoScale(position, rotation);
+				node->SetLocalTransform(position, rotation);
 			}
 		}
 	}

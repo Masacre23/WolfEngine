@@ -6,11 +6,13 @@
 #include "ModuleCamera.h"
 #include "ModuleTextures.h"
 #include "ModuleEditor.h"
+#include "ModuleLevel.h"
 #include "SDL/include/SDL.h"
 #include "OpenGL.h"
 #include "Math.h"
 #include "JsonHandler.h"
 #include "Color.h"
+#include "Primitive.h"
 
 #pragma comment( lib, "Glew/libx86/glew32.lib" )
 #pragma comment (lib, "opengl32.lib")
@@ -113,7 +115,7 @@ bool ModuleRender::Init()
 
 bool ModuleRender::Start()
 {
-	LoadCubeGeometry();
+	LoadPrimitivesGeometry();
 
 	return true;
 }
@@ -142,7 +144,8 @@ update_status ModuleRender::Update(float dt)
 
 update_status ModuleRender::PostUpdate(float dt)
 {
-	App->editor->Draw();
+	/*App->level->Draw();
+	App->editor->Draw();*/
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
 	return UPDATE_CONTINUE;
@@ -171,8 +174,9 @@ void ModuleRender::ResetProjection()
 	glLoadIdentity();
 }
 
-void ModuleRender::LoadCubeGeometry()
+void ModuleRender::LoadPrimitivesGeometry()
 {
+	//Load Cube
 	float3 A = { -0.5f, -0.5f, 0.5f };
 	float3 B = { 0.5f, -0.5f, 0.5f };
 	float3 C = { -0.5f, 0.5f, 0.5f };
@@ -189,8 +193,10 @@ void ModuleRender::LoadCubeGeometry()
 
 	float normals[] = { -1,-1,1, 1,-1,1, -1,1,1, 1,1,1, -1,-1,-1, 1,-1,-1, -1,1,-1, 1,1,-1, -1,-1,1, 1,-1,1, -1,1,-1, 1,1,-1 };
 
-	int triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 9, 5,  3, 5, 11,  10, 4, 8,  10, 8, 2,  2, 3, 10,  10, 3, 11,  6, 7, 4,  4, 7, 5,  4, 5, 8,  8, 5, 9 };
+	unsigned triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 9, 5,  3, 5, 11,  10, 4, 8,  10, 8, 2,  2, 3, 10,  10, 3, 11,  6, 7, 4,  4, 7, 5,  4, 5, 8,  8, 5, 9 };
 	num_indices_triangles = 36;
+
+	Primitives::Cube.Init(num_vertices, num_indices_triangles, vertices, texture_coord, normals, triangles_indices);
 
 	glGenBuffers(1, (GLuint*) &(id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -216,6 +222,11 @@ void ModuleRender::LoadCubeGeometry()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void ModuleRender::DrawColor(const Color& color)
+{
+	glColor3f(color.r, color.g, color.b);
+}
+
 void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale, float angle, float3 rotation)
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -234,7 +245,7 @@ void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	glColor3f(1.0f, 1.0f, 1.0f);
+	DrawColor(Colors::White);
 
 	glTranslatef(translate.x, translate.y, translate.z);
 	glScalef(scale.x, scale.y, scale.z);
@@ -271,7 +282,7 @@ void ModuleRender::DrawBoundingBox(const AABB& bbox, const Color& color)
 	DrawParallepiped(corners, color);
 }
 
-void ModuleRender::DrawBoundingOBBBox(const OBB& bbox, const Color& color)
+void ModuleRender::DrawBoundingBox(const OBB& bbox, const Color& color)
 {
 	float3 corners[8];
 	bbox.GetCornerPoints(corners);
@@ -293,25 +304,25 @@ void ModuleRender::DrawAxis()
 
 	glDepthRange(0.0, 0.01);
 
-	glEnable(GL_COLOR_MATERIAL);
 	glBegin(GL_LINES);
+	glEnable(GL_COLOR_MATERIAL);
 	glLineWidth(2.0f);
 
-	glColor3f(Colors::Red.r, Colors::Red.g, Colors::Red.b);
+	DrawColor(Colors::Red);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(axis_length, 0.0, 0.0);
 
-	glColor3f(Colors::Green.r, Colors::Green.g, Colors::Green.b);
+	DrawColor(Colors::Green);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, axis_length, 0.0);
 
-	glColor3f(Colors::Blue.r, Colors::Blue.g, Colors::Blue.b);
+	DrawColor(Colors::Blue);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, 0.0, axis_length);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
-	glEnd();
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glDisable(GL_COLOR_MATERIAL);
+	glEnd();
 
 	glDepthRange(0.01, 1.0);
 
@@ -324,11 +335,11 @@ void ModuleRender::DrawBasePlane(const Color& color)
 	float max_distance = 100.f;
 	int num_lines = ((int)((max_distance - min_distance) / distance_between_lines)) + 1;
 
-	glEnable(GL_COLOR_MATERIAL);
 	//glDepthRange(0.1, 0.9);
 	glBegin(GL_LINES);
 	glLineWidth(2.0f);
-	glColor3f(color.r, color.g, color.b);
+	glEnable(GL_COLOR_MATERIAL);
+	DrawColor(color);
 	for (int i = 0; i < num_lines; i++)
 	{
 		glVertex3f(min_distance + i*distance_between_lines, 0.0, min_distance);
@@ -339,9 +350,9 @@ void ModuleRender::DrawBasePlane(const Color& color)
 		glVertex3f(min_distance, 0.0, min_distance + i*distance_between_lines);
 		glVertex3f(max_distance, 0.0, min_distance + i*distance_between_lines);
 	}
-	glColor3f(0.0f, 0.0f, 0.0f);
-	glEnd();
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glDisable(GL_COLOR_MATERIAL);
+	glEnd();
 }
 
 void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
@@ -351,7 +362,7 @@ void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 	glEnable(GL_COLOR_MATERIAL);
 	glBegin(GL_LINES);
 	
-	glColor3f(color.r, color.g, color.b);
+	DrawColor(color);
 	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
 	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
 
@@ -388,7 +399,7 @@ void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
 	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	DrawColor(Colors::Black);
 	glEnd();
 	glDisable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);

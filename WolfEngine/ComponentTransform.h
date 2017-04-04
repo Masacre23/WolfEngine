@@ -19,6 +19,7 @@ public:
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
 	void Load(const float3& position, const Quat& rotation);
+	void Load(const float3& position);
 
 	bool OnUpdate();
 	bool OnDraw() const;
@@ -31,7 +32,7 @@ public:
 	float4x4 local_transform = float4x4::identity;
 	float4x4 backup_local_transform = float4x4::identity;
 	float4x4 global_transform = float4x4::identity;
-	bool transform_change = false;
+	bool transform_change = true;
 
 private:
 	float3 position = float3::zero;

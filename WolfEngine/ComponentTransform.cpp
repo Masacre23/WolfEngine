@@ -33,11 +33,18 @@ void ComponentTransform::Load(const float3& position, const float3& scale, const
 	RecalculateLocalTransform();
 }
 
-void ComponentTransform::Load(const float3 & position, const Quat & rotation)
+void ComponentTransform::Load(const float3& position, const Quat& rotation)
 {
 	this->position = position;
 	this->rotation = rotation;
 	rotation_euler = rotation.ToEulerXYZ().Abs();
+
+	RecalculateLocalTransform();
+}
+
+void ComponentTransform::Load(const float3 & position)
+{
+	this->position = position;
 
 	RecalculateLocalTransform();
 }
@@ -73,7 +80,7 @@ bool ComponentTransform::OnEditor()
 
 		ImGui::DragFloat3("Scale", (float*)&scale, 0.1f);
 
-		transform_change = !(last_position.Equals(position) && last_rotation_euler.Equals(last_rotation_euler) && last_scale.Equals(last_scale));
+		//transform_change = !(last_position.Equals(position) && last_rotation_euler.Equals(last_rotation_euler) && last_scale.Equals(last_scale));
 
 		RecalculateLocalTransform();
 	}
@@ -83,5 +90,6 @@ bool ComponentTransform::OnEditor()
 
 void ComponentTransform::RecalculateLocalTransform()
 { 
-	local_transform = float4x4::FromTRS(position, rotation, scale); 
+	local_transform = float4x4::FromTRS(position, rotation, scale);
+	transform_change = true;
 }

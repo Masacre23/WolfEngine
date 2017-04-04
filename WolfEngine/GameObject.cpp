@@ -17,6 +17,7 @@
 #include "ModuleTimeController.h"
 #include "OpenGL.h"
 #include "Color.h"
+#include "Primitive.h"
 
 GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::string& name) : name(name), root(root_object)
 {
@@ -44,10 +45,11 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
-	if(transform->transform_change)
+	if (transform->transform_change)
 	{
 		transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
 		bbox.SetFrom(transform_bbox);
+		transform->transform_change = false;
 	}
 
 	if (App->camera->InsideCulling(bbox))
@@ -68,11 +70,11 @@ void GameObject::Draw() const
 	{
 		glPushMatrix();
 
-		App->renderer->DrawBoundingBox(bbox, Colors::Green);
+		//App->renderer->DrawBoundingBox(bbox, Colors::Green);
 		if (selected)
 		{
 			App->renderer->DrawBoundingBox(bbox, Colors::Green);
-			App->renderer->DrawBoundingOBBBox(transform_bbox, Colors::Blue);
+			App->renderer->DrawBoundingBox(transform_bbox, Colors::Blue);
 		}
 
 		if (transform != nullptr)
@@ -122,7 +124,7 @@ void GameObject::DrawHierarchy() const
 	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	
-	glColor3f(Colors::Blue.r, Colors::Blue.g, Colors::Blue.b);
+	App->renderer->DrawColor(Colors::Blue);
 
 	glPushMatrix();
 
@@ -148,7 +150,7 @@ void GameObject::DrawHierarchy() const
 		if ((*it)->IsActive())
 			(*it)->RecursiveDrawHierarchy();
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	App->renderer->DrawColor(Colors::Black);
 	glDisable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 	glDepthRange(0.01, 1.0);
@@ -324,7 +326,7 @@ void GameObject::SetLocalTransform(const float3& position, const float3& scaling
 	transform->Load(position, scaling, rotation);
 }
 
-void GameObject::SetLocalTransformNoScale(const float3& position, const Quat& rotation)
+void GameObject::SetLocalTransform(const float3& position, const Quat& rotation)
 {
 	if (transform == nullptr)
 		SetLocalTransform(position, float3::one, rotation);
@@ -332,15 +334,44 @@ void GameObject::SetLocalTransformNoScale(const float3& position, const Quat& ro
 	transform->Load(position, rotation);
 }
 
-void GameObject::LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path)
+void GameObject::SetLocalTransform(const float3 & position)
+{
+	if (transform == nullptr)
+		SetLocalTransform(position, float3::one, Quat::identity);
+
+	transform->Load(position);
+}
+
+void GameObject::LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path)
 {
 	ComponentMesh* mesh = (ComponentMesh*)CreateComponent(Component::Type::MESH);
 	mesh->Load(scene_mesh);
 	mesh->folder_path = folder_path;
+}
 
+void GameObject::LoadMesh(Primitive* primitive)
+{
+	ComponentMesh* mesh = (ComponentMesh*) CreateComponent(Component::MESH);
+	mesh->Load(primitive);
+}
+
+void GameObject::LoadMaterial(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path)
+{
 	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
 	aiMaterial* scene_material = scene->mMaterials[scene_mesh->mMaterialIndex];
 	material->Load(scene_material, folder_path);
+}
+
+void GameObject::LoadMaterial(const aiString& path)
+{
+	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
+	material->LoadTexture(path);
+}
+
+void GameObject::LoadMaterial()
+{
+	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
+	material->LoadTexture();
 }
 
 void GameObject::LoadAnim(const char * name, const char * file)

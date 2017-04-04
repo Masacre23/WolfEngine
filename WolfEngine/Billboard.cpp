@@ -1,5 +1,7 @@
 #include "Billboard.h"
 #include "Application.h"
+#include "ModuleRender.h"
+#include "Color.h"
 #include "ModuleTextures.h"
 #include "OpenGL.h"
 
@@ -28,7 +30,7 @@ void Billboard::Draw()
 	glEnable(GL_COLOR_MATERIAL);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	glColor3f(1.0f, 1.0f, 1.0f);
+	App->renderer->DrawColor(Colors::White);
 
 	glBegin(GL_TRIANGLES);
 
@@ -47,7 +49,7 @@ void Billboard::Draw()
 	
 	glEnd();
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	App->renderer->DrawColor(Colors::Black);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_COLOR_MATERIAL);
 }

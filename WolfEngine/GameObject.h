@@ -12,6 +12,7 @@ class ComponentMesh;
 class ComponentMaterial;
 class ComponentBillboard;
 class ComponentParticleSystem;
+class Primitive;
 
 struct aiMesh;
 struct aiNode;
@@ -41,8 +42,13 @@ public:
 	bool IsActive() const { return active; }
 
 	void SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation);
-	void SetLocalTransformNoScale(const float3& position, const Quat& rotation);
-	void LoadMeshFromScene(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
+	void SetLocalTransform(const float3& position, const Quat& rotation);
+	void SetLocalTransform(const float3& position);
+	void LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
+	void LoadMesh(Primitive* primitive);
+	void LoadMaterial(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
+	void LoadMaterial(const aiString& path);
+	void LoadMaterial();
 	void LoadAnim(const char * name, const char * file);
 	void LoadBones();
 	void SetAABB(AABB box);

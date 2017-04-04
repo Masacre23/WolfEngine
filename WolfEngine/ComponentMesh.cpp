@@ -5,6 +5,9 @@
 #include "OpenGL.h"
 #include "GameObject.h"
 #include "Color.h"
+#include "Application.h"
+#include "ModuleRender.h"
+#include "Primitive.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
 
@@ -135,6 +138,57 @@ void ComponentMesh::Load(aiMesh* mesh)
 			}
 		}
 	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void ComponentMesh::Load(Primitive* primitive)
+{
+	num_vertices = primitive->num_vertices;
+	num_indices = primitive->num_indices;
+
+	vertices = new float3[num_vertices];
+	vertices_bind = new float3[num_vertices];
+	memcpy(vertices, primitive->vertices, 3 * num_vertices * sizeof(float));
+	memcpy(vertices_bind, vertices, num_vertices * sizeof(float3));
+
+	glGenBuffers(1, (GLuint*) &(vertices_id));
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, vertices, GL_STATIC_DRAW);
+	parent->initial_bbox.SetNegativeInfinity();
+	parent->initial_bbox.Enclose((float3*)vertices, num_vertices);
+
+	has_normals = true;
+	normals = new float3[num_vertices];
+	normals_bind = new float3[num_vertices];
+	memcpy(normals, primitive->normals, 3 * num_vertices * sizeof(float));
+	memcpy(normals_bind, normals, num_vertices * sizeof(float3));
+
+	glGenBuffers(1, (GLuint*) &(normals_id));
+	glBindBuffer(GL_ARRAY_BUFFER, normals_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, normals, GL_STATIC_DRAW);
+
+	has_tex_coords = true;
+	tex_coords = new float[2 * num_vertices];
+	memcpy(tex_coords, primitive->text_coord, 2 * num_vertices * sizeof(float));
+
+	glGenBuffers(1, (GLuint*) &(texture_id));
+	glBindBuffer(GL_ARRAY_BUFFER, texture_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, tex_coords, GL_STATIC_DRAW);
+
+	num_indices = primitive->num_indices;
+	indices = new unsigned[num_indices];
+	memcpy(indices, primitive->indices, num_indices * sizeof(unsigned));
+
+	glGenBuffers(1, (GLuint*) &(indices_id));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * num_indices, indices, GL_STATIC_DRAW);
+
+	has_bones = false;
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void ComponentMesh::LoadBones()
@@ -227,6 +281,9 @@ bool ComponentMesh::OnDraw() const
 
 	//DrawNormals();
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	return true;
 }
 
@@ -252,7 +309,7 @@ void ComponentMesh::DrawNormals() const
 	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 
-	glColor3f(Colors::Yellow.r, Colors::Yellow.g, Colors::Yellow.b);
+	App->renderer->DrawColor(Colors::Yellow);
 
 	for (int i = 0; i < num_vertices; i++)
 	{
@@ -262,7 +319,7 @@ void ComponentMesh::DrawNormals() const
 		glEnd();
 	}
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	App->renderer->DrawColor(Colors::Black);
 	glDisable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 }

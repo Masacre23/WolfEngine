@@ -13,6 +13,7 @@ struct aiNode;
 
 class GameObject;
 class Quadtree;
+class Primitive;
 
 class ModuleLevel : public Module
 {
@@ -27,6 +28,8 @@ public:
 	void Draw() const;
 
 	GameObject* CreateGameObject(const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
+	GameObject* CreateGameObject(Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
+	GameObject* CreateGameObject(const aiString& texture, Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 
 	GameObject* ImportScene(const char* folder, const char* file);
 

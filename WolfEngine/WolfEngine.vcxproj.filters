@@ -153,6 +153,9 @@
     <ClCompile Include="ComponentParticleSystem.cpp">
       <Filter>Game Object</Filter>
     </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -298,6 +301,10 @@
     </ClInclude>
     <ClInclude Include="ComponentBillboard.h">
       <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentParticleSystem.h" />
+    <ClInclude Include="Primitive.h">
+      <Filter>Clases</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

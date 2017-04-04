@@ -6,6 +6,8 @@
 #include <vector>
 #include <assimp/types.h>
 
+class Primitive;
+
 struct aiMesh;
 //struct aiString;
 
@@ -31,6 +33,7 @@ public:
 	~ComponentMesh();
 
 	void Load(aiMesh* mesh);
+	void Load(Primitive* primitive);
 	void LoadBones();
 
 	bool OnUpdate();

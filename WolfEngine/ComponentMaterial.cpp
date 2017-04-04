@@ -17,7 +17,7 @@ ComponentMaterial::~ComponentMaterial()
 {
 }
 
-void ComponentMaterial::Load(aiMaterial * material, const aiString& folder_path)
+void ComponentMaterial::Load(aiMaterial* material, const aiString& folder_path)
 {
 	aiColor4D ambient;
 	aiColor4D diffuse;
@@ -46,9 +46,19 @@ void ComponentMaterial::Load(aiMaterial * material, const aiString& folder_path)
 			aiString full_path = aiString(folder_path);
 			full_path.Append(path.data);
 
-			texture = App->textures->LoadTexture(full_path);
+			LoadTexture(full_path);
 		}
 	}
+}
+
+void ComponentMaterial::LoadTexture(const aiString& texture_path)
+{
+	texture = App->textures->LoadTexture(texture_path);
+}
+
+void ComponentMaterial::LoadTexture()
+{
+	texture = App->textures->texture_checkers;
 }
 
 bool ComponentMaterial::OnUpdate()

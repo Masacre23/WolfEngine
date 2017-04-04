@@ -1,4 +1,5 @@
 #include "Color.h"
+#include "OpenGL.h"
 
 Color Colors::Black = Color(0.0f, 0.0f, 0.0f);
 Color Colors::Blue = Color(0.0f, 0.0f, 1.0f);

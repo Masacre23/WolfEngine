@@ -74,7 +74,25 @@ GameObject* ModuleLevel::CreateGameObject(const std::string& name, GameObject* p
 	return ret;
 }
 
-GameObject* ModuleLevel::ImportScene(const char * folder, const char * file)
+GameObject * ModuleLevel::CreateGameObject(Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
+{
+	GameObject* ret = CreateGameObject(name, parent, root_object);
+	ret->LoadMesh(primitive);
+	ret->LoadMaterial();
+
+	return ret;
+}
+
+GameObject * ModuleLevel::CreateGameObject(const aiString& texture, Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
+{
+	GameObject* ret = CreateGameObject(name, parent, root_object);
+	ret->LoadMesh(primitive);
+	ret->LoadMaterial(texture);
+
+	return ret;
+}
+
+GameObject* ModuleLevel::ImportScene(const char* folder, const char* file)
 {
 	GameObject* res = nullptr;
 	aiString folder_path = aiString();
@@ -119,13 +137,15 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 		for (int i = 0; i < scene_node->mNumMeshes; i++)
 		{
 			mesh_object = CreateGameObject(scene_node->mName.data, new_object, root_scene_object);
-			mesh_object->LoadMeshFromScene(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
+			mesh_object->LoadMesh(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
+			mesh_object->LoadMaterial(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
 		}
 	}
 	else if (scene_node->mNumMeshes == 1)
 	{
 		//Create mesh component on this object
-		new_object->LoadMeshFromScene(scene->mMeshes[scene_node->mMeshes[0]], scene, folder_path);
+		new_object->LoadMesh(scene->mMeshes[scene_node->mMeshes[0]], scene, folder_path);
+		new_object->LoadMaterial(scene->mMeshes[scene_node->mMeshes[0]], scene, folder_path);
 	}
 
 	for (int i = 0; i < scene_node->mNumChildren; i++)
