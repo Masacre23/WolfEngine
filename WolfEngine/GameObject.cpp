@@ -15,6 +15,7 @@
 #include "ModuleLevel.h"
 #include "ModuleRender.h"
 #include "ModuleTimeController.h"
+#include "ModuleTextures.h"
 #include "OpenGL.h"
 #include "Color.h"
 #include "Primitive.h"
@@ -26,8 +27,6 @@ GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::s
 
 	SetParent(parent);
 	components.push_back(transform = new ComponentTransform(this));
-
-	App->time_controller->gameobjects.push_back(this);
 
 	//Init BoundingBox (in case some GameObjects don't have a MeshComponent)
 	initial_bbox.SetNegativeInfinity();
@@ -45,13 +44,6 @@ GameObject::~GameObject()
 
 bool GameObject::Update()
 {
-	if (transform->transform_change)
-	{
-		transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
-		bbox.SetFrom(transform_bbox);
-		transform->transform_change = false;
-	}
-
 	if (App->camera->InsideCulling(bbox))
 	{
 		for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
@@ -70,7 +62,6 @@ void GameObject::Draw() const
 	{
 		glPushMatrix();
 
-		//App->renderer->DrawBoundingBox(bbox, Colors::Green);
 		if (selected)
 		{
 			App->renderer->DrawBoundingBox(bbox, Colors::Green);
@@ -86,10 +77,12 @@ void GameObject::Draw() const
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
+		const Component* material = GetComponent(Component::MATERIAL);
 		if (material != nullptr)
 			if (material->IsActive())
 				material->OnDraw();
 
+		const Component* mesh = GetComponent(Component::MESH);
 		if (mesh != nullptr)
 			if (mesh->IsActive())
 				mesh->OnDraw();
@@ -238,7 +231,6 @@ Component* GameObject::CreateComponent(Component::Type type)
 		else
 		{
 			ret = new ComponentMesh(this);
-			mesh = (ComponentMesh*)ret;
 		}
 		break;
 	case Component::MATERIAL:
@@ -249,7 +241,6 @@ Component* GameObject::CreateComponent(Component::Type type)
 		else
 		{
 			ret = new ComponentMaterial(this);
-			material = (ComponentMaterial*)ret;
 		}
 		break;
 	case Component::CAMERA:
@@ -280,6 +271,19 @@ Component* GameObject::CreateComponent(Component::Type type)
 	return ret;
 }
 
+void GameObject::DeleteComponent(Component* component)
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		if (*it == component)
+		{
+			RELEASE(*it);
+			components.erase(it);
+			break;
+		}
+	}
+}
+
 const Component* GameObject::GetComponent(Component::Type type) const
 {
 	Component* ret = nullptr;
@@ -287,20 +291,23 @@ const Component* GameObject::GetComponent(Component::Type type) const
 	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 	{
 		if ((*it)->GetType() == type && (*it)->IsActive())
-			ret = *it;
+			ret = *it;	
 	}
 
 	return ret;
 }
 
-void GameObject::GetComponents(Component::Type type, std::vector<Component*>& components) const
+Component* GameObject::GetComponent(Component::Type type)
 {
-	components.clear();
-	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+	Component* ret = nullptr;
+
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
 		if ((*it)->GetType() == type && (*it)->IsActive())
-			components.push_back(*it);
+			ret = *it;
 	}
+
+	return ret;
 }
 
 GameObject* GameObject::FindByName(const std::string& name) const
@@ -384,6 +391,7 @@ void GameObject::LoadAnim(const char * name, const char * file)
 
 void GameObject::LoadBones()
 {
+	ComponentMesh* mesh = (ComponentMesh*) GetComponent(Component::MESH);
 	if (mesh != nullptr)
 		mesh->LoadBones();
 
@@ -404,22 +412,46 @@ void GameObject::ChangeAnim(const char* name, unsigned int duration)
 	((ComponentAnim*)component_anim)->BlendTo(name, duration);
 }
 
-void GameObject::UpdateGlobalTransforms()
-{
-	float4x4 global = transform->GetGlobalTransformMatrix();
-	global = transform->UpdateTransform(global);
-
-	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveUpdateTransforms(global);
-}
-
 void GameObject::RecursiveUpdateTransforms(const float4x4& parent)
 {
-	float4x4 global = transform->UpdateTransform(parent);
+	float4x4 global = transform->UpdateGlobalTransform(parent);
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->RecursiveUpdateTransforms(global);
 }
+
+void GameObject::RecursiveUpdateBoundingBox(bool force_recalculation)
+{
+	bool child_recalc = false;
+
+	if (transform->transform_change || force_recalculation)
+	{
+		transform_bbox.SetFrom(initial_bbox, GetGlobalTransformMatrix());
+		bbox.SetFrom(transform_bbox);
+		transform->transform_change = false;
+		child_recalc = true;
+	}
+
+	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->RecursiveUpdateBoundingBox(child_recalc);
+}
+
+void GameObject::RecursiveSaveLocalTransform()
+{
+	transform->SaveTransform();
+
+	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->RecursiveSaveLocalTransform();
+}
+
+void GameObject::RecursiveLoadLocalTransform()
+{
+	transform->LoadTransform();
+
+	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->RecursiveSaveLocalTransform();
+}
+
 const float4x4& GameObject::GetLocalTransformMatrix() const
 {
 	return transform->GetLocalTransformMatrix();

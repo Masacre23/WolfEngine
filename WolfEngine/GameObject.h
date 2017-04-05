@@ -32,11 +32,13 @@ public:
 
 	void SetParent(GameObject* parent);
 	Component* CreateComponent(Component::Type type);
+	void DeleteComponent(Component* component);
 
 	int GetNumComponents() const { return components.size(); }
 	int GetNumChilds() const { return childs.size(); }
+
 	const Component* GetComponent(Component::Type type) const;
-	void GetComponents(Component::Type type, std::vector<Component*>& components) const;
+	Component* GetComponent(Component::Type type);
 	GameObject* FindByName(const std::string& name) const;
 
 	bool IsActive() const { return active; }
@@ -55,14 +57,16 @@ public:
 
 	void ChangeAnim(const char* name, unsigned int duration);
 
-	void UpdateGlobalTransforms();
+	void RecursiveUpdateTransforms(const float4x4& parent = float4x4::identity);
+	void RecursiveUpdateBoundingBox(bool force_recalculation = false);
+	void RecursiveSaveLocalTransform();
+	void RecursiveLoadLocalTransform();
 
 	const float4x4& GetLocalTransformMatrix() const;
 	const float4x4& GetGlobalTransformMatrix() const;
 
 private:
 	void RecursiveDrawHierarchy() const;
-	void RecursiveUpdateTransforms(const float4x4& parent);
 
 public:
 	AABB initial_bbox;
@@ -72,9 +76,7 @@ public:
 	std::vector<Component*> components;
 	std::vector<GameObject*> childs;
 
-	ComponentTransform * transform = nullptr;
-	ComponentMesh* mesh = nullptr;
-	ComponentMaterial* material = nullptr;
+	ComponentTransform* transform = nullptr;
 	ComponentBillboard* billboard = nullptr;
 	ComponentParticleSystem* particle_system = nullptr;
 

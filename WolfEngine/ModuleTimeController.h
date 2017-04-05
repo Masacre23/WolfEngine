@@ -22,6 +22,7 @@ public:
 	~ModuleTimeController();
 
 	bool Init();
+	bool Start();
 	update_status Update(float dt);
 	void Play();
 	void Pause();
@@ -31,7 +32,6 @@ public:
 	bool CleanUp();
 
 public:
-	std::vector<GameObject*> gameobjects;
 	Timer* time = nullptr;
 	TimeStates state;
 

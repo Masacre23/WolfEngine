@@ -87,7 +87,7 @@ bool ComponentMaterial::OnEditor()
 		ImGui::SameLine();
 
 		if (ImGui::Button("Delete"))
-			this->~ComponentMaterial();
+			parent->DeleteComponent(this);
 	}
 
 	return ImGui::IsItemClicked();

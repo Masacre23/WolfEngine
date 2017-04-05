@@ -82,8 +82,8 @@ unsigned int ModuleTextures::LoadTexture(const aiString& path)
 
 void ModuleTextures::LoadCheckers()
 {
-	const int CHECKERS_HEIGHT = 16;
-	const int CHECKERS_WIDTH = 16;
+	const int CHECKERS_HEIGHT = 64;
+	const int CHECKERS_WIDTH = 64;
 
 	GLubyte checkImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
 	for (int i = 0; i < CHECKERS_HEIGHT; i++) {

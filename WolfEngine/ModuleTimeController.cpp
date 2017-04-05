@@ -3,6 +3,7 @@
 #include "ComponentTransform.h"
 #include "Timer.h"
 #include "Application.h"
+#include "ModuleLevel.h"
 
 ModuleTimeController::ModuleTimeController() : Module("ModuleTimeController", true)
 {
@@ -20,7 +21,13 @@ bool ModuleTimeController::Init()
 	game_time = 0; 
 	time_scale = 1.0f;
 	delta_time = 0.0f;
+	return true;
+}
+
+bool ModuleTimeController::Start()
+{
 	Play();
+
 	return true;
 }
 
@@ -35,10 +42,8 @@ update_status ModuleTimeController::Update(float dt)
 
 void ModuleTimeController::Play()
 {
-	for (int i = 0; i < gameobjects.size(); ++i)
-	{
-		gameobjects[i]->transform->backup_local_transform = gameobjects[i]->transform->local_transform;
-	}
+	App->level->SaveGameObjectsTransforms();
+	
 	state = PLAY;
 }
 
@@ -58,10 +63,8 @@ void ModuleTimeController::Tick()
 
 void ModuleTimeController::Stop()
 {
-	for (int i = 0; i < gameobjects.size(); ++i)
-	{
-		gameobjects[i]->transform->local_transform = gameobjects[i]->transform->backup_local_transform;
-	}
+	App->level->RestoreGameObjectsTransforms();
+
 	state = STOP;
 }
 
@@ -74,6 +77,7 @@ void ModuleTimeController::UpdateDeltaTime()
 
 bool ModuleTimeController::CleanUp()
 {
-	gameobjects.clear();
+	RELEASE(time);
+
 	return false;
 }

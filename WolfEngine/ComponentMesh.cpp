@@ -295,8 +295,8 @@ bool ComponentMesh::OnEditor()
 
 		ImGui::SameLine();
 
-		if(ImGui::Button("Delete"))
-			this->~ComponentMesh();
+		if (ImGui::Button("Delete"))
+			parent->DeleteComponent(this);
 
 		ImGui::Text(folder_path.C_Str());
 	}

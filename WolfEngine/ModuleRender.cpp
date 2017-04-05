@@ -144,8 +144,8 @@ update_status ModuleRender::Update(float dt)
 
 update_status ModuleRender::PostUpdate(float dt)
 {
-	/*App->level->Draw();
-	App->editor->Draw();*/
+	App->level->Draw();
+	App->editor->Draw();
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
 	return UPDATE_CONTINUE;
@@ -174,104 +174,9 @@ void ModuleRender::ResetProjection()
 	glLoadIdentity();
 }
 
-void ModuleRender::LoadPrimitivesGeometry()
-{
-	//Load Cube
-	float3 A = { -0.5f, -0.5f, 0.5f };
-	float3 B = { 0.5f, -0.5f, 0.5f };
-	float3 C = { -0.5f, 0.5f, 0.5f };
-	float3 D = { 0.5f, 0.5f, 0.5f };
-	float3 E = { -0.5f, -0.5f, -0.5f };
-	float3 F = { 0.5f, -0.5f, -0.5f };
-	float3 G = { -0.5f, 0.5f, -0.5f };
-	float3 H = { 0.5f, 0.5f, -0.5f };
-
-	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z, A.x, A.y, A.z,  B.x, B.y, B.z, G.x, G.y, G.z, H.x, H.y, H.z };
-	unsigned int num_vertices = 12;
-	float texture_coord[] = { 0,0, 1,0, 0,1, 1,1, 1,0, 0,0, 1,1, 0,1, 1,1, 0,1, 0,0, 1,0 };
-	float check_coord[] = { 0,0, 4,0, 0,4, 4,4, 4,0, 0,0, 4,4, 0,4, 4,4, 0,4, 0,0, 4,0 };
-
-	float normals[] = { -1,-1,1, 1,-1,1, -1,1,1, 1,1,1, -1,-1,-1, 1,-1,-1, -1,1,-1, 1,1,-1, -1,-1,1, 1,-1,1, -1,1,-1, 1,1,-1 };
-
-	unsigned triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 9, 5,  3, 5, 11,  10, 4, 8,  10, 8, 2,  2, 3, 10,  10, 3, 11,  6, 7, 4,  4, 7, 5,  4, 5, 8,  8, 5, 9 };
-	num_indices_triangles = 36;
-
-	Primitives::Cube.Init(num_vertices, num_indices_triangles, vertices, texture_coord, normals, triangles_indices);
-
-	glGenBuffers(1, (GLuint*) &(id_vertices));
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_texture_check));
-	glBindBuffer(GL_ARRAY_BUFFER, id_texture_check);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, check_coord, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_texture));
-	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, texture_coord, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_normals));
-	glBindBuffer(GL_ARRAY_BUFFER, id_normals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_indices_triangles, normals, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_indices_triangles));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_triangles, triangles_indices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
 void ModuleRender::DrawColor(const Color& color)
 {
 	glColor3f(color.r, color.g, color.b);
-}
-
-void ModuleRender::DrawCube(unsigned int texture, float3 translate, float3 scale, float angle, float3 rotation)
-{
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnable(GL_COLOR_MATERIAL);
-
-	GLuint id_texture;
-	if (texture == App->textures->texture_checkers)
-		id_texture = id_texture_check;
-	else
-		id_texture = this->id_texture;
-
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	DrawColor(Colors::White);
-
-	glTranslatef(translate.x, translate.y, translate.z);
-	glScalef(scale.x, scale.y, scale.z);
-	glRotatef(angle, rotation.x, rotation.y, rotation.z);
-
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, id_normals);
-	glNormalPointer(GL_FLOAT, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
-	glDrawElements(GL_TRIANGLES, num_indices_triangles, GL_UNSIGNED_INT, NULL);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	glDisable(GL_COLOR_MATERIAL);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glPopMatrix();
 }
 
 void ModuleRender::DrawBoundingBox(const AABB& bbox, const Color& color)
@@ -304,25 +209,32 @@ void ModuleRender::DrawAxis()
 
 	glDepthRange(0.0, 0.01);
 
-	glBegin(GL_LINES);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	glLineWidth(2.0f);
 
 	DrawColor(Colors::Red);
+	glBegin(GL_LINES);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(axis_length, 0.0, 0.0);
+	glEnd();
 
 	DrawColor(Colors::Green);
+	glBegin(GL_LINES);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, axis_length, 0.0);
+	glEnd();
 
 	DrawColor(Colors::Blue);
+	glBegin(GL_LINES);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, 0.0, axis_length);
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glDisable(GL_COLOR_MATERIAL);
 	glEnd();
+
+	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
 
 	glDepthRange(0.01, 1.0);
 
@@ -336,23 +248,30 @@ void ModuleRender::DrawBasePlane(const Color& color)
 	int num_lines = ((int)((max_distance - min_distance) / distance_between_lines)) + 1;
 
 	//glDepthRange(0.1, 0.9);
-	glBegin(GL_LINES);
+	
 	glLineWidth(2.0f);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	DrawColor(color);
 	for (int i = 0; i < num_lines; i++)
 	{
+		glBegin(GL_LINES);
 		glVertex3f(min_distance + i*distance_between_lines, 0.0, min_distance);
 		glVertex3f(min_distance + i*distance_between_lines, 0.0, max_distance);
+		glEnd();
 	}
 	for (int i = 0; i < num_lines; i++)
 	{
+		glBegin(GL_LINES);
 		glVertex3f(min_distance, 0.0, min_distance + i*distance_between_lines);
 		glVertex3f(max_distance, 0.0, min_distance + i*distance_between_lines);
+		glEnd();
 	}
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glDisable(GL_COLOR_MATERIAL);
-	glEnd();
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+	
 }
 
 void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
@@ -441,4 +360,52 @@ bool ModuleRender::GetGLError() const
 	}
 
 	return ret;
+}
+
+void ModuleRender::LoadPrimitivesGeometry()
+{
+	//Load Cube
+	float3 A = { -0.5f, -0.5f, 0.5f };
+	float3 B = { 0.5f, -0.5f, 0.5f };
+	float3 C = { -0.5f, 0.5f, 0.5f };
+	float3 D = { 0.5f, 0.5f, 0.5f };
+	float3 E = { -0.5f, -0.5f, -0.5f };
+	float3 F = { 0.5f, -0.5f, -0.5f };
+	float3 G = { -0.5f, 0.5f, -0.5f };
+	float3 H = { 0.5f, 0.5f, -0.5f };
+
+	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z, A.x, A.y, A.z,  B.x, B.y, B.z, G.x, G.y, G.z, H.x, H.y, H.z };
+	unsigned int num_vertices = 12;
+	float texture_coord[] = { 0,0, 1,0, 0,1, 1,1, 1,0, 0,0, 1,1, 0,1, 1,1, 0,1, 0,0, 1,0 };
+	float check_coord[] = { 0,0, 4,0, 0,4, 4,4, 4,0, 0,0, 4,4, 0,4, 4,4, 0,4, 0,0, 4,0 };
+
+	float normals[] = { -1,-1,1, 1,-1,1, -1,1,1, 1,1,1, -1,-1,-1, 1,-1,-1, -1,1,-1, 1,1,-1, -1,-1,1, 1,-1,1, -1,1,-1, 1,1,-1 };
+
+	unsigned triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 9, 5,  3, 5, 11,  10, 4, 8,  10, 8, 2,  2, 3, 10,  10, 3, 11,  6, 7, 4,  4, 7, 5,  4, 5, 8,  8, 5, 9 };
+	num_indices_triangles = 36;
+
+	Primitives::Cube.Init(num_vertices, num_indices_triangles, vertices, texture_coord, normals, triangles_indices);
+
+	glGenBuffers(1, (GLuint*) &(id_vertices));
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*) &(id_texture_check));
+	glBindBuffer(GL_ARRAY_BUFFER, id_texture_check);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, check_coord, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*) &(id_texture));
+	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, texture_coord, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*) &(id_normals));
+	glBindBuffer(GL_ARRAY_BUFFER, id_normals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_indices_triangles, normals, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*) &(id_indices_triangles));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_triangles, triangles_indices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

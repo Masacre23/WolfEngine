@@ -22,6 +22,7 @@ public:
 	~ModuleLevel();
 
 	bool Init();
+	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	bool CleanUp();
 
@@ -35,6 +36,9 @@ public:
 
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
+
+	void SaveGameObjectsTransforms();
+	void RestoreGameObjectsTransforms();
 
 private:
 	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object);

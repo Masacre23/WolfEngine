@@ -30,11 +30,17 @@ bool ModuleLevel::Init()
 	return true;
 }
 
+update_status ModuleLevel::PreUpdate(float dt)
+{
+	root->RecursiveUpdateTransforms();
+	root->RecursiveUpdateBoundingBox();
+
+	return UPDATE_CONTINUE;
+}
+
 update_status ModuleLevel::Update(float dt)
 {
 	root->Update();
-
-	root->UpdateGlobalTransforms();
 
 	return UPDATE_CONTINUE;
 }
@@ -151,6 +157,18 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 	for (int i = 0; i < scene_node->mNumChildren; i++)
 		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path, root_scene_object);
 	return new_object;
+}
+
+void ModuleLevel::SaveGameObjectsTransforms()
+{
+	root->RecursiveSaveLocalTransform();
+}
+
+void ModuleLevel::RestoreGameObjectsTransforms()
+{
+	root->RecursiveLoadLocalTransform();
+
+	root->RecursiveUpdateTransforms();
 }
 
 void ModuleLevel::GetGLError(const char* string) const

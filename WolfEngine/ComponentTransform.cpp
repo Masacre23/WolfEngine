@@ -16,7 +16,7 @@ ComponentTransform::~ComponentTransform()
 {
 }
 
-const float4x4& ComponentTransform::UpdateTransform(const float4x4& parent)
+const float4x4& ComponentTransform::UpdateGlobalTransform(const float4x4& parent)
 {
 	global_transform = parent * local_transform;
 
@@ -65,9 +65,7 @@ bool ComponentTransform::OnDraw() const
 bool ComponentTransform::OnEditor()
 {
 	bool node_open = ImGui::CollapsingHeader("Transform");
-	float3 last_position = position;
-	float3 last_scale = scale;
-	float3 last_rotation_euler = rotation_euler;
+	float4x4 last_transform = local_transform;
 
 	if (node_open)
 	{
@@ -80,9 +78,9 @@ bool ComponentTransform::OnEditor()
 
 		ImGui::DragFloat3("Scale", (float*)&scale, 0.1f);
 
-		//transform_change = !(last_position.Equals(position) && last_rotation_euler.Equals(last_rotation_euler) && last_scale.Equals(last_scale));
-
 		RecalculateLocalTransform();
+
+		transform_change = !(last_transform.Equals(local_transform));
 	}
 
 	return ImGui::IsItemClicked();
