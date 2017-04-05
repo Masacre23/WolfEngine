@@ -77,15 +77,28 @@ void GameObject::Draw() const
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		const Component* material = GetComponent(Component::MATERIAL);
-		if (material != nullptr)
-			if (material->IsActive())
-				material->OnDraw();
+		App->renderer->DrawColor(Colors::White);
 
-		const Component* mesh = GetComponent(Component::MESH);
+		const Component* material = GetComponent(Component::MATERIAL);
+		bool material_on = false;
+		if (material != nullptr)
+		{
+			if (material->IsActive())
+			{
+				material->OnDraw();
+				material_on = true;
+			}	
+			else
+				glBindTexture(GL_TEXTURE_2D, App->textures->texture_checkers);	
+		}
+			
+		ComponentMesh* mesh = (ComponentMesh*) GetComponent(Component::MESH);
 		if (mesh != nullptr)
+		{
+			mesh->SetUseNormals(material_on);
 			if (mesh->IsActive())
 				mesh->OnDraw();
+		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -93,7 +106,8 @@ void GameObject::Draw() const
 
 		const Component* camera = GetComponent(Component::Type::CAMERA);
 		if (camera != nullptr)
-			camera->OnDraw();
+			if (camera->IsActive())
+				camera->OnDraw();
 
 		if (billboard != nullptr)
 			if (billboard->IsActive())
@@ -284,27 +298,47 @@ void GameObject::DeleteComponent(Component* component)
 	}
 }
 
-const Component* GameObject::GetComponent(Component::Type type) const
+const Component* GameObject::GetComponent(Component::Type type, bool only_active) const
 {
 	Component* ret = nullptr;
 
 	for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 	{
-		if ((*it)->GetType() == type && (*it)->IsActive())
+		if ((*it)->GetType() == type)
 			ret = *it;	
+	}
+
+	if (only_active && !ret->IsActive())
+	{
+		ret = nullptr;
+		for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		{
+			if ((*it)->GetType() == type && (*it)->IsActive())
+				ret = *it;
+		}
 	}
 
 	return ret;
 }
 
-Component* GameObject::GetComponent(Component::Type type)
+Component* GameObject::GetComponent(Component::Type type, bool only_active)
 {
 	Component* ret = nullptr;
 
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
-		if ((*it)->GetType() == type && (*it)->IsActive())
+		if ((*it)->GetType() == type)
 			ret = *it;
+	}
+
+	if (only_active && !ret->IsActive())
+	{
+		ret = nullptr;
+		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			if ((*it)->GetType() == type && (*it)->IsActive())
+				ret = *it;
+		}
 	}
 
 	return ret;
@@ -373,12 +407,6 @@ void GameObject::LoadMaterial(const aiString& path)
 {
 	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
 	material->LoadTexture(path);
-}
-
-void GameObject::LoadMaterial()
-{
-	ComponentMaterial* material = (ComponentMaterial*)CreateComponent(Component::Type::MATERIAL);
-	material->LoadTexture();
 }
 
 void GameObject::LoadAnim(const char * name, const char * file)

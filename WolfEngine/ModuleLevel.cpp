@@ -84,16 +84,15 @@ GameObject * ModuleLevel::CreateGameObject(Primitive* primitive, const std::stri
 {
 	GameObject* ret = CreateGameObject(name, parent, root_object);
 	ret->LoadMesh(primitive);
-	ret->LoadMaterial();
 
 	return ret;
 }
 
-GameObject * ModuleLevel::CreateGameObject(const aiString& texture, Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
+GameObject * ModuleLevel::CreateGameObject(const char* texture, Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
 {
 	GameObject* ret = CreateGameObject(name, parent, root_object);
 	ret->LoadMesh(primitive);
-	ret->LoadMaterial(texture);
+	ret->LoadMaterial(aiString(texture));
 
 	return ret;
 }

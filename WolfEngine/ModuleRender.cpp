@@ -277,6 +277,7 @@ void ModuleRender::DrawBasePlane(const Color& color)
 void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 {
 	glLineWidth(1.0f);
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	glBegin(GL_LINES);
@@ -322,6 +323,7 @@ void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 	glEnd();
 	glDisable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
 }
 
 bool ModuleRender::SetVsync(bool vsync)

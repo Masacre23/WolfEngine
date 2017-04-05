@@ -14,7 +14,6 @@ public:
 
 	void Load(aiMaterial* material, const aiString& folder_path);
 	void LoadTexture(const aiString& texture_path);
-	void LoadTexture();
 
 	bool OnUpdate();
 	bool OnDraw() const;

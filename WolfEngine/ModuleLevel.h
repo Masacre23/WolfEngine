@@ -30,7 +30,7 @@ public:
 
 	GameObject* CreateGameObject(const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 	GameObject* CreateGameObject(Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
-	GameObject* CreateGameObject(const aiString& texture, Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
+	GameObject* CreateGameObject(const char* texture, Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 
 	GameObject* ImportScene(const char* folder, const char* file);
 

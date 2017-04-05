@@ -56,11 +56,6 @@ void ComponentMaterial::LoadTexture(const aiString& texture_path)
 	texture = App->textures->LoadTexture(texture_path);
 }
 
-void ComponentMaterial::LoadTexture()
-{
-	texture = App->textures->texture_checkers;
-}
-
 bool ComponentMaterial::OnUpdate()
 {
 	return true;
@@ -88,6 +83,11 @@ bool ComponentMaterial::OnEditor()
 
 		if (ImGui::Button("Delete"))
 			parent->DeleteComponent(this);
+
+		ImGui::DragFloat4("Ambient", (float*)&ambient, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat4("Diffuse", (float*)&diffuse, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat4("Specular", (float*)&specular, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("Shiness", (float*)&shiness, 1.0f, 0.0f, 128.0f);
 	}
 
 	return ImGui::IsItemClicked();

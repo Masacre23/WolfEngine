@@ -256,7 +256,7 @@ bool ComponentMesh::OnDraw() const
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);	
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	if (has_normals)
+	if (use_normals)
 	{
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glEnable(GL_LIGHTING);
@@ -265,6 +265,7 @@ bool ComponentMesh::OnDraw() const
 	}
 	else
 		glDisable(GL_LIGHTING);
+		
 		
 	if (has_tex_coords)
 	{
@@ -279,7 +280,11 @@ bool ComponentMesh::OnDraw() const
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	//DrawNormals();
+	if (draw_normals)
+		DrawNormals();
+
+	if (draw_mesh)
+		DrawMesh();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -298,7 +303,12 @@ bool ComponentMesh::OnEditor()
 		if (ImGui::Button("Delete"))
 			parent->DeleteComponent(this);
 
-		ImGui::Text(folder_path.C_Str());
+		if (strcmp(folder_path.data, ""))
+			ImGui::Text(folder_path.data);
+		
+		ImGui::Checkbox("Draw normals", &draw_normals);
+
+		ImGui::Checkbox("Draw mesh", &draw_mesh);
 	}
 
 	return ImGui::IsItemClicked();
@@ -306,6 +316,7 @@ bool ComponentMesh::OnEditor()
 
 void ComponentMesh::DrawNormals() const
 {
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 
@@ -322,4 +333,38 @@ void ComponentMesh::DrawNormals() const
 	App->renderer->DrawColor(Colors::Black);
 	glDisable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+}
+
+void ComponentMesh::DrawMesh() const
+{
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+
+	App->renderer->DrawColor(Colors::Fuchsia);
+
+	unsigned num_triangles = num_indices / 3;
+	for (int i = 0; i < num_triangles; i++)
+	{
+		unsigned first = indices[3 *i];
+		unsigned second = indices[3 * i + 1];
+		unsigned third = indices[3 * i + 2];
+
+		glBegin(GL_LINES);
+		glVertex3f(vertices[first].x, vertices[first].y, vertices[first].z);
+		glVertex3f(vertices[second].x, vertices[second].y, vertices[second].z);
+
+		glVertex3f(vertices[second].x, vertices[second].y, vertices[second].z);
+		glVertex3f(vertices[third].x, vertices[third].y, vertices[third].z);
+
+		glVertex3f(vertices[third].x, vertices[third].y, vertices[third].z);
+		glVertex3f(vertices[first].x, vertices[first].y, vertices[first].z);
+		glEnd();
+	}
+
+	App->renderer->DrawColor(Colors::Black);
+	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
 }

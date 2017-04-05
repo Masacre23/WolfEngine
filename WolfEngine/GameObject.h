@@ -37,8 +37,8 @@ public:
 	int GetNumComponents() const { return components.size(); }
 	int GetNumChilds() const { return childs.size(); }
 
-	const Component* GetComponent(Component::Type type) const;
-	Component* GetComponent(Component::Type type);
+	const Component* GetComponent(Component::Type type, bool only_active = false) const;
+	Component* GetComponent(Component::Type type, bool only_active = false);
 	GameObject* FindByName(const std::string& name) const;
 
 	bool IsActive() const { return active; }
@@ -50,7 +50,6 @@ public:
 	void LoadMesh(Primitive* primitive);
 	void LoadMaterial(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadMaterial(const aiString& path);
-	void LoadMaterial();
 	void LoadAnim(const char * name, const char * file);
 	void LoadBones();
 	void SetAABB(AABB box);

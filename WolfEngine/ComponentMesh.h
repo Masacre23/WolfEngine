@@ -41,6 +41,9 @@ public:
 	bool OnEditor();
 
 	void DrawNormals() const;
+	void DrawMesh() const;
+
+	void SetUseNormals(bool material_on) { use_normals = has_normals && material_on; }
 
 public:
 	aiString folder_path;
@@ -65,6 +68,11 @@ private:
 	bool has_bones = false;
 	int num_bones;
 	Bone* bones;
+
+	bool use_normals = false;
+
+	bool draw_normals = false;
+	bool draw_mesh = false;
 };
 
 #endif
