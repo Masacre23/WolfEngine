@@ -50,10 +50,14 @@ public:
 	aiString folder_path;
 
 private:
+	unsigned buffer_id = 0;
+
 	unsigned vertices_id = 0;
 	unsigned normals_id = 0;
 	unsigned texture_id = 0;
 	unsigned indices_id = 0;
+
+	float* buffer = nullptr;
 
 	float3* vertices = nullptr;
 	bool has_tex_coords = false;
