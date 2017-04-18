@@ -32,7 +32,7 @@ public:
 	GameObject* CreateGameObject(Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 	GameObject* CreateGameObject(const char* texture, Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 
-	GameObject* ImportScene(const char* folder, const char* file);
+	GameObject* ImportScene(const char* folder, const char* file, bool is_dynamic = false);
 
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
@@ -41,7 +41,7 @@ public:
 	void RestoreGameObjectsTransforms();
 
 private:
-	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object);
+	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object, bool is_dynamic = false);
 
 	void GetGLError(const char* string) const;
 

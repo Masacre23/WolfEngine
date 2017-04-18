@@ -5,6 +5,7 @@
 #include "Math.h"
 #include <vector>
 #include <assimp/types.h>
+#include "Glew/include/GL/glew.h"
 
 class Primitive;
 
@@ -32,7 +33,7 @@ public:
 	ComponentMesh(GameObject* parent);
 	~ComponentMesh();
 
-	void Load(aiMesh* mesh);
+	void Load(aiMesh* mesh, bool is_dynamic = false);
 	void Load(Primitive* primitive);
 	void LoadBones();
 
@@ -54,12 +55,10 @@ private:
 	unsigned texture_id = 0;
 	unsigned indices_id = 0;
 
-	float3* vertices_bind = nullptr;
 	float3* vertices = nullptr;
 	bool has_tex_coords = false;
-	float* tex_coords = nullptr;
+	float2* tex_coords = nullptr;
 	bool has_normals = false;
-	float3* normals_bind = nullptr;
 	float3* normals = nullptr;
 	unsigned num_vertices = 0;
 	unsigned* indices = nullptr;
@@ -73,6 +72,8 @@ private:
 
 	bool draw_normals = false;
 	bool draw_mesh = false;
+
+	GLenum draw_mode = GL_STATIC_DRAW;
 };
 
 #endif

@@ -383,10 +383,10 @@ void GameObject::SetLocalTransform(const float3 & position)
 	transform->Load(position);
 }
 
-void GameObject::LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path)
+void GameObject::LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path, bool is_dynamic)
 {
 	ComponentMesh* mesh = (ComponentMesh*)CreateComponent(Component::Type::MESH);
-	mesh->Load(scene_mesh);
+	mesh->Load(scene_mesh, is_dynamic);
 	mesh->folder_path = folder_path;
 }
 

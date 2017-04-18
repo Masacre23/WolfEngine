@@ -80,7 +80,7 @@ GameObject* ModuleLevel::CreateGameObject(const std::string& name, GameObject* p
 	return ret;
 }
 
-GameObject * ModuleLevel::CreateGameObject(Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
+GameObject* ModuleLevel::CreateGameObject(Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
 {
 	GameObject* ret = CreateGameObject(name, parent, root_object);
 	ret->LoadMesh(primitive);
@@ -88,7 +88,7 @@ GameObject * ModuleLevel::CreateGameObject(Primitive* primitive, const std::stri
 	return ret;
 }
 
-GameObject * ModuleLevel::CreateGameObject(const char* texture, Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
+GameObject* ModuleLevel::CreateGameObject(const char* texture, Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
 {
 	GameObject* ret = CreateGameObject(name, parent, root_object);
 	ret->LoadMesh(primitive);
@@ -97,7 +97,7 @@ GameObject * ModuleLevel::CreateGameObject(const char* texture, Primitive* primi
 	return ret;
 }
 
-GameObject* ModuleLevel::ImportScene(const char* folder, const char* file)
+GameObject* ModuleLevel::ImportScene(const char* folder, const char* file, bool is_dynamic)
 {
 	GameObject* res = nullptr;
 	aiString folder_path = aiString();
@@ -110,7 +110,7 @@ GameObject* ModuleLevel::ImportScene(const char* folder, const char* file)
 
 	if (scene != nullptr)
 	{
-		res = RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path, nullptr);
+		res = RecursiveLoadSceneNode(scene->mRootNode, scene, root, folder_path, nullptr, is_dynamic);
 	}
 	res->LoadBones();
 
@@ -118,7 +118,7 @@ GameObject* ModuleLevel::ImportScene(const char* folder, const char* file)
 	return res;
 }
 
-GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object)
+GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object, bool is_dynamic)
 {
 	GameObject* new_object = CreateGameObject(scene_node->mName.data, parent, root_scene_object);
 	if (root_scene_object == nullptr)
@@ -142,19 +142,19 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 		for (int i = 0; i < scene_node->mNumMeshes; i++)
 		{
 			mesh_object = CreateGameObject(scene_node->mName.data, new_object, root_scene_object);
-			mesh_object->LoadMesh(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
+			mesh_object->LoadMesh(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path, is_dynamic);
 			mesh_object->LoadMaterial(scene->mMeshes[scene_node->mMeshes[i]], scene, folder_path);
 		}
 	}
 	else if (scene_node->mNumMeshes == 1)
 	{
 		//Create mesh component on this object
-		new_object->LoadMesh(scene->mMeshes[scene_node->mMeshes[0]], scene, folder_path);
+		new_object->LoadMesh(scene->mMeshes[scene_node->mMeshes[0]], scene, folder_path, is_dynamic);
 		new_object->LoadMaterial(scene->mMeshes[scene_node->mMeshes[0]], scene, folder_path);
 	}
 
 	for (int i = 0; i < scene_node->mNumChildren; i++)
-		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path, root_scene_object);
+		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path, root_scene_object, is_dynamic);
 	return new_object;
 }
 

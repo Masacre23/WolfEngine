@@ -18,7 +18,6 @@ ComponentMesh::ComponentMesh(GameObject* parent) : Component(Component::Type::ME
 ComponentMesh::~ComponentMesh()
 {
 	RELEASE_ARRAY(vertices);
-	RELEASE_ARRAY(vertices_bind);
 	RELEASE_ARRAY(normals);
 	RELEASE_ARRAY(tex_coords);
 	RELEASE_ARRAY(indices);
@@ -40,11 +39,13 @@ ComponentMesh::~ComponentMesh()
 	glDeleteBuffers(1, (GLuint*) &(indices_id));
 }
 
-void ComponentMesh::Load(aiMesh* mesh)
+void ComponentMesh::Load(aiMesh* mesh, bool is_dynamic)
 {
+	if (is_dynamic)
+		draw_mode = GL_DYNAMIC_DRAW;
+
 	num_vertices = mesh->mNumVertices;
 	vertices = new float3[num_vertices];
-	vertices_bind = new float3[num_vertices];
 	unsigned c = 0;
 	for (size_t i = 0; i < num_vertices; ++i)
 		for (size_t j = 0; j < 3; ++j)
@@ -55,11 +56,9 @@ void ComponentMesh::Load(aiMesh* mesh)
 	if (c != 3 * mesh->mNumVertices)
 		APPLOG("Error loading meshes: Incorrect number of vertices");
 
-	memcpy(vertices_bind, vertices, num_vertices * sizeof(float3));
-
 	glGenBuffers(1, (GLuint*) &(vertices_id));
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, vertices, draw_mode);
 
 	//Creating BoundingBox from vertices points
 	parent->initial_bbox.SetNegativeInfinity();
@@ -69,7 +68,6 @@ void ComponentMesh::Load(aiMesh* mesh)
 	if (has_normals) 
 	{
 		normals = new float3[num_vertices];
-		normals_bind = new float3[num_vertices];
 		c = 0;
 		for (size_t i = 0; i < num_vertices; ++i)
 			for (size_t j = 0; j < 3; ++j)
@@ -80,27 +78,28 @@ void ComponentMesh::Load(aiMesh* mesh)
 		if (c != 3 * mesh->mNumVertices)
 			APPLOG("Error loading meshes: Incorrect number of normals");
 
-		memcpy(normals_bind, normals, num_vertices * sizeof(float3));
-
 		glGenBuffers(1, (GLuint*) &(normals_id));
 		glBindBuffer(GL_ARRAY_BUFFER, normals_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, normals, draw_mode);
 	}
 
 	has_tex_coords = mesh->HasTextureCoords(0);
 	if (has_tex_coords) 
 	{
-		tex_coords = new float[2 * num_vertices];
+		tex_coords = new float2[num_vertices];
 		c = 0;
 		for (size_t i = 0; i < num_vertices; ++i)
 			for (size_t j = 0; j < 2; ++j)
-				tex_coords[c++] = mesh->mTextureCoords[0][i][j];
+			{
+				tex_coords[i][j] = mesh->mTextureCoords[0][i][j];
+				c++;
+			}
 		if (c != 2 * mesh->mNumVertices)
 			APPLOG("Error loading meshes: Incorrect number of texture coordinates");
 
 		glGenBuffers(1, (GLuint*) &(texture_id));
 		glBindBuffer(GL_ARRAY_BUFFER, texture_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, tex_coords, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * num_vertices, tex_coords, draw_mode);
 	}
 
 	num_indices = 3 * mesh->mNumFaces;
@@ -115,7 +114,7 @@ void ComponentMesh::Load(aiMesh* mesh)
 
 	glGenBuffers(1, (GLuint*) &(indices_id));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * num_indices, indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * num_indices, indices, draw_mode);
 
 	if (mesh->HasBones())
 	{
@@ -149,9 +148,7 @@ void ComponentMesh::Load(Primitive* primitive)
 	num_indices = primitive->num_indices;
 
 	vertices = new float3[num_vertices];
-	vertices_bind = new float3[num_vertices];
 	memcpy(vertices, primitive->vertices, 3 * num_vertices * sizeof(float));
-	memcpy(vertices_bind, vertices, num_vertices * sizeof(float3));
 
 	glGenBuffers(1, (GLuint*) &(vertices_id));
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
@@ -161,21 +158,19 @@ void ComponentMesh::Load(Primitive* primitive)
 
 	has_normals = true;
 	normals = new float3[num_vertices];
-	normals_bind = new float3[num_vertices];
 	memcpy(normals, primitive->normals, 3 * num_vertices * sizeof(float));
-	memcpy(normals_bind, normals, num_vertices * sizeof(float3));
 
 	glGenBuffers(1, (GLuint*) &(normals_id));
 	glBindBuffer(GL_ARRAY_BUFFER, normals_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, normals, GL_STATIC_DRAW);
 
 	has_tex_coords = true;
-	tex_coords = new float[2 * num_vertices];
-	memcpy(tex_coords, primitive->text_coord, 2 * num_vertices * sizeof(float));
+	tex_coords = new float2[num_vertices];
+	memcpy(tex_coords, primitive->text_coord, num_vertices * sizeof(float2));
 
 	glGenBuffers(1, (GLuint*) &(texture_id));
 	glBindBuffer(GL_ARRAY_BUFFER, texture_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, tex_coords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * num_vertices, tex_coords, GL_STATIC_DRAW);
 
 	num_indices = primitive->num_indices;
 	indices = new unsigned[num_indices];
@@ -203,19 +198,27 @@ void ComponentMesh::LoadBones()
 				bones[i].bone_object = bone;
 				bones[i].bone_object->is_bone = true;
 			}
-			
 		}
 	}
 }
 
 bool ComponentMesh::OnUpdate()
 {
+	float3* vertex_pointer;
+	float3* normals_pointer;
+
 	if (has_bones)
 	{
-		memset(vertices, 0, num_vertices * sizeof(float3));
+		glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
+		vertex_pointer = (float3*) glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+		memset(vertex_pointer, 0, num_vertices * sizeof(float3));
 		if (has_normals)
-			memset(normals, 0, num_vertices * sizeof(float3));
-
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, normals_id);
+			normals_pointer = (float3*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+			memset(normals_pointer, 0, num_vertices * sizeof(float3));
+		}
+			
 		float4x4 animation_transform = float4x4::identity;
 
 		for (int i = 0; i < num_bones; i++)
@@ -228,12 +231,21 @@ bool ComponentMesh::OnUpdate()
 
 			for (int j = 0; j < bones[i].num_weights; j++)
 			{
-				vertices[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices_bind[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
+				vertex_pointer[bones[i].weights[j].vertex] += animation_transform.TransformPos(vertices[bones[i].weights[j].vertex]) * bones[i].weights[j].weight;
 
 				if (has_normals)
-					normals[bones[i].weights[j].vertex] += rotation * normals_bind[bones[i].weights[j].vertex] * bones[i].weights[j].weight;
+					normals_pointer[bones[i].weights[j].vertex] += rotation * normals[bones[i].weights[j].vertex] * bones[i].weights[j].weight;
 			}
 		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+		if (has_normals)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, normals_id);
+			glUnmapBuffer(GL_ARRAY_BUFFER);
+		}
+
 	}
 
 	return true;
@@ -241,17 +253,6 @@ bool ComponentMesh::OnUpdate()
 
 bool ComponentMesh::OnDraw() const
 {
-	if (has_bones)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, vertices, GL_STATIC_DRAW);
-		if (has_normals)
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, normals_id);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * num_vertices, normals, GL_STATIC_DRAW);
-		}
-	}
-		
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_id);	
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
