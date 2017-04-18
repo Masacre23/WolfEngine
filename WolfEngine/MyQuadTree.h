@@ -26,6 +26,7 @@ struct QuadNode
 	
 	GameObject** bucket;
 	unsigned int bucket_size = 0;
+	unsigned int bucket_mul = 1;
 
 	QuadNode** children = nullptr;
 };
