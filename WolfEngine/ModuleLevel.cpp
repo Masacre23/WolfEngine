@@ -7,7 +7,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "Math.h"
-#include "Quadtree.h"
+#include "MyQuadTree.h"
 
 #pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
 
@@ -23,9 +23,9 @@ bool ModuleLevel::Init()
 {
 	APPLOG("Init level.");
 
-	root = CreateGameObject("Root");
+	quadtree = new MyQuadTree(AABB(float3(-100, -20, -100), float3(100, 20, 100)));
 
-	quadtree = new Quadtree(AABB(float3(-100, -20, -100), float3(100, 20, 100)));
+	root = CreateGameObject("Root");
 
 	return true;
 }
@@ -58,7 +58,7 @@ bool ModuleLevel::CleanUp()
 
 void ModuleLevel::Draw() const
 {
-	//quadtree->Draw();
+	quadtree->Draw();
 
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
 	{
@@ -156,6 +156,11 @@ GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScen
 	for (int i = 0; i < scene_node->mNumChildren; i++)
 		RecursiveLoadSceneNode(scene_node->mChildren[i], scene, new_object, folder_path, root_scene_object, is_dynamic);
 	return new_object;
+}
+
+void ModuleLevel::InsertGameObjectQuadTree(GameObject * game_object)
+{
+	quadtree->Insert(game_object);
 }
 
 void ModuleLevel::SaveGameObjectsTransforms()

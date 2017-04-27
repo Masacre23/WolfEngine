@@ -12,7 +12,7 @@ struct aiString;
 struct aiNode;
 
 class GameObject;
-class Quadtree;
+class MyQuadTree;
 class Primitive;
 
 class ModuleLevel : public Module
@@ -37,6 +37,7 @@ public:
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
 
+	void InsertGameObjectQuadTree(GameObject * game_object);
 	void SaveGameObjectsTransforms();
 	void RestoreGameObjectsTransforms();
 
@@ -47,7 +48,7 @@ private:
 
 private:
 	GameObject* root = nullptr;
-	Quadtree* quadtree = nullptr;
+	MyQuadTree* quadtree = nullptr;
 };
 
 #endif // !MODULELEVEL_H

@@ -19,6 +19,7 @@ ComponentCamera::ComponentCamera(GameObject* parent) : Component(Component::Type
 
 	frustum->SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
 
+	SetAABB();
 	App->camera->SetupFrustum(this);
 }
 
@@ -85,6 +86,7 @@ bool ComponentCamera::OnEditor()
 void ComponentCamera::SetFOV(float fov)
 {
 	frustum->SetVerticalFovAndAspectRatio(DEG_TO_RAD * fov, frustum->AspectRatio());
+	SetAABB();
 }
 
 void ComponentCamera::SetAspectRatio(float aspect_ratio)
@@ -92,22 +94,26 @@ void ComponentCamera::SetAspectRatio(float aspect_ratio)
 	float fov = frustum->VerticalFov();
 	float horizontalFov = 2.0f * atanf(tanf(fov / 2.0f) * aspect_ratio);
 	frustum->SetHorizontalFovAndAspectRatio(horizontalFov, aspect_ratio);
+	SetAABB();
 }
 
 void ComponentCamera::SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance)
 {
 	frustum->SetViewPlaneDistances(nearPlaneDistance, farPlaneDistance);
+	SetAABB();
 }
 
 void ComponentCamera::SetPosition(const float3& position)
 {
 	frustum->SetPos(position);
+	SetAABB();
 }
 
 void ComponentCamera::SetOrientation(const Quat& rotation)
 {
 	frustum->SetFront(rotation.Mul(float3::unitZ));
 	frustum->SetUp(rotation.Mul(float3::unitY));
+	SetAABB();
 }
 
 void ComponentCamera::LookAt(const float3 & position)
@@ -118,6 +124,7 @@ void ComponentCamera::LookAt(const float3 & position)
 
 	frustum->SetFront(matrix.MulDir(frustum->Front()).Normalized());
 	frustum->SetUp(matrix.MulDir(frustum->Up()).Normalized());
+	SetAABB();
 }
 
 bool ComponentCamera::IsInsideFrustum(const AABB& box) const
@@ -151,4 +158,14 @@ float* ComponentCamera::GetViewMatrix() const
 	float4x4 matrix = (float4x4)frustum->ViewMatrix();
 
 	return (float*)matrix.Transposed().v;
+}
+
+void ComponentCamera::SetAABB() const
+{
+	if (parent != nullptr)
+	{
+		parent->initial_bbox.SetNegativeInfinity();
+		parent->initial_bbox.Enclose(*frustum);
+		parent->bbox = parent->initial_bbox;
+	}
 }

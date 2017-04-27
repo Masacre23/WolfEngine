@@ -37,9 +37,9 @@ public:
 	MyQuadTree(AABB limits);
 	~MyQuadTree();
 
-	void Draw();
+	void Draw() const;
 	void Insert(GameObject* game_object);
-	void IntersectCandidates(std::vector<GameObject*>& candidates, AABB primitive);
+	void IntersectCandidates(std::vector<GameObject*>& candidates, AABB primitive) const;
 
 private:
 	QuadNode* root = nullptr;

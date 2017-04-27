@@ -19,7 +19,7 @@ MyQuadTree::~MyQuadTree()
 	RELEASE(root);
 }
 
-void MyQuadTree::Draw()
+void MyQuadTree::Draw() const
 {
 	std::vector<QuadNode*> quadnodes;
 	quadnodes.push_back(root);
@@ -120,7 +120,7 @@ void MyQuadTree::Insert(GameObject * game_object)
 	}
 }
 
-void MyQuadTree::IntersectCandidates(std::vector<GameObject*>& candidates, AABB primitive)
+void MyQuadTree::IntersectCandidates(std::vector<GameObject*>& candidates, AABB primitive) const
 {
 	std::vector<QuadNode*> quadnodes;
 	QuadNode* node = root;

@@ -28,7 +28,7 @@ bool ModuleSceneIni::Start()
 
 	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
-	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	App->level->ImportScene("Resources/Models/street/", "Street.obj");
 
 	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae", true);
 	if (pilot != nullptr)

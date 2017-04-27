@@ -27,6 +27,9 @@ public:
 	float* GetProjectionMatrix() const;
 	float* GetViewMatrix() const;
 
+private:
+	void SetAABB() const;
+
 public:
 	Frustum* frustum;
 	bool frustum_culling = true;

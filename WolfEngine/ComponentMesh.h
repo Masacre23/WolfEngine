@@ -46,6 +46,9 @@ public:
 
 	void SetUseNormals(bool material_on) { use_normals = has_normals && material_on; }
 
+private:
+	void SetAABB() const;
+
 public:
 	aiString folder_path;
 

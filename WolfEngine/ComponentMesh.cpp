@@ -7,6 +7,7 @@
 #include "Color.h"
 #include "Application.h"
 #include "ModuleRender.h"
+#include "ModuleLevel.h"
 #include "Primitive.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
@@ -64,9 +65,7 @@ void ComponentMesh::Load(aiMesh* mesh, bool is_dynamic)
 			vertices[i][j] = mesh->mVertices[i][j];
 		}
 
-	//Creating BoundingBox from vertices points
-	parent->initial_bbox.SetNegativeInfinity();
-	parent->initial_bbox.Enclose((float3*)vertices, num_vertices);
+	SetAABB();
 
 	normals = new float3[num_vertices];
 	if (has_normals)
@@ -174,8 +173,7 @@ void ComponentMesh::Load(Primitive* primitive)
 			buffer[c++] = tex_coords[i][j];
 		}
 
-	parent->initial_bbox.SetNegativeInfinity();
-	parent->initial_bbox.Enclose((float3*)vertices, num_vertices);
+	SetAABB();
 
 	glGenBuffers(1, (GLuint*) &(buffer_id));
 	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
@@ -377,4 +375,13 @@ void ComponentMesh::DrawMesh() const
 	glDisable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
+}
+
+void ComponentMesh::SetAABB() const
+{
+	//Creating BoundingBox from vertices points
+	parent->initial_bbox.SetNegativeInfinity();
+	parent->initial_bbox.Enclose((float3*)vertices, num_vertices);
+	parent->bbox = parent->initial_bbox;
+	App->level->InsertGameObjectQuadTree(parent);
 }
