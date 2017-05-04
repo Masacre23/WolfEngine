@@ -218,6 +218,7 @@
     <ClInclude Include="PanelInterface.h" />
     <ClInclude Include="PanelMenuBar.h" />
     <ClInclude Include="parson\parson.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Quadtree.h" />

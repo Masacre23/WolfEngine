@@ -19,6 +19,8 @@ ModuleAnimations::~ModuleAnimations()
 
 update_status ModuleAnimations::Update(float dt)
 {
+	BROFILER_CATEGORY("ModuleAnimation_Update", Profiler::Color::Red);
+
 	UpdateInstances(dt);
 
 	RecursiveUpdateAnimation(App->level->GetRoot());

@@ -14,7 +14,7 @@
 #include "SDL\include\SDL.h"
 
 
-ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
+ModuleEditor::ModuleEditor() : Module(MODULE_EDITOR, true)
 {
 	ImGuiStyle* style = &ImGui::GetStyle();
 	style->WindowPadding = ImVec2(15, 15);
@@ -99,6 +99,8 @@ bool ModuleEditor::Init()
 
 update_status ModuleEditor::PreUpdate(float dt)
 {
+	BROFILER_CATEGORY("ModuleEditor_Update", Profiler::Color::Blue);
+
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 
 	return UPDATE_CONTINUE;
@@ -106,6 +108,8 @@ update_status ModuleEditor::PreUpdate(float dt)
 
 update_status ModuleEditor::Update(float dt)
 {
+	BROFILER_CATEGORY("ModuleEditor_Update", Profiler::Color::Red);
+
 	for (std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it)
 		if ((*it)->active)
 			(*it)->Draw();
@@ -127,6 +131,11 @@ update_status ModuleEditor::Update(float dt)
 	if (ImGui::Button("Tick"))
 	{
 		App->time_controller->Tick();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Stop"))
+	{
+		App->time_controller->Stop();
 	}
 	ImGui::SliderFloat("Slower/Faster", &App->time_controller->time_scale, 0, 10);
 	ImGui::End();
