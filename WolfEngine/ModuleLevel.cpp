@@ -32,6 +32,8 @@ bool ModuleLevel::Init()
 
 update_status ModuleLevel::PreUpdate(float dt)
 {
+	BROFILER_CATEGORY("ModuleLevel_PreUpdate", Profiler::Color::Blue);
+
 	root->RecursiveUpdateTransforms();
 	root->RecursiveUpdateBoundingBox();
 
@@ -40,6 +42,8 @@ update_status ModuleLevel::PreUpdate(float dt)
 
 update_status ModuleLevel::Update(float dt)
 {
+	BROFILER_CATEGORY("ModuleLevel_Update", Profiler::Color::Red);
+
 	root->Update();
 
 	return UPDATE_CONTINUE;

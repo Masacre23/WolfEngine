@@ -1,6 +1,8 @@
 #ifndef MODULEEDITOR_H
 #define MODULEEDITOR_H
 
+#define MODULE_EDITOR "ModuleEditor"
+
 #include "Module.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"

@@ -5,7 +5,7 @@
 #include "Application.h"
 #include "ModuleLevel.h"
 
-ModuleTimeController::ModuleTimeController() : Module("ModuleTimeController", true)
+ModuleTimeController::ModuleTimeController() : Module(MODULE_TIME, true)
 {
 }
 
@@ -34,6 +34,8 @@ bool ModuleTimeController::Start()
 
 update_status ModuleTimeController::Update(float dt)
 {
+	BROFILER_CATEGORY("ModuleTimeController_Update", Profiler::Color::Red);
+
 	if (state == PAUSE)
 		this->delta_time = 0;
 	if (state == TICK)

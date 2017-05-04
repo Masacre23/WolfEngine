@@ -20,7 +20,7 @@
 			"TitleWithInfoLength" : 200		
 		},
 		"Render" : { 
-			"Vsync" : false,
+			"Vsync" : true,
 			"DefaultBlitSpeed" : 1
 		},
 		"EditorCamera" : {

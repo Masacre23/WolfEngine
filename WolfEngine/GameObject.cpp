@@ -19,6 +19,7 @@
 #include "OpenGL.h"
 #include "Color.h"
 #include "Primitive.h"
+#include "Brofiler/include/Brofiler.h"
 
 GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::string& name) : name(name), root(root_object)
 {
