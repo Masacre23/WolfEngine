@@ -52,6 +52,8 @@ bool ModuleInput::Start()
 
 update_status ModuleInput::PreUpdate(float dt)
 {
+	BROFILER_CATEGORY("ModuleInput_PreUpdate", Profiler::Color::Blue);
+
 	static SDL_Event event_general;
 
 	mouse_motion = { 0, 0 };

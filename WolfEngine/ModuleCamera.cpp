@@ -51,6 +51,8 @@ bool ModuleCamera::Start()
 
 update_status ModuleCamera::Update(float dt)
 {
+	BROFILER_CATEGORY("ModuleCamera_Update", Profiler::Color::Red);
+
 	float3 movement = float3::zero;
 	float3 direction_forward = editor_camera->frustum->Front();
 	float3 direction_right = editor_camera->frustum->WorldRight();

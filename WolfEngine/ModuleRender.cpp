@@ -122,6 +122,8 @@ bool ModuleRender::Start()
 
 update_status ModuleRender::PreUpdate(float dt)
 {
+	BROFILER_CATEGORY("ModuleRender_PreUpdate", Profiler::Color::Blue);
+
 	glViewport(0, 0, App->window->GetScreenWidth(), App->window->GetScreenHeight());
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -136,6 +138,8 @@ update_status ModuleRender::PreUpdate(float dt)
 
 update_status ModuleRender::Update(float dt)
 {
+	BROFILER_CATEGORY("ModuleRender_Update", Profiler::Color::Red);
+
 	DrawBasePlane(Colors::White);
 	DrawAxis();
 
@@ -144,6 +148,8 @@ update_status ModuleRender::Update(float dt)
 
 update_status ModuleRender::PostUpdate(float dt)
 {
+	BROFILER_CATEGORY("ModuleRender_PostUpdate", Profiler::Color::Green);
+
 	//App->level->Draw();
 	App->level->DrawDebug();
 	App->editor->Draw();

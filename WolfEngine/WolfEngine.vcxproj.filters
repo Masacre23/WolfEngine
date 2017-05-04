@@ -306,5 +306,8 @@
     <ClInclude Include="Primitive.h">
       <Filter>Clases</Filter>
     </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

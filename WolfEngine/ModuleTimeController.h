@@ -1,6 +1,8 @@
 #ifndef MODULETIMECONTROLLER_H
 #define MODULETIMECONTROLLER_H
 
+#define MODULE_TIME "ModuleTimeController"
+
 #include "Module.h"
 #include <vector>
 

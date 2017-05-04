@@ -2,6 +2,7 @@
 #define MODULE_H
 
 #include "Globals.h"
+#include "Brofiler/include/Brofiler.h"
 
 class Module
 {
@@ -63,16 +64,22 @@ public:
 
 	virtual update_status PreUpdate(float dt)
 	{
+		BROFILER_CATEGORY(name, Profiler::Color::Blue);
+
 		return UPDATE_CONTINUE;
 	}
 
 	virtual update_status Update(float dt)
 	{
+		BROFILER_CATEGORY(name, Profiler::Color::Red);
+
 		return UPDATE_CONTINUE;
 	}
 
 	virtual update_status PostUpdate(float dt)
 	{
+		BROFILER_CATEGORY(name, Profiler::Color::Green);
+
 		return UPDATE_CONTINUE;
 	}
 
@@ -81,8 +88,10 @@ public:
 		return true;
 	}
 
-private:
+public:
 	const char* name = "";
+
+private:
 	bool active = true;
 };
 

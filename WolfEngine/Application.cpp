@@ -12,6 +12,8 @@
 #include "ModuleSceneIni.h"
 #include "ModuleEditor.h"
 #include "ModuleTimeController.h"
+#include "Brofiler/include/Brofiler.h"
+#pragma comment(lib, "Brofiler/libx86/ProfilerCore32.lib")
 
 Application::Application()
 {
@@ -101,17 +103,30 @@ update_status Application::Update()
 	//  differential time since last frame 
 	time_controller->UpdateDeltaTime();
 
+	BROFILER_FRAME("frameName");
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
+		{
+			//BROFILER_CATEGORY((*it)->name, Profiler::Color::Blue);
 			ret = (*it)->PreUpdate(time_controller->delta_time);
+		}
+			
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
+		{
+			//BROFILER_CATEGORY((*it)->name, Profiler::Color::Red);
 			ret = (*it)->Update(time_controller->delta_time);
+		}
+			
 
 	for (std::list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled())
+		{
+			//BROFILER_CATEGORY((*it)->name, Profiler::Color::Green);
 			ret = (*it)->PostUpdate(time_controller->delta_time);
+		}
+			
 
 	EndUpdate();
 
