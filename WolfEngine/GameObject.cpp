@@ -271,7 +271,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 	case Component::PARTICLE:
 		ret = new ComponentParticleSystem(this);
 		particle_system = (ComponentParticleSystem*)ret;
-		particle_system->Init(10, aiVector2D(0, 0), 2, 2, "Resources/rainSprite.tga", aiVector2D(0,0));
+		particle_system->Init(1, aiVector2D(0, 0), 2, 2, "Resources/rainSprite.tga", aiVector2D(0,0));
 		break;
 	case Component::UNKNOWN:
 		break;

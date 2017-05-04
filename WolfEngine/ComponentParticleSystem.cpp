@@ -4,6 +4,7 @@
 #include "ModuleCamera.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
+#include "OpenGL.h"
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject * parent) : Component(Component::Type::PARTICLE, parent)
 {
@@ -37,11 +38,14 @@ void ComponentParticleSystem::Update(unsigned elapsed, const ComponentCamera & c
 
 bool ComponentParticleSystem::OnDraw()
 {
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.1f);
 	for (int i = 0; i < billboards.size(); ++i)
 	{
 		particles[i].billboard->ComputeQuad(App->camera->GetPosition());
 		particles[i].billboard->Draw();
 	}
+	glDisable(GL_ALPHA_TEST);
 	return false;
 }
 
