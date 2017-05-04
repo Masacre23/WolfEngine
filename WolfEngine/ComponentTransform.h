@@ -17,8 +17,8 @@ public:
 
 	const float4x4& UpdateGlobalTransform(const float4x4& parent);
 
-	void SaveTransform() { backup_local_transform = local_transform; }
-	void LoadTransform() { local_transform = backup_local_transform; }
+	void SaveTransform();
+	void LoadTransform();
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
 	void Load(const float3& position, const Quat& rotation);

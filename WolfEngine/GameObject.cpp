@@ -477,7 +477,7 @@ void GameObject::RecursiveLoadLocalTransform()
 	transform->LoadTransform();
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveSaveLocalTransform();
+		(*it)->RecursiveLoadLocalTransform();
 }
 
 const float4x4& GameObject::GetLocalTransformMatrix() const

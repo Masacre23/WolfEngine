@@ -21,13 +21,14 @@ bool ModuleTimeController::Init()
 	game_time = 0; 
 	time_scale = 1.0f;
 	delta_time = 0.0f;
+
+	state = PAUSE;
+
 	return true;
 }
 
 bool ModuleTimeController::Start()
 {
-	Play();
-
 	return true;
 }
 

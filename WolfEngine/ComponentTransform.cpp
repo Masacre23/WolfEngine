@@ -91,3 +91,18 @@ void ComponentTransform::RecalculateLocalTransform()
 	local_transform = float4x4::FromTRS(position, rotation, scale);
 	transform_change = true;
 }
+
+void ComponentTransform::SaveTransform()
+{ 
+	backup_local_transform = local_transform; 
+}
+
+void ComponentTransform::LoadTransform()
+{ 
+	local_transform = backup_local_transform;
+	position = local_transform.TranslatePart();
+	rotation_euler = local_transform.RotatePart().ToEulerXYZ();
+	rotation = Quat::FromEulerXYZ(rotation_euler[0], rotation_euler[1], rotation_euler[2]);
+	scale = local_transform.GetScale();
+	transform_change = true;
+}
