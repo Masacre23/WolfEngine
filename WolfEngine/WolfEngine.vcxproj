@@ -153,6 +153,7 @@
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleLevel.cpp" />
+    <ClCompile Include="ModuleProgramShaders.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneIni.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleLevel.h" />
+    <ClInclude Include="ModuleProgramShaders.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleSceneIni.h" />
     <ClInclude Include="ModuleTextures.h" />

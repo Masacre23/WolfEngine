@@ -156,6 +156,7 @@
     <ClCompile Include="Primitive.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleProgramShaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -306,5 +307,6 @@
     <ClInclude Include="Primitive.h">
       <Filter>Clases</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleProgramShaders.h" />
   </ItemGroup>
 </Project>

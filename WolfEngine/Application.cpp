@@ -12,6 +12,7 @@
 #include "ModuleSceneIni.h"
 #include "ModuleEditor.h"
 #include "ModuleTimeController.h"
+#include "ModuleProgramShaders.h"
 
 Application::Application()
 {
@@ -31,6 +32,7 @@ Application::Application()
 	modules.push_back(level = new ModuleLevel());
 	modules.push_back(editor = new ModuleEditor());
 	modules.push_back(textures = new ModuleTextures());
+	modules.push_back(program_shaders = new ModuleProgramShaders());
 	modules.push_back(audio = new ModuleAudio());
 	
 
