@@ -59,7 +59,6 @@ bool ModuleLevel::CleanUp()
 void ModuleLevel::Draw() const
 {
 	quadtree->Draw();
-
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
 	{
 		if ((*it)->IsActive())
@@ -68,6 +67,27 @@ void ModuleLevel::Draw() const
 			(*it)->DrawHierarchy();
 		}
 	}
+}
+
+void ModuleLevel::DrawDebug() const
+{
+	quadtree->Draw();
+	camera->Draw();
+	std::vector<GameObject*> testObjects;
+	testObjects.clear();
+
+	quadtree->IntersectCandidates(testObjects, camera->bbox);
+
+	for (std::vector<GameObject*>::const_iterator it = testObjects.begin(); it != testObjects.end(); ++it)
+	{
+		if ((*it)->IsActive())
+		{
+			(*it)->Draw();
+			(*it)->DrawHierarchy();
+		}
+	}
+
+	testObjects.clear();
 }
 
 GameObject* ModuleLevel::CreateGameObject(const std::string& name, GameObject* parent, GameObject* root_object)
@@ -116,6 +136,13 @@ GameObject* ModuleLevel::ImportScene(const char* folder, const char* file, bool 
 
 	aiReleaseImport(scene);
 	return res;
+}
+
+GameObject * ModuleLevel::AddCamera()
+{
+	camera = CreateGameObject("Game Camera");
+	camera->CreateComponent(Component::Type::CAMERA);
+	return camera;
 }
 
 GameObject* ModuleLevel::RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object, bool is_dynamic)

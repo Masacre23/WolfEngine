@@ -27,12 +27,14 @@ public:
 	bool CleanUp();
 
 	void Draw() const;
+	void DrawDebug() const;
 
 	GameObject* CreateGameObject(const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 	GameObject* CreateGameObject(Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 	GameObject* CreateGameObject(const char* texture, Primitive* primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 
 	GameObject* ImportScene(const char* folder, const char* file, bool is_dynamic = false);
+	GameObject* AddCamera();
 
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
@@ -48,6 +50,7 @@ private:
 
 private:
 	GameObject* root = nullptr;
+	GameObject* camera = nullptr;
 	MyQuadTree* quadtree = nullptr;
 };
 

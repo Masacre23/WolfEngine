@@ -26,8 +26,9 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	APPLOG("Loading initial scene");
 
-	//App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
-	//App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
+	App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
+	App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
+	App->level->AddCamera();
 	App->level->ImportScene("Resources/Models/street/", "Street.obj");
 
 	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae", true);
