@@ -308,5 +308,12 @@
     <ClInclude Include="Physics.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentParticleSystem.h">
+      <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulePhysics.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleProgramShaders.h" />
   </ItemGroup>
 </Project>

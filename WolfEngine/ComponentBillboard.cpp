@@ -52,7 +52,7 @@ bool ComponentBillboard::OnDraw() const
 		{
 			Billboard* b = (Billboard*)(*c);
 			b->ComputeQuad(App->camera->GetPosition());
-			b->Draw();
+			b->Draw({ 1.0f, 1.0f, 1.0f }, {1.0f, 1.0f});
 		}
 	}
 	glDisable(GL_ALPHA_TEST);

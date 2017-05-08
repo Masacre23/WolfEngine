@@ -6,8 +6,6 @@
 #include "PanelHierachy.h"
 #include "ComponentTransform.h"
 
-#define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
-
 PanelInterface::PanelInterface(bool active) : Panel("Interface", active)
 {
 	hierachy = new PanelHierachy();
@@ -41,7 +39,7 @@ void PanelInterface::Draw()
 		char buf[1024];
 		strcpy(buf, go->name.c_str());
         ImGui::InputText("", buf, IM_ARRAYSIZE(buf));
-	
+
 		go->name = buf;
 
 		for (int i = 0; i < go->GetNumComponents(); ++i)
