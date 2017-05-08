@@ -39,6 +39,7 @@ public:
 
 	bool OnUpdate();
 	bool OnDraw() const;
+	bool OnDebugDraw() const;
 	bool OnEditor();
 
 	void DrawNormals() const;

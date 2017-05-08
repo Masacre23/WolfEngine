@@ -153,6 +153,7 @@
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleLevel.cpp" />
+    <ClCompile Include="ModulePhysics.cpp" />
     <ClCompile Include="ModuleProgramShaders.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneIni.cpp" />
@@ -168,7 +169,6 @@
     <ClCompile Include="PanelMenuBar.cpp" />
     <ClCompile Include="parson\parson.c" />
     <ClCompile Include="Primitive.cpp" />
-    <ClCompile Include="Quadtree.cpp" />
     <ClCompile Include="TimerUs.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +202,7 @@
     <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleLevel.h" />
+    <ClInclude Include="ModulePhysics.h" />
     <ClInclude Include="ModuleProgramShaders.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleSceneIni.h" />
@@ -221,7 +222,6 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Primitive.h" />
-    <ClInclude Include="Quadtree.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerUs.h" />
   </ItemGroup>

@@ -83,6 +83,7 @@ bool ModuleRender::Init()
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHTING);
+		//glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 		ret = ret && GetGLError();
 
@@ -140,8 +141,13 @@ update_status ModuleRender::Update(float dt)
 {
 	BROFILER_CATEGORY("ModuleRender_Update", Profiler::Color::Red);
 
-	DrawBasePlane(Colors::White);
-	DrawAxis();
+	if (debug_draw)
+	{
+		PreDebugDraw();
+		DrawBasePlane(Colors::White);
+		DrawAxis();
+		PostDebugDraw();
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -150,9 +156,17 @@ update_status ModuleRender::PostUpdate(float dt)
 {
 	BROFILER_CATEGORY("ModuleRender_PostUpdate", Profiler::Color::Green);
 
-	//App->level->Draw();
-	App->level->DrawDebug();
+	App->level->Draw();
+
+	if (debug_draw)
+	{
+		PreDebugDraw();
+		App->level->DrawDebug();
+		PostDebugDraw();
+	}
+
 	App->editor->Draw();
+
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
 	return UPDATE_CONTINUE;
@@ -186,6 +200,20 @@ void ModuleRender::DrawColor(const Color& color)
 	glColor3f(color.r, color.g, color.b);
 }
 
+void ModuleRender::PreDebugDraw()
+{
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	//glEnable(GL_COLOR_MATERIAL);
+}
+
+void ModuleRender::PostDebugDraw()
+{
+	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	//glDisable(GL_COLOR_MATERIAL);
+}
+
 void ModuleRender::DrawBoundingBox(const AABB& bbox, const Color& color)
 {
 	float3 corners[8];
@@ -216,9 +244,6 @@ void ModuleRender::DrawAxis()
 
 	glDepthRange(0.0, 0.01);
 
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
 	glLineWidth(2.0f);
 
 	DrawColor(Colors::Red);
@@ -239,10 +264,6 @@ void ModuleRender::DrawAxis()
 	glVertex3f(0.0, 0.0, axis_length);
 	glEnd();
 
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-
 	glDepthRange(0.01, 1.0);
 
 }
@@ -257,9 +278,6 @@ void ModuleRender::DrawBasePlane(const Color& color)
 	//glDepthRange(0.1, 0.9);
 	
 	glLineWidth(2.0f);
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
 	DrawColor(color);
 	for (int i = 0; i < num_lines; i++)
 	{
@@ -274,19 +292,12 @@ void ModuleRender::DrawBasePlane(const Color& color)
 		glVertex3f(min_distance, 0.0, min_distance + i*distance_between_lines);
 		glVertex3f(max_distance, 0.0, min_distance + i*distance_between_lines);
 		glEnd();
-	}
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-	
+	}	
 }
 
 void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 {
 	glLineWidth(1.0f);
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
 	glBegin(GL_LINES);
 	
 	DrawColor(color);
@@ -328,9 +339,6 @@ void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 
 	DrawColor(Colors::Black);
 	glEnd();
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
 }
 
 bool ModuleRender::SetVsync(bool vsync)

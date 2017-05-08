@@ -135,9 +135,6 @@
     <ClCompile Include="MyQuadTree.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
-    <ClCompile Include="Quadtree.cpp">
-      <Filter>Clases</Filter>
-    </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -157,6 +154,9 @@
       <Filter>Clases</Filter>
     </ClCompile>
     <ClCompile Include="ModuleProgramShaders.cpp" />
+    <ClCompile Include="ModulePhysics.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -279,9 +279,6 @@
     <ClInclude Include="ComponentAnim.h">
       <Filter>Game Object</Filter>
     </ClInclude>
-    <ClInclude Include="Quadtree.h">
-      <Filter>Clases</Filter>
-    </ClInclude>
     <ClInclude Include="MyQuadTree.h">
       <Filter>Clases</Filter>
     </ClInclude>
@@ -310,6 +307,9 @@
     <ClInclude Include="ModuleProgramShaders.h" />
     <ClInclude Include="Physics.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulePhysics.h">
+      <Filter>Core Modules</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

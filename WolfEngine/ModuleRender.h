@@ -28,8 +28,11 @@ public:
 	bool CleanUp();
 
 	void WindowResize(int width, int height);
-
+	
 	void DrawColor(const Color& color);
+
+	void PreDebugDraw();
+	void PostDebugDraw();
 	void DrawBoundingBox(const AABB& bbox, const Color& color);
 	void DrawBoundingBox(const OBB & bbox, const Color & color);
 	void DrawFrustum(const Frustum& frustum, const Color& color);
@@ -50,6 +53,7 @@ private:
 
 public:
 	SDL_Renderer* renderer = nullptr;
+	bool debug_draw = true;
 
 private:
 	SDL_GLContext glcontext = NULL;

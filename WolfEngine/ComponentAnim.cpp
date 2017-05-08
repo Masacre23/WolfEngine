@@ -3,6 +3,8 @@
 #include "ModuleAnimations.h"
 #include "ComponentTransform.h"
 #include "GameObject.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl_gl3.h"
 #include <vector>
 #include <assimp/scene.h>
 
@@ -15,9 +17,26 @@ ComponentAnim::~ComponentAnim()
 {
 }
 
-bool ComponentAnim::OnEditor(int selection_mask, int id)
+bool ComponentAnim::OnEditor()
 {
-	return false;
+	if (ImGui::CollapsingHeader("Animator"))
+	{
+		/*ImGui::LabelText()
+
+		ImGui::Checkbox("Active", &enable);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Delete"))
+			parent->DeleteComponent(this);
+
+		ImGui::DragFloat4("Ambient", (float*)&ambient, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat4("Diffuse", (float*)&diffuse, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat4("Specular", (float*)&specular, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("Shiness", (float*)&shiness, 1.0f, 0.0f, 128.0f);*/
+	}
+
+	return true;
 }
 
 bool ComponentAnim::OnAnimationUpdate()

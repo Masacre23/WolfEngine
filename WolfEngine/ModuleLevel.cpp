@@ -62,14 +62,10 @@ bool ModuleLevel::CleanUp()
 
 void ModuleLevel::Draw() const
 {
-	quadtree->Draw();
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
 	{
 		if ((*it)->IsActive())
-		{
 			(*it)->Draw();
-			(*it)->DrawHierarchy();
-		}
 	}
 }
 
@@ -82,12 +78,14 @@ void ModuleLevel::DrawDebug() const
 
 	quadtree->IntersectCandidates(testObjects, camera->bbox);
 
-	for (std::vector<GameObject*>::const_iterator it = testObjects.begin(); it != testObjects.end(); ++it)
+	//for (std::vector<GameObject*>::const_iterator it = testObjects.begin(); it != testObjects.end(); ++it)
+	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
 	{
 		if ((*it)->IsActive())
 		{
-			(*it)->Draw();
 			(*it)->DrawHierarchy();
+			(*it)->DebugDraw();
+			
 		}
 	}
 

@@ -28,6 +28,7 @@ public:
 	bool Update();
 	
 	void Draw() const;
+	void DebugDraw() const;
 	void DrawHierarchy() const;
 
 	void SetParent(GameObject* parent);
