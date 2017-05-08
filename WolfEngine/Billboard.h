@@ -16,6 +16,7 @@ public:
 
 public:
 	float3 position;
+	unsigned time_reset_pos = 0;
 private:
 	const float3 up_vector = float3(0.0f, 1.0f, 0.0f);
 	unsigned int texture;

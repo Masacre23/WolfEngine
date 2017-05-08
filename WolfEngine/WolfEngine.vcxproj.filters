@@ -300,13 +300,15 @@
     <ClInclude Include="ComponentBillboard.h">
       <Filter>Game Object</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentParticleSystem.h" />
     <ClInclude Include="Primitive.h">
       <Filter>Clases</Filter>
     </ClInclude>
     <ClInclude Include="ModuleProgramShaders.h" />
     <ClInclude Include="Physics.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentParticleSystem.h">
+      <Filter>Game Object</Filter>
     </ClInclude>
     <ClInclude Include="ModulePhysics.h">
       <Filter>Core Modules</Filter>
