@@ -1,6 +1,7 @@
 #include "ModuleProgramShaders.h"
 #include "OpenGL.h"
 #include <string>
+#include <cstdio>
 
 ModuleProgramShaders::ModuleProgramShaders() : Module(MODULE_PROGRAM_SHADERS)
 {
@@ -29,6 +30,17 @@ void ModuleProgramShaders::Load(const char * name, const char * vertex_shader, c
 
 	aiString path = aiString();
 	path.Append(name);
+
+	FILE * vertex_file;
+	vertex_file = fopen(vertex_shader, "r");
+	if (vertex_file == nullptr)
+		return;
+	fseek(vertex_file, 0, SEEK_END);
+	int vertex_file_size = ftell(vertex_file);
+	rewind(vertex_file);
+	void* buff_vertex;
+	fread(buff_vertex, sizeof(char), vertex_file_size, vertex_file);
+	APPLOG("Vertex shader: %s", buff_vertex);
 
 	int id_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(id_vertex_shader, 1, &((const GLchar *) vertex_shader), 0);
@@ -140,8 +152,18 @@ int ModuleProgramShaders::GetUniformLocation(const char * name, const char * ver
 
 void ModuleProgramShaders::UseProgram(const char * name)
 {
+	aiString path = aiString();
+	path.Append(name);
+
+	ProgramList::iterator it = programs.find(path);
+
+	if (it != programs.end())
+	{
+		glUseProgram(programs[path]);
+	}
 }
 
 void ModuleProgramShaders::UnuseProgram()
 {
+	glUseProgram(0);
 }
