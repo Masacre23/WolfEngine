@@ -39,7 +39,7 @@ bool ComponentCamera::OnUpdate()
 	return true;
 }
 
-bool ComponentCamera::OnDraw() const
+bool ComponentCamera::OnDebugDraw() const
 {
 	App->renderer->DrawFrustum(*frustum, Colors::Yellow);
 

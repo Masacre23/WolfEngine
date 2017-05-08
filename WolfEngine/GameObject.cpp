@@ -63,21 +63,11 @@ void GameObject::Draw() const
 	{
 		glPushMatrix();
 
-		if (selected)
-		{
-			App->renderer->DrawBoundingBox(bbox, Colors::Green);
-			App->renderer->DrawBoundingBox(transform_bbox, Colors::Blue);
-		}
-
 		if (transform != nullptr)
 			if (transform->IsActive())
 				transform->OnDraw();
 
-		if (selected)
-			App->renderer->DrawAxis();
-
 		glBindTexture(GL_TEXTURE_2D, 0);
-
 		App->renderer->DrawColor(Colors::White);
 
 		const Component* material = GetComponent(Component::MATERIAL);
@@ -105,11 +95,6 @@ void GameObject::Draw() const
 
 		glPopMatrix();
 
-		const Component* camera = GetComponent(Component::Type::CAMERA);
-		if (camera != nullptr)
-			if (camera->IsActive())
-				camera->OnDraw();
-
 		if (billboard != nullptr)
 			if (billboard->IsActive())
 				billboard->OnDraw();
@@ -125,12 +110,48 @@ void GameObject::Draw() const
 	}
 }
 
+void GameObject::DebugDraw() const
+{
+	glPushMatrix();
+
+	if (selected)
+	{
+		App->renderer->DrawBoundingBox(bbox, Colors::Green);
+		App->renderer->DrawBoundingBox(transform_bbox, Colors::Blue);
+	}
+
+	if (transform != nullptr)
+		if (transform->IsActive())
+			transform->OnDebugDraw();
+
+	if (selected)
+	{
+		App->renderer->DrawAxis();
+
+		const Component* mesh = GetComponent(Component::MESH);
+		if (mesh != nullptr)
+		{
+			if (mesh->IsActive())
+				mesh->OnDebugDraw();
+		}
+	}
+
+	glPopMatrix();
+
+	const Component* camera = GetComponent(Component::Type::CAMERA);
+	if (camera != nullptr)
+		if (camera->IsActive())
+			camera->OnDebugDraw();
+
+	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
+		if ((*it)->IsActive())
+			(*it)->DebugDraw();
+}
+
 void GameObject::DrawHierarchy() const
 {
 	glDepthRange(0.0, 0.01);
 	glLineWidth(2.0f);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
 	
 	App->renderer->DrawColor(Colors::Blue);
 
@@ -159,8 +180,6 @@ void GameObject::DrawHierarchy() const
 			(*it)->RecursiveDrawHierarchy();
 
 	App->renderer->DrawColor(Colors::Black);
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
 	glDepthRange(0.01, 1.0);
 }
 
@@ -272,7 +291,7 @@ Component* GameObject::CreateComponent(Component::Type type)
 	case Component::PARTICLE:
 		ret = new ComponentParticleSystem(this);
 		particle_system = (ComponentParticleSystem*)ret;
-		particle_system->Init(1, aiVector2D(0, 0), 2, 2, "Resources/rainSprite.tga", aiVector2D(0,0));
+		particle_system->Init(500, aiVector2D(0, 0), 100, 10, "Resources/rainSprite.tga", aiVector2D(0.5f,0.5f));
 		break;
 	case Component::UNKNOWN:
 		break;

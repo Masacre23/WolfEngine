@@ -27,18 +27,18 @@ bool ModuleSceneIni::Start()
 	bool res = true;
 	APPLOG("Loading initial scene");
 
-	App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
-	App->level->ImportScene("Resources/Models/", "magnetto2.fbx");
+	/*App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
+	App->level->ImportScene("Resources/Models/", "magnetto2.fbx");*/
 	App->level->AddCamera();
 	App->level->ImportScene("Resources/Models/street/", "Street.obj");
 
-	pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae", true);
+	/*pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae", true);
 	if (pilot != nullptr)
 	{
 		pilot->LoadAnim("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 		App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
 		App->animations->Load("ArmyPilot_Walk", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Walk.fbx");
-	}	
+	}	*/
 
 	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", &Primitives::Cube, "LennaCube");
 	cube->SetLocalTransform({ 2.0f, 0.0f, 0.0f });
@@ -54,8 +54,8 @@ bool ModuleSceneIni::Start()
 	bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(10.0f, 10.0f, 10.0f));
 	quad_tree = new MyQuadTree(bbox);*/
 
-	//grass = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "grass");
-	//grass->CreateComponent(Component::Type::BILLBOARD);
+	grass = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "grass");
+	grass->CreateComponent(Component::Type::BILLBOARD);
 
 	rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
 	rain->CreateComponent(Component::Type::PARTICLE);

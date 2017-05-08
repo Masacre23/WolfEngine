@@ -30,7 +30,7 @@ public:
 
 	void Init(unsigned max_particles, const aiVector2D& _emit_size, unsigned _falling_time, float falling_height, const char* texture_file, const aiVector2D& psize);
 	void Clear();
-	void Update(unsigned elapsed, const ComponentCamera& camera);
+	void Rain(Billboard* b);
 	bool OnDraw();
 	bool OnEditor();
 

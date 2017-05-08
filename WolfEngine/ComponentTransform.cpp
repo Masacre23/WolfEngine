@@ -62,6 +62,14 @@ bool ComponentTransform::OnDraw() const
 	return true;
 }
 
+bool ComponentTransform::OnDebugDraw() const
+{
+	float* transform = global_transform.Transposed().ptr();
+	glMultMatrixf(transform);
+
+	return true;
+}
+
 bool ComponentTransform::OnEditor()
 {
 	bool node_open = ImGui::CollapsingHeader("Transform");

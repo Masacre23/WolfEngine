@@ -11,7 +11,7 @@ public:
 	~ComponentCamera();
 
 	bool OnUpdate();
-	bool OnDraw() const;
+	bool OnDebugDraw() const;
 	bool OnEditor();
 
 	void SetFOV(float fov);

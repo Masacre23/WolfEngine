@@ -288,14 +288,19 @@ bool ComponentMesh::OnDraw() const
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	return true;
+}
+
+bool ComponentMesh::OnDebugDraw() const
+{
 	if (draw_normals)
 		DrawNormals();
 
 	if (draw_mesh)
 		DrawMesh();
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	return true;
 }
@@ -324,10 +329,6 @@ bool ComponentMesh::OnEditor()
 
 void ComponentMesh::DrawNormals() const
 {
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
-
 	App->renderer->DrawColor(Colors::Yellow);
 
 	for (int i = 0; i < num_vertices; i++)
@@ -339,17 +340,10 @@ void ComponentMesh::DrawNormals() const
 	}
 
 	App->renderer->DrawColor(Colors::Black);
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
 }
 
 void ComponentMesh::DrawMesh() const
 {
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
-
 	App->renderer->DrawColor(Colors::Fuchsia);
 
 	unsigned num_triangles = num_indices / 3;
@@ -372,9 +366,6 @@ void ComponentMesh::DrawMesh() const
 	}
 
 	App->renderer->DrawColor(Colors::Black);
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
 }
 
 void ComponentMesh::SetAABB() const

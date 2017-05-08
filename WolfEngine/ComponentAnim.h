@@ -11,7 +11,7 @@ public:
 	ComponentAnim(GameObject* parent);
 	~ComponentAnim();
 
-	bool OnEditor(int selection_mask, int id);
+	bool OnEditor();
 
 	bool OnAnimationUpdate();
 
