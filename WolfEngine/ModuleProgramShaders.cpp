@@ -32,18 +32,24 @@ void ModuleProgramShaders::Load(const char * name, const char * vertex_shader, c
 	path.Append(name);
 
 	FILE * vertex_file;
-	vertex_file = fopen(vertex_shader, "r");
-	if (vertex_file == nullptr)
+	vertex_file = fopen(vertex_shader, "rb");
+	if (vertex_file == nullptr) {
+		APPLOG("Error opening file %s: %s\n", vertex_shader, strerror(errno));
 		return;
+	}
+	
 	fseek(vertex_file, 0, SEEK_END);
 	int vertex_file_size = ftell(vertex_file);
 	rewind(vertex_file);
-	void* buff_vertex;
+	char* buff_vertex = new char[vertex_file_size + 1];
 	fread(buff_vertex, sizeof(char), vertex_file_size, vertex_file);
-	APPLOG("Vertex shader: %s", buff_vertex);
+	buff_vertex[vertex_file_size] = '\0';
+	fclose(vertex_file);
 
 	int id_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(id_vertex_shader, 1, &((const GLchar *) vertex_shader), 0);
+	glShaderSource(id_vertex_shader, 1, &buff_vertex, 0);
+
+	RELEASE_ARRAY(buff_vertex);
 
 	glCompileShader(id_vertex_shader);
 
@@ -56,7 +62,7 @@ void ModuleProgramShaders::Load(const char * name, const char * vertex_shader, c
 	//The maxLength includes the NULL character
 	char* info_log = new char[max_length];
 	glGetShaderInfoLog(id_vertex_shader, max_length, &max_length, &info_log[0]);
-	APPLOG("Compile fragment shader: %s", info_log);
+	APPLOG("Compile vertex shader: %s", info_log);
 
 	if (is_compiled == GL_FALSE)
 	{
@@ -69,9 +75,26 @@ void ModuleProgramShaders::Load(const char * name, const char * vertex_shader, c
 		return;
 	}
 
+	FILE * fragment_file;
+	fragment_file = fopen(fragment_shader, "rb");
+	if (fragment_file == nullptr) {
+		APPLOG("Error opening file %s: %s\n", fragment_shader, strerror(errno));
+		return;
+	}
+
+	fseek(fragment_file, 0, SEEK_END);
+	int fragment_file_size = ftell(fragment_file);
+	rewind(fragment_file);
+	char* buff_fragment = new char[fragment_file_size + 1];
+	fread(buff_fragment,sizeof(char), fragment_file_size, fragment_file);
+	buff_fragment[fragment_file_size] = '\0';
+	fclose(fragment_file);
+
 	int id_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 
-	glShaderSource(id_fragment_shader, 1, &((const GLchar *)fragment_shader), 0);
+	glShaderSource(id_fragment_shader, 1, &buff_fragment, 0);
+
+	RELEASE_ARRAY(buff_fragment);
 
 	glCompileShader(id_fragment_shader);
 
@@ -145,9 +168,21 @@ void ModuleProgramShaders::Load(const char * name, const char * vertex_shader, c
 	programs[path] = id_program;
 }
 
-int ModuleProgramShaders::GetUniformLocation(const char * name, const char * vertex_shader, const char * fragment_shader)
+int ModuleProgramShaders::GetUniformLocation(const char * name, const char* uniform)
 {
-	return 0;
+	aiString path = aiString();
+	path.Append(name);
+
+	ProgramList::iterator it = programs.find(path);
+
+	if (it != programs.end())
+	{
+		return glGetUniformLocation(programs[path], uniform);
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 void ModuleProgramShaders::UseProgram(const char * name)
