@@ -145,7 +145,6 @@ update_status ModuleRender::Update(float dt)
 	{
 		PreDebugDraw();
 		DrawBasePlane(Colors::White);
-		DrawAxis();
 		PostDebugDraw();
 	}
 

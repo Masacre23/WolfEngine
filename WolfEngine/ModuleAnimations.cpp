@@ -51,7 +51,7 @@ bool ModuleAnimations::CleanUp()
 	return true;
 }
 
-void ModuleAnimations::Load(const char * name, const char * file)
+void ModuleAnimations::Load(const char* name, const char* file)
 {
 	aiString animation_name = aiString();
 	animation_name.Append(name);

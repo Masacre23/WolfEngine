@@ -21,19 +21,29 @@ bool ComponentAnim::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Animator"))
 	{
-		/*ImGui::LabelText()
+		ImGui::Checkbox("Show bones", &draw_bones);
 
-		ImGui::Checkbox("Active", &enable);
+		ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.50f);
+		ImGui::SliderInt("Blend Time", &blend_time, 10, 1000);
 
-		ImGui::SameLine();
+		ImGui::TextWrapped("Current animation:");
+		ImGui::TextWrapped("%s", current_animation.data);
 
-		if (ImGui::Button("Delete"))
-			parent->DeleteComponent(this);
+		if (ImGui::Button("Play"))
+			PlayCurrent(true);
 
-		ImGui::DragFloat4("Ambient", (float*)&ambient, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat4("Diffuse", (float*)&diffuse, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat4("Specular", (float*)&specular, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("Shiness", (float*)&shiness, 1.0f, 0.0f, 128.0f);*/
+		if (anim_id != -1)
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Stop"))
+				StopCurrent();
+		}
+
+		for (std::list<aiString>::iterator it = animations.begin(); it != animations.end(); ++it)
+		{
+			if (ImGui::Button(it->data))
+				PlayAnimation(it->data, true);
+		}
 	}
 
 	return true;
@@ -41,7 +51,6 @@ bool ComponentAnim::OnEditor()
 
 bool ComponentAnim::OnAnimationUpdate()
 {
-
 	if (anim_id != -1)
 	{
 		std::vector<GameObject*> nodes;
@@ -64,31 +73,68 @@ bool ComponentAnim::OnAnimationUpdate()
 	return true;
 }
 
+void ComponentAnim::LoadAnimations(const char* animation)
+{
+	aiString new_animation = aiString();
+	new_animation.Append(animation);
+	this->animations.push_back(new_animation);
+
+	current_animation = *(animations.begin());
+}
+
+void ComponentAnim::LoadAnimations(const std::list<std::string>& animations)
+{
+	for (std::list<std::string>::const_iterator it = animations.cbegin(); it != animations.end(); ++it)
+	{
+		aiString new_animation = aiString();
+		new_animation.Append(it->c_str());
+		this->animations.push_back(new_animation);
+	}
+
+	current_animation = *(this->animations.begin());
+}
+
 void ComponentAnim::SetName(const char * name)
 {
-	anim_name = aiString();
-	anim_name.Append(name);
+	current_animation = aiString();
+	current_animation.Append(name);
 }
 
-void ComponentAnim::Play(bool loop)
+void ComponentAnim::PlayAnimation(const char* name, bool loop)
 {
-	anim_id = App->animations->Play(anim_name.C_Str(), loop);
+	if (anim_id == -1)
+	{
+		SetName(name);
+		PlayCurrent(loop);
+	}
+	else
+	{
+		BlendTo(name, blend_time);
+	}
 }
 
-void ComponentAnim::Stop()
+void ComponentAnim::PlayCurrent(bool loop)
 {
-	if(anim_id != -1)
+	anim_id = App->animations->Play(current_animation.data, loop);
+}
+
+void ComponentAnim::StopCurrent()
+{
+	if (anim_id != -1)
 		App->animations->Stop(anim_id);
 	anim_id = -1;
 }
 
-bool ComponentAnim::IsPlaying()
+bool ComponentAnim::IsPlaying() const
 {
 	return anim_id != -1;
 }
 
-void ComponentAnim::BlendTo(const char * name, unsigned int duration)
+void ComponentAnim::BlendTo(const char* name, unsigned int duration)
 {
+	current_animation = aiString();
+	current_animation.Append(name);
+
 	App->animations->BlendTo(anim_id, name, duration);
 }
 

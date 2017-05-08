@@ -4,6 +4,8 @@
 #include "Module.h"
 #include "Globals.h"
 #include <vector>
+#include <list>
+#include <string>
 
 class GameObject;
 class MyQuadTree;
@@ -19,11 +21,7 @@ public:
 	bool CleanUp();
 
 private:
-	GameObject* pilot = nullptr;
 	std::vector<GameObject*> empty_game_objects;
-	const char* anim_idle = "ArmyPilot_Idle";
-	const char* anim_walk = "ArmyPilot_Walk";
-	const char* anim_run = "ArmyPilot_Run_Forwards";
 	MyQuadTree* quad_tree = nullptr;
 	GameObject* grass = nullptr;
 	GameObject* rain = nullptr;

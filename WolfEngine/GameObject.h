@@ -2,6 +2,7 @@
 #define GAMEOBJECT_H
 
 #include <vector>
+#include <list>
 #include <string>
 #include "Component.h"
 #include "Math.h"
@@ -43,6 +44,7 @@ public:
 	GameObject* FindByName(const std::string& name) const;
 
 	bool IsActive() const { return active; }
+	bool IsPlayingAnimation() const;
 
 	void SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation);
 	void SetLocalTransform(const float3& position, const Quat& rotation);
@@ -51,7 +53,8 @@ public:
 	void LoadMesh(Primitive* primitive);
 	void LoadMaterial(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadMaterial(const aiString& path);
-	void LoadAnim(const char * name, const char * file);
+	void LoadAnimation(const char * name);
+	void LoadAnimation(const std::list<std::string>& animations);
 	void LoadBones();
 	void SetAABB(AABB box);
 

@@ -83,9 +83,7 @@ void ModuleLevel::DrawDebug() const
 	{
 		if ((*it)->IsActive())
 		{
-			(*it)->DrawHierarchy();
 			(*it)->DebugDraw();
-			
 		}
 	}
 

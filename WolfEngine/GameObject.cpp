@@ -128,7 +128,7 @@ void GameObject::DebugDraw() const
 	{
 		App->renderer->DrawAxis();
 
-		const Component* mesh = GetComponent(Component::MESH);
+		const Component* mesh = GetComponent(Component::Type::MESH);
 		if (mesh != nullptr)
 		{
 			if (mesh->IsActive())
@@ -137,6 +137,13 @@ void GameObject::DebugDraw() const
 	}
 
 	glPopMatrix();
+
+	if (selected)
+	{
+		const ComponentAnim* anim = (ComponentAnim*)GetComponent(Component::Type::ANIMATION);
+		if (anim != nullptr && anim->draw_bones)
+			DrawHierarchy();
+	}
 
 	const Component* camera = GetComponent(Component::Type::CAMERA);
 	if (camera != nullptr)
@@ -193,7 +200,7 @@ void GameObject::RecursiveDrawHierarchy() const
 
 	for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
 	{
-		if ((*it)->IsActive())
+		if ((*it)->IsActive() && (*it)->is_bone)
 		{
 			float3 child_transform = (*it)->transform->GetPosition();
 			glBegin(GL_LINES);
@@ -281,7 +288,14 @@ Component* GameObject::CreateComponent(Component::Type type)
 		ret = new ComponentCamera(this);
 		break;
 	case Component::ANIMATION:
-		ret = new ComponentAnim(this);
+		if (existing_component != nullptr)
+		{
+			APPLOG("Error adding component: Already a animator in %s", name.c_str());
+		}
+		else
+		{
+			ret = new ComponentAnim(this);
+		}
 		break;
 	case Component::BILLBOARD:
 		ret = new ComponentBillboard(this, 1, 1);
@@ -379,6 +393,18 @@ GameObject* GameObject::FindByName(const std::string& name) const
 	return ret;
 }
 
+bool GameObject::IsPlayingAnimation() const
+{
+	bool ret = false;
+
+	const ComponentAnim* anim = (ComponentAnim*)GetComponent(Component::Type::ANIMATION);
+
+	if (anim != nullptr)
+		ret = anim->IsPlaying();
+
+	return ret;
+}
+
 void GameObject::SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation)
 {
 	if (transform == nullptr)
@@ -429,12 +455,24 @@ void GameObject::LoadMaterial(const aiString& path)
 	material->LoadTexture(path);
 }
 
-void GameObject::LoadAnim(const char * name, const char * file)
+void GameObject::LoadAnimation(const char* name)
 {
-	App->animations->Load(name, file);
 	ComponentAnim* anim = (ComponentAnim*)CreateComponent(Component::Type::ANIMATION);
-	anim->SetName(name);
-	anim->Play(true);
+
+	if (anim == nullptr)
+		anim = (ComponentAnim*)GetComponent(Component::Type::ANIMATION);
+
+	anim->LoadAnimations(name);
+}
+
+void GameObject::LoadAnimation(const std::list<std::string>& animations)
+{
+	ComponentAnim* anim = (ComponentAnim*)CreateComponent(Component::Type::ANIMATION);
+
+	if (anim == nullptr)
+		anim = (ComponentAnim*)GetComponent(Component::Type::ANIMATION);
+
+	anim->LoadAnimations(animations);
 }
 
 void GameObject::LoadBones()

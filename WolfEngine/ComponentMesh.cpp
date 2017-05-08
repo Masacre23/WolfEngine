@@ -214,7 +214,7 @@ bool ComponentMesh::OnUpdate()
 	float3* vertex_pointer;
 	float3* normals_pointer;
 
-	if (has_bones)
+	if (has_bones && parent->root->IsPlayingAnimation())
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
 		float* buffer_pointer = (float*) glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
