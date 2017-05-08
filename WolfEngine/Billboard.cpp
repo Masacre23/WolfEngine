@@ -25,29 +25,33 @@ void Billboard::ComputeQuad(float3 camera)
 	vertices[3] = position - (up * up_vector) - (right * right_vector);
 }
 
-void Billboard::Draw()
+void Billboard::Draw(float3 scale, float2 texture_scale)
 {
 	glEnable(GL_COLOR_MATERIAL);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	App->renderer->DrawColor(Colors::White);
 
+	glPushMatrix();
+	glScalef(scale.x, scale.y, scale.z);
+
 	glBegin(GL_TRIANGLES);
 
-	glTexCoord2f(1.0f, 1.0f);
+	glTexCoord2f(1.0f * texture_scale.x, 1.0f * texture_scale.y);
 	glVertex3f(vertices[0].x, vertices[0].y, vertices[0].z);
-	glTexCoord2f(0.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f * texture_scale.y);
 	glVertex3f(vertices[2].x, vertices[2].y, vertices[2].z);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(vertices[3].x, vertices[3].y, vertices[3].z);
-	glTexCoord2f(1.0f, 1.0f);
+	glTexCoord2f(1.0f * texture_scale.x, 1.0f * texture_scale.y);
 	glVertex3f(vertices[0].x, vertices[0].y, vertices[0].z);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(vertices[3].x, vertices[3].y, vertices[3].z);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(vertices[1].x, vertices[1].y, vertices[1].z);
-	
+	glTexCoord2f(1.0f * texture_scale.x, 0.0f);
+	glVertex3f(vertices[1].x, vertices[1].y, vertices[1].z); 
+
 	glEnd();
+	glPopMatrix();
 
 	App->renderer->DrawColor(Colors::Black);
 	glBindTexture(GL_TEXTURE_2D, 0);

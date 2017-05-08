@@ -15,7 +15,7 @@ ComponentParticleSystem::~ComponentParticleSystem()
 {
 }
 
-void ComponentParticleSystem::Init(unsigned max_particles, const aiVector2D & _emit_size, unsigned _falling_time, float falling_height, const char * texture_file, const aiVector2D & psize)
+void ComponentParticleSystem::Init(unsigned max_particles, const float2 & _emit_size, unsigned _falling_time, float falling_height, const char * texture_file, const float2 & psize)
 {
 	this->emit_area = _emit_size;
 	this->falling_time = _falling_time;
@@ -43,24 +43,25 @@ void ComponentParticleSystem::Rain(Billboard* b)
 {
 	if (b->position.y <= 0)
 	{
-		b->position.x = rand() % 10 - 5;
-		b->position.y = rand() % 2 + falling_height;
-		b->position.z = rand() % 10 - 5;
+		b->position.x = (rand() % 10 - 5) / scale.x;
+		b->position.y = (rand() % 2 + falling_height) / scale.y;
+		b->position.z = (rand() % 10 - 5) / scale.z;
 
-		b->position += App->camera->GetPosition();
+		float3 aux = { App->camera->GetPosition().x / scale.x, App->camera->GetPosition().y / scale.y, App->camera->GetPosition().z / scale.z};
+		b->position += aux;
 	}
-	b->position.y -= 0.1f;
+	b->position.y -= 0.1f / scale.y;
 }
 
 bool ComponentParticleSystem::OnDraw()
 {
 	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.8f);
+	glAlphaFunc(GL_GREATER, 0.1f);
 	for (int i = 0; i < particles.size(); ++i)
 	{
 		Rain(particles[i].billboard);
 		particles[i].billboard->ComputeQuad(App->camera->GetPosition());
-		particles[i].billboard->Draw();
+		particles[i].billboard->Draw(scale, texture_scale);
 	}
 	glDisable(GL_ALPHA_TEST);
 	return false;
@@ -77,26 +78,19 @@ bool ComponentParticleSystem::OnEditor()
 		if (ImGui::Button("Delete"))
 			this->~ComponentParticleSystem();
 
-		static int maxparticles = 0;
-
-		ImGui::SliderInt("Max particles", &maxparticles, 1, 1000);
-		
-		static int x = emit_area.x, z = emit_area.y;
-		ImGui::SliderInt("Emit X", &x, -100, 100);
-		ImGui::SliderInt("Emit Z", &z, -100, 100);
-		emit_area = aiVector2D(x, z);
-
+		ImGui::SliderInt("Max particles", (int*)&maxparticles, 1, 1000);
+		ImGui::DragFloat2("Emit area", (float*)&emit_area.x, 1, -100, 100);
+		ImGui::DragInt("Falling time", (int*)&falling_time, 1.0f);
+		/*char buf[1024];
+		strcpy(buf, (const char*)texture_file);
+		ImGui::InputText("", buf, IM_ARRAYSIZE(buf));
+		texture_file = buf;*/
+		ImGui::DragFloat3("Scale", (float*)&scale, 0.1f, 0.1f, 1.0f);
+		ImGui::DragFloat2("Texture", (float*)&texture_scale, 0.1f, 0.0f, 100.0f);
 		//ImGui::InputInt("Fallint time", &falling_time);
 
-
 		if (ImGui::Button("Save"))
-			Init(maxparticles, emit_area, falling_time, falling_height, "Resources/rainSprite.tga", aiVector2D(0.5f, 0.5f));
-		//ImGui::SliderInt("Lines", &lines, 1, 10);
-		//ImGui::SameLine();
-		//ImGui::SliderInt("Cols", &cols, 1, 10);
-
-		//if (ImGui::Button("Update"))
-		//	this->Enable();
+			Init(maxparticles, emit_area, falling_time, falling_height, texture_file, texture_scale);
 	}
 
 	return ImGui::IsItemClicked();

@@ -2,7 +2,7 @@
 #define COMPONENTPARTICLESYSTEM_H
 
 #include "Component.h"
-#include "assimp\types.h"
+//#include "assimp\types.h"
 #include <list>
 #include <vector>
 #include "Math.h"
@@ -28,7 +28,7 @@ public:
 	ComponentParticleSystem(GameObject* parent);
 	~ComponentParticleSystem();
 
-	void Init(unsigned max_particles, const aiVector2D& _emit_size, unsigned _falling_time, float falling_height, const char* texture_file, const aiVector2D& psize);
+	void Init(unsigned max_particles, const float2& _emit_size, unsigned _falling_time, float falling_height, const char* texture_file, const float2& psize);
 	void Clear();
 	void Rain(Billboard* b);
 	bool OnDraw();
@@ -44,15 +44,18 @@ public:
 	ParticleList dead;
 	BillboardList billboards;
 
-	aiVector2D emit_area;
+	unsigned maxparticles = 1;
+	float2 emit_area = {1.0f, 1.0f};
 	unsigned falling_time = 0;
 	unsigned accum_elapsed = 0;
 	float falling_height = 0.0f;
-	unsigned texture = 0;
+	char * texture_file = "Resources/rainSprite.tga";
+	float3 scale = {1.0f, 1.0f, 1.0f};
+	float2 texture_scale = {6.0f, 2.0f};
 
-	aiVector3D* vertices = nullptr;
-	aiVector2D* text_coords = nullptr;
-	aiColor4D* colors = nullptr;
+	float3* vertices = nullptr;
+	float2* text_coords = nullptr;
+	float4* colors = nullptr;
 	unsigned* indices = nullptr;
 };
 
