@@ -8,6 +8,7 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleLevel.h"
+#include "ModuleProgramShaders.h"
 #include "Primitive.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl_gl3.h"
@@ -282,6 +283,8 @@ bool ComponentMesh::OnDraw() const
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+	App->program_shaders->UseProgram("Prueba");
+	glUniform4f(App->program_shaders->GetUniformLocation("Prueba", "light_position;"), 0, 0, 0, 0);
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -290,6 +293,7 @@ bool ComponentMesh::OnDraw() const
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	App->program_shaders->UnuseProgram();
 
 	return true;
 }

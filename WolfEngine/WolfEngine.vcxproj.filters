@@ -153,7 +153,9 @@
     <ClCompile Include="Primitive.cpp">
       <Filter>Clases</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleProgramShaders.cpp" />
+    <ClCompile Include="ModuleProgramShaders.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
@@ -303,7 +305,6 @@
     <ClInclude Include="Primitive.h">
       <Filter>Clases</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleProgramShaders.h" />
     <ClInclude Include="Physics.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -313,5 +314,6 @@
     <ClInclude Include="ModulePhysics.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleProgramShaders.h" />
   </ItemGroup>
 </Project>

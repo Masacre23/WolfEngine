@@ -27,7 +27,7 @@ public:
 
 	void Load(const char* name, const char* vertex_shader, const char* fragment_shader);
 	
-	int GetUniformLocation(const char* name, const char* vertex_shader, const char* fragment_shader);
+	int GetUniformLocation(const char* name, const char* uniform);
 	void UseProgram(const char* name);
 	void UnuseProgram();
 

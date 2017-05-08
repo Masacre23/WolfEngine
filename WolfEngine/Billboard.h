@@ -12,7 +12,7 @@ public:
 	~Billboard();
 
 	void ComputeQuad(float3 camera);
-	void Draw();
+	void Draw(float3 scale, float2 texture_scale);
 
 public:
 	float3 position;

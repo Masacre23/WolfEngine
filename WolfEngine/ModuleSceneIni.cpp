@@ -59,13 +59,13 @@ bool ModuleSceneIni::Start()
 	bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(10.0f, 10.0f, 10.0f));
 	quad_tree = new MyQuadTree(bbox);*/
 
-	/*grass = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "grass");
-	grass->CreateComponent(Component::Type::BILLBOARD);
+	//grass = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "grass");
+	//grass->CreateComponent(Component::Type::BILLBOARD);
 
-	rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
-	rain->CreateComponent(Component::Type::PARTICLE);*/
+	//rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
+	//rain->CreateComponent(Component::Type::PARTICLE);
 
-	App->program_shaders->Load("Prueba", "varying vec2 myTexCoord;\n\nvoid main()\n{\ngl_Position = gl_ProjectionMatrix*gl_ModelViewMatrix*gl_Vertex;\nmyTexCoord = vec2(gl_MultiTexCoord0);\n}\n", "varying vec2 myTexCoord;\nuniform sampler2D diffuse;\n\nvoid main()\n{\ngl_FragColor = texture2D(diffuse, myTexCoord);\n}");
+	App->program_shaders->Load("Prueba", "Resources/Shaders/vertex_shader.txt", "C:\\Users\\estebanag\\Source\\Repos\\WolfEngine2\\WolfEngine\\Game\\Resources\\Shaders\\fragment_shader.txt");
 
 	return res;
 }
