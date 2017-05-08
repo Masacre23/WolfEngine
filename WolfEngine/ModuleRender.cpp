@@ -150,8 +150,8 @@ update_status ModuleRender::PostUpdate(float dt)
 {
 	BROFILER_CATEGORY("ModuleRender_PostUpdate", Profiler::Color::Green);
 
-	//App->level->Draw();
-	App->level->DrawDebug();
+	App->level->Draw();
+	//App->level->DrawDebug();
 	App->editor->Draw();
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
