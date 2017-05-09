@@ -13,6 +13,7 @@ class Panel;
 class PanelMenuBar;
 class PanelInterface;
 class PanelConsole;
+class PanelGameTime;
 
 class ModuleEditor : public Module
 {
@@ -44,6 +45,7 @@ public:
 
 	PanelMenuBar* menu = nullptr;
 	PanelInterface* interfaces = nullptr;
+	PanelGameTime* game_time = nullptr;
 
 private:
 	std::vector<Panel*> panels;

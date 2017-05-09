@@ -3,6 +3,8 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
+#include "ModuleTimeController.h"
+#include "ModuleRender.h"
 #include "ComponentCamera.h"
 #include "SDL\include\SDL.h"
 #include "Math.h"
@@ -32,8 +34,17 @@ void PanelConfiguration::Draw()
 
 		ImGui::InputText("App Name", str0, sizeof(str0));
 		ImGui::InputText("Organization", str1, sizeof(str1));
-		static int i1 = 0;
-		ImGui::SliderInt("Max FPS", &i1, 0, 120);
+
+		bool vsync = App->renderer->GetVsync();
+		ImGui::Checkbox("Vsync", &vsync);
+		App->renderer->SetVsync(vsync);
+
+		ImGui::SameLine();
+
+		int fps = App->time_controller->GetFpsCap();
+		ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.25f);
+		ImGui::SliderInt("Max FPS", &fps, 0, 400);
+		App->time_controller->SetFpsCap(fps);
 
 		std::vector<float> aux_fps = fps_log;
 		std::vector<float> aux_ms = ms_log;
@@ -49,9 +60,9 @@ void PanelConfiguration::Draw()
 			ms_log.push_back(*it);
 		}
 
-		fps_log.push_back(App->frames_last_sec);
+		fps_log.push_back((float)App->time_controller->GetFramesLastSecond());
 
-		ms_log.push_back(App->last_frame_ms);
+		ms_log.push_back((float)App->time_controller->GetLastFrameMs());
 
 		char title[25];
 		sprintf_s(title, 25, "Framerate %.1f", fps_log.back());
@@ -102,7 +113,7 @@ void PanelConfiguration::Draw()
 		ImGui::SliderInt("Width", &width, 0, 1920);
 		static int height = 0;
 		ImGui::SliderInt("Height", &height, 0, 1080);
-		ImGui::Text("Refresh rate: %d", App->frames_last_sec);
+		ImGui::Text("Refresh rate: %d", App->time_controller->GetFramesLastSecond());
 
 		if (ImGui::Checkbox("Fullscreen", &fullscreen))
 			App->window->FULLSCREEN = fullscreen;

@@ -40,8 +40,8 @@ public:
 	const GameObject* GetRoot() const { return root; }
 
 	void InsertGameObjectQuadTree(GameObject * game_object);
-	void SaveGameObjectsTransforms();
-	void RestoreGameObjectsTransforms();
+	void SaveGameObjects();
+	void RestoreGameObjects();
 
 private:
 	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object, bool is_dynamic = false);

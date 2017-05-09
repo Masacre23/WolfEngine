@@ -32,7 +32,7 @@ bool ModuleLevel::Init()
 
 update_status ModuleLevel::PreUpdate(float dt)
 {
-	BROFILER_CATEGORY("ModuleLevel_PreUpdate", Profiler::Color::Blue);
+	BROFILER_CATEGORY("ModuleLevel-PreUpdate", Profiler::Color::Blue);
 
 	root->RecursiveUpdateTransforms();
 	root->RecursiveUpdateBoundingBox();
@@ -42,7 +42,7 @@ update_status ModuleLevel::PreUpdate(float dt)
 
 update_status ModuleLevel::Update(float dt)
 {
-	BROFILER_CATEGORY("ModuleLevel_Update", Profiler::Color::Red);
+	BROFILER_CATEGORY("ModuleLevel-Update", Profiler::Color::Red);
 
 	root->Update();
 
@@ -62,6 +62,8 @@ bool ModuleLevel::CleanUp()
 
 void ModuleLevel::Draw() const
 {
+	BROFILER_CATEGORY("ModuleLevel-Draw", Profiler::Color::GreenYellow);
+
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
 	{
 		if ((*it)->IsActive())
@@ -71,6 +73,8 @@ void ModuleLevel::Draw() const
 
 void ModuleLevel::DrawDebug() const
 {
+	BROFILER_CATEGORY("ModuleLevel-DebugDraw", Profiler::Color::GreenYellow);
+
 	quadtree->Draw();
 	camera->Draw();
 	std::vector<GameObject*> testObjects;
@@ -190,12 +194,12 @@ void ModuleLevel::InsertGameObjectQuadTree(GameObject * game_object)
 	quadtree->Insert(game_object);
 }
 
-void ModuleLevel::SaveGameObjectsTransforms()
+void ModuleLevel::SaveGameObjects()
 {
 	root->RecursiveSaveLocalTransform();
 }
 
-void ModuleLevel::RestoreGameObjectsTransforms()
+void ModuleLevel::RestoreGameObjects()
 {
 	root->RecursiveLoadLocalTransform();
 

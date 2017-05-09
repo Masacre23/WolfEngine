@@ -9,6 +9,7 @@
 #include "PanelInterface.h"
 #include "PanelMenuBar.h"
 #include "PanelConsole.h"
+#include "PanelGameTime.h"
 #include "JsonHandler.h"
 #include "Glew/include/GL/glew.h"   
 #include "SDL\include\SDL.h"
@@ -94,12 +95,13 @@ bool ModuleEditor::Init()
 	
 	panels.push_back(menu = new PanelMenuBar());
 	panels.push_back(interfaces = new PanelInterface());
+	panels.push_back(game_time = new PanelGameTime());
 	return true;
 }
 
 update_status ModuleEditor::PreUpdate(float dt)
 {
-	BROFILER_CATEGORY("ModuleEditor_Update", Profiler::Color::Blue);
+	BROFILER_CATEGORY("ModuleEditor-PreUpdate", Profiler::Color::Blue);
 
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 
@@ -108,7 +110,7 @@ update_status ModuleEditor::PreUpdate(float dt)
 
 update_status ModuleEditor::Update(float dt)
 {
-	BROFILER_CATEGORY("ModuleEditor_Update", Profiler::Color::Red);
+	BROFILER_CATEGORY("ModuleEditor-Update", Profiler::Color::Red);
 
 	for (std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it)
 		if ((*it)->active)
@@ -116,29 +118,6 @@ update_status ModuleEditor::Update(float dt)
 
 	if (console->active)
 		console->Draw();
-
-	ImGui::Begin("", new bool(true), ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_ShowBorders);
-	if (ImGui::Button("Play"))
-	{
-		App->time_controller->Play();
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Pause"))
-	{
-		App->time_controller->Pause();
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Tick"))
-	{
-		App->time_controller->Tick();
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Stop"))
-	{
-		App->time_controller->Stop();
-	}
-	ImGui::SliderFloat("Slower/Faster", &App->time_controller->time_scale, 0, 10);
-	ImGui::End();
 
 	return UPDATE_CONTINUE;
 }

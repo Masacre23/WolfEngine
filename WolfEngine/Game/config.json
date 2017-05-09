@@ -4,10 +4,12 @@
 		"Resolution" : { 
 			"Width" : 1200, 
 			"Height" : 800
-			},
-		"FpsCap": 200
+			}
 	},
 	"Modules" : {
+		"TimeController" : {
+			"FpsCap": 200
+		},
 		"Input" : {
 			"MouseButtons" : 5,
 			"KeyboardKeys" : 300

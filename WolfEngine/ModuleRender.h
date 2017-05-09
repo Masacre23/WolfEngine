@@ -38,13 +38,14 @@ public:
 	void DrawFrustum(const Frustum& frustum, const Color& color);
 	void DrawAxis();
 
+	bool GetVsync() const { return vsync; }
+	bool SetVsync(bool active);
+
 private:
 	void ResetProjection();
 
 	void DrawBasePlane(const Color& color);
 	void DrawParallepiped(const float3* corners, const Color& color);
-
-	bool SetVsync(bool vsync);
 
 	bool ConstantConfig();
 	bool GetGLError() const;
@@ -58,7 +59,7 @@ public:
 private:
 	SDL_GLContext glcontext = NULL;
 	float DEFAULT_SPEED = 1.0f;
-	bool VSYNC = true;
+	bool vsync = true;
 
 	unsigned int id_vertices;
 	unsigned int id_texture;

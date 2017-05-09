@@ -106,7 +106,7 @@ bool ModuleRender::Init()
 
 		ret = ret && GetGLError();
 
-		SetVsync(VSYNC);
+		SetVsync(vsync);
 
 		ret = ret && GetGLError();
 	}
@@ -123,7 +123,7 @@ bool ModuleRender::Start()
 
 update_status ModuleRender::PreUpdate(float dt)
 {
-	BROFILER_CATEGORY("ModuleRender_PreUpdate", Profiler::Color::Blue);
+	BROFILER_CATEGORY("ModuleRender-PreUpdate", Profiler::Color::Blue);
 
 	glViewport(0, 0, App->window->GetScreenWidth(), App->window->GetScreenHeight());
 
@@ -139,7 +139,7 @@ update_status ModuleRender::PreUpdate(float dt)
 
 update_status ModuleRender::Update(float dt)
 {
-	BROFILER_CATEGORY("ModuleRender_Update", Profiler::Color::Red);
+	BROFILER_CATEGORY("ModuleRender-Update", Profiler::Color::Red);
 
 	if (debug_draw)
 	{
@@ -153,7 +153,7 @@ update_status ModuleRender::Update(float dt)
 
 update_status ModuleRender::PostUpdate(float dt)
 {
-	BROFILER_CATEGORY("ModuleRender_PostUpdate", Profiler::Color::Green);
+	BROFILER_CATEGORY("ModuleRender-PostUpdate", Profiler::Color::Green);
 
 	App->level->Draw();
 
@@ -340,8 +340,9 @@ void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 	glEnd();
 }
 
-bool ModuleRender::SetVsync(bool vsync)
+bool ModuleRender::SetVsync(bool active)
 {
+	vsync = active;
 	bool ret = true;
 	if (SDL_GL_SetSwapInterval(vsync ? 1 : 0))
 		APPLOG("Error during Vsync setting: %s", SDL_GetError());
@@ -354,7 +355,7 @@ bool ModuleRender::ConstantConfig()
 
 	if (App->parser->LoadObject(RENDER_SECTION) == true)
 	{
-		VSYNC = App->parser->GetBoolMandatory("Vsync");
+		vsync = App->parser->GetBoolMandatory("Vsync");
 		DEFAULT_SPEED = App->parser->GetFloat("DefaultBlitSpeed");
 		ret = App->parser->UnloadObject();
 	}

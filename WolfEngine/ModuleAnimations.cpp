@@ -19,7 +19,7 @@ ModuleAnimations::~ModuleAnimations()
 
 update_status ModuleAnimations::Update(float dt)
 {
-	BROFILER_CATEGORY("ModuleAnimation_Update", Profiler::Color::Red);
+	BROFILER_CATEGORY("ModuleAnimation-Update", Profiler::Color::Red);
 
 	UpdateInstances(dt);
 
@@ -259,6 +259,8 @@ Quat& ModuleAnimations::InterpQuaternion(const Quat& first, const Quat& second, 
 
 void ModuleAnimations::UpdateInstances(float dt)
 {
+	BROFILER_CATEGORY("ModuleAnimation-UpdateInstances", Profiler::Color::Orange);
+
 	unsigned int dt_ms = 1000 * dt;
 	for (InstanceList::iterator it = instances.begin(); it != instances.end(); ++it)
 	{

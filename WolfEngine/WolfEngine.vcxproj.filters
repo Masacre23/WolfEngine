@@ -159,6 +159,9 @@
     <ClCompile Include="ModulePhysics.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
+    <ClCompile Include="PanelGameTime.cpp">
+      <Filter>Panels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -314,6 +317,11 @@
     <ClInclude Include="ModulePhysics.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleProgramShaders.h" />
+    <ClInclude Include="PanelGameTime.h">
+      <Filter>Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleProgramShaders.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

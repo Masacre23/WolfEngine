@@ -51,6 +51,8 @@ bool ComponentAnim::OnEditor()
 
 bool ComponentAnim::OnAnimationUpdate()
 {
+	BROFILER_CATEGORY("ComponentAnimation-OnAnimationUpdate", Profiler::Color::Aquamarine);
+
 	if (anim_id != -1)
 	{
 		std::vector<GameObject*> nodes;

@@ -34,9 +34,6 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-private:
-	void EndUpdate();
-
 public:
 	ModuleInput* input;
 	ModuleWindow* window;
@@ -53,16 +50,10 @@ public:
 	ModuleSceneIni* scene_ini;
 
 	JSONParser* parser;
-	int frames_last_sec = 0;
-	Uint32 last_frame_ms;
-	float prev_time = 0;
+
 private:
 	std::list<Module*> modules;
-	Timer app_timer;
-	int frames_count = 0;
 
-	Uint32 fps_cap = 60;
-	Uint32 cap_ms = 1000;
 };
 
 extern Application* App;

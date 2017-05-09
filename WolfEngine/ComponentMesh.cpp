@@ -212,6 +212,8 @@ void ComponentMesh::LoadBones()
 
 bool ComponentMesh::OnUpdate()
 {
+	BROFILER_CATEGORY("ComponentMesh-OnUpdate", Profiler::Color::Aqua);
+
 	float3* vertex_pointer;
 	float3* normals_pointer;
 

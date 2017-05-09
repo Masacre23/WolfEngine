@@ -2,6 +2,7 @@
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
+#include "ModuleTimeController.h"
 #include "Application.h"
 #include "ComponentCamera.h"
 #include "SDL/include/SDL.h"
@@ -51,7 +52,9 @@ bool ModuleCamera::Start()
 
 update_status ModuleCamera::Update(float dt)
 {
-	BROFILER_CATEGORY("ModuleCamera_Update", Profiler::Color::Red);
+	BROFILER_CATEGORY("ModuleCamera-Update", Profiler::Color::Red);
+
+	float real_dt = App->time_controller->GetRealDeltaTime();
 
 	float3 movement = float3::zero;
 	float3 direction_forward = editor_camera->frustum->Front();
@@ -68,7 +71,7 @@ update_status ModuleCamera::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) movement -= direction_up;
 	
 	movement += direction_forward * App->input->mouse_wheel.y * SPEED_ZOOM;
-	float3 translation = movement * SPEED_TRANSLATION * (shift_pressed ? 2 : 1) * dt;
+	float3 translation = movement * SPEED_TRANSLATION * (shift_pressed ? 2 : 1) * real_dt;
 
 	// Camera rotation
 	int dx = App->input->mouse_motion.x;
@@ -78,12 +81,12 @@ update_status ModuleCamera::Update(float dt)
 	float3 up = editor_camera->frustum->Up();
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) 
 	{
-		float angle = -dy * SPEED_ROTATION * dt;
+		float angle = -dy * SPEED_ROTATION * real_dt;
 		Quat q = Quat::RotateAxisAngle(direction_right, angle);
 		up = q * up;
 		front = q * front;
 
-		angle = - dx * SPEED_ROTATION * dt;
+		angle = - dx * SPEED_ROTATION * real_dt;
 		q = Quat::RotateY(angle);
 		up = q * up;
 		front = q * front;
