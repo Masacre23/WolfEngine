@@ -44,19 +44,17 @@ bool ModuleTimeController::CleanUp()
 	return false;
 }
 
-update_status ModuleTimeController::Update(float dt)
+update_status ModuleTimeController::PreUpdate(float dt)
 {
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleTimeController::PostUpdate(float dt)
-{
-	BROFILER_CATEGORY("ModuleTimeController-PostUpdate", Profiler::Color::Green);
+	BROFILER_CATEGORY("ModuleTimeController-PreUpdate", Profiler::Color::Blue);
 
 	/*if (state == PAUSE || state == STOP)
 	this->delta_time = 0;*/
 	if (game_state == TICK)
+	{
+		game_timer->Pause();
 		game_state = PAUSE;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -72,15 +70,25 @@ void ModuleTimeController::Play()
 
 void ModuleTimeController::Pause()
 {
-	game_timer->Stop();
-
-	game_state = PAUSE;
+	if (game_timer->IsRunning())
+	{
+		game_timer->Pause();
+		game_state = PAUSE;
+	}
+	else
+	{
+		game_timer->Unpause();
+		game_state = PLAY;
+	}
 }
 
 void ModuleTimeController::Tick()
 {
 	if (game_state == PAUSE)
+	{
+		game_timer->Unpause();
 		game_state = TICK;
+	}		
 }
 
 void ModuleTimeController::Stop()
@@ -143,6 +151,11 @@ void ModuleTimeController::EndUpdate()
 		float real_delay_time = (float)delay_timer.GetTimeInMs();
 		//LOG("We wait for %i milliseconds and got back in %f", time_to_nframe, real_delay_time);
 	}
+}
+
+bool ModuleTimeController::IsGameRunning() const
+{
+	return game_timer->IsRunning();
 }
 
 void ModuleTimeController::SetFpsCap(int fps)

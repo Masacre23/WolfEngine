@@ -13,10 +13,21 @@ PanelGameTime::~PanelGameTime()
 void PanelGameTime::Draw()
 {
 	ImGui::Begin("", new bool(true), ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize);
-	if (ImGui::Button("Play"))
+	if (App->time_controller->IsStopped())
 	{
-		App->time_controller->Play();
+		if (ImGui::Button("Play"))
+		{
+			App->time_controller->Play();
+		}
 	}
+	else
+	{
+		if (ImGui::Button("Stop"))
+		{
+			App->time_controller->Stop();
+		}
+	}
+	
 	ImGui::SameLine();
 	if (ImGui::Button("Pause"))
 	{
@@ -27,11 +38,7 @@ void PanelGameTime::Draw()
 	{
 		App->time_controller->Tick();
 	}
-	ImGui::SameLine();
-	if (ImGui::Button("Stop"))
-	{
-		App->time_controller->Stop();
-	}
+	
 	ImGui::SliderFloat("Speed", &App->time_controller->time_scale, 0.1, 10);
 	
 	ImGui::Separator();

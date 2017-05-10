@@ -65,7 +65,7 @@ bool ModuleSceneIni::Start()
 	//rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
 	//rain->CreateComponent(Component::Type::PARTICLE);
 
-	App->program_shaders->Load("Prueba", "Resources/Shaders/vertex_shader.txt", "C:\\Users\\estebanag\\Source\\Repos\\WolfEngine2\\WolfEngine\\Game\\Resources\\Shaders\\fragment_shader.txt");
+	App->program_shaders->Load("Prueba", "Resources/Shaders/vertex_shader.txt", "Resources/Shaders/fragment_shader.txt");
 
 	return res;
 }

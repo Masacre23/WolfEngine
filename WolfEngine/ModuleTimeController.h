@@ -26,8 +26,7 @@ public:
 
 	bool Init();
 	bool CleanUp();
-	update_status Update(float dt);
-	update_status PostUpdate(float dt);
+	update_status PreUpdate(float dt);
 
 	void Play();
 	void Pause();
@@ -36,6 +35,8 @@ public:
 
 	float UpdateDeltaTime();
 	void EndUpdate();
+
+	bool IsGameRunning() const;
 
 	int GetFpsCap() const { return fps_cap; }
 	void SetFpsCap(int fps);
@@ -47,6 +48,9 @@ public:
 	float GetGameTime() const { return game_time; }
 	float GetDeltaTime() const { return delta_time; }
 	float GetRealDeltaTime() const { return real_time_delta_time; }
+
+	bool IsPlaying() const { return game_state == TimeStates::PLAY; }
+	bool IsStopped() const { return game_state == TimeStates::STOP; }
 
 public:
 	float time_scale = 1.0f; // scale at which time is passing (Game Clock
