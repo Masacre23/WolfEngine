@@ -35,7 +35,7 @@ bool ModuleSceneIni::Start()
 	/*App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	App->level->ImportScene("Resources/Models/", "magnetto2.fbx");*/
 	App->level->AddCamera();
-	App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
 
 	App->animations->Load("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 	App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
@@ -45,8 +45,8 @@ bool ModuleSceneIni::Start()
 	if (pilot != nullptr)
 		pilot->LoadAnimation(pilot_animations);
 
-	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", &Primitives::Cube, "LennaCube");
-	cube->SetLocalTransform({ 2.0f, 0.0f, 0.0f });
+	//GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", &Primitives::Cube, "LennaCube");
+	//cube->SetLocalTransform({ 2.0f, 0.0f, 0.0f });
 
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)

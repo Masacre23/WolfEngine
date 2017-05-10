@@ -1,12 +1,13 @@
-varying float diffuse;
-uniform vec4 light_position;
+varying vec3 normal;
+varying vec3 vertex;
+varying vec2 tex_coord;
+
 
 void main()
 {
-	gl_Position = gl_ProjectionMatrix*gl_ModelViewMatrix*gl_Vertex;
-	vec4 Vertex_New = gl_ModelViewMatrix*gl_Vertex;
-	vec3 Normal_New = gl_NormalMatrix*gl_Normal;
-	vec4 Light_Position = gl_ModelViewMatrix*light_position;
-	diffuse = dot(Normal_New.xyz, normalize(Light_Position - Vertex_New).xyz);
-	if(diffuse < 0.0) diffuse =0.0;
+	vertex = vec3(gl_ModelViewMatrix * gl_Vertex);
+	normal = normalize(gl_NormalMatrix * gl_Normal);
+	tex_coord = vec2(gl_MultiTexCoord0);
+	
+	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
 }
