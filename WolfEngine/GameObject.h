@@ -62,8 +62,8 @@ public:
 
 	void RecursiveUpdateTransforms(const float4x4& parent = float4x4::identity);
 	void RecursiveUpdateBoundingBox(bool force_recalculation = false);
-	void RecursiveSaveLocalTransform();
-	void RecursiveLoadLocalTransform();
+	void RecursiveSaveComponents();
+	void RecursiveRestoreComponents();
 
 	const float4x4& GetLocalTransformMatrix() const;
 	const float4x4& GetGlobalTransformMatrix() const;

@@ -31,6 +31,9 @@ public:
 	virtual bool OnEditor() { return true; }
 	virtual void Disable() { enable = false; }
 
+	virtual void SaveComponent() {}
+	virtual void RestoreComponent() {}
+
 	Type GetType() const { return type; }
 	GameObject* GetParent() const { return parent; }
 	bool IsActive() const { return enable; }

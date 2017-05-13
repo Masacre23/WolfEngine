@@ -70,12 +70,12 @@ void ModuleTimeController::Play()
 
 void ModuleTimeController::Pause()
 {
-	if (game_timer->IsRunning())
+	if (game_state == PLAY)
 	{
 		game_timer->Pause();
 		game_state = PAUSE;
 	}
-	else
+	else if (game_state == PAUSE)
 	{
 		game_timer->Unpause();
 		game_state = PLAY;

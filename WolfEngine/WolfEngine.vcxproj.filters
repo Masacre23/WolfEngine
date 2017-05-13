@@ -19,9 +19,6 @@
     <Filter Include="Engine Modules">
       <UniqueIdentifier>{98cfa6b0-d679-4938-b81f-5c6b366e42b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Clases">
-      <UniqueIdentifier>{d3f4f139-a3c9-4e1e-b4fd-0a36a5039496}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3rd Party\Imgui">
       <UniqueIdentifier>{9ac9812d-2ae4-4bc5-b009-b054920a9394}</UniqueIdentifier>
     </Filter>
@@ -33,6 +30,9 @@
     </Filter>
     <Filter Include="3rd Party\MathGeoLib">
       <UniqueIdentifier>{e7bb526b-f1f0-42ef-9875-4443e8b01729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{d3f4f139-a3c9-4e1e-b4fd-0a36a5039496}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -133,13 +133,10 @@
       <Filter>Game Object</Filter>
     </ClCompile>
     <ClCompile Include="MyQuadTree.cpp">
-      <Filter>Clases</Filter>
-    </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Utils</Filter>
+      <Filter>Containers</Filter>
     </ClCompile>
     <ClCompile Include="Billboard.cpp">
-      <Filter>Clases</Filter>
+      <Filter>Containers</Filter>
     </ClCompile>
     <ClCompile Include="ModuleTimeController.cpp">
       <Filter>Core Modules</Filter>
@@ -151,7 +148,7 @@
       <Filter>Game Object</Filter>
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
-      <Filter>Clases</Filter>
+      <Filter>Containers</Filter>
     </ClCompile>
     <ClCompile Include="ModuleProgramShaders.cpp">
       <Filter>Core Modules</Filter>
@@ -161,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="PanelGameTime.cpp">
       <Filter>Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -285,16 +285,13 @@
       <Filter>Game Object</Filter>
     </ClInclude>
     <ClInclude Include="MyQuadTree.h">
-      <Filter>Clases</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Utils</Filter>
+      <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Point.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Billboard.h">
-      <Filter>Clases</Filter>
+      <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="ModuleTimeController.h">
       <Filter>Core Modules</Filter>
@@ -306,7 +303,7 @@
       <Filter>Game Object</Filter>
     </ClInclude>
     <ClInclude Include="Primitive.h">
-      <Filter>Clases</Filter>
+      <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>Utils</Filter>
@@ -322,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="ModuleProgramShaders.h">
       <Filter>Core Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

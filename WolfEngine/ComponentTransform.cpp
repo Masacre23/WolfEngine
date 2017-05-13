@@ -70,6 +70,16 @@ bool ComponentTransform::OnDebugDraw() const
 	return true;
 }
 
+bool ComponentTransform::OnDebugDrawNoScale() const
+{
+	float4x4 global_noscale = global_transform;
+	global_noscale.RemoveScale();
+	float* transform = global_noscale.Transposed().ptr();
+	glMultMatrixf(transform);
+
+	return true;
+}
+
 bool ComponentTransform::OnEditor()
 {
 	bool node_open = ImGui::CollapsingHeader("Transform");
@@ -100,12 +110,12 @@ void ComponentTransform::RecalculateLocalTransform()
 	transform_change = true;
 }
 
-void ComponentTransform::SaveTransform()
+void ComponentTransform::SaveComponent()
 { 
 	backup_local_transform = local_transform; 
 }
 
-void ComponentTransform::LoadTransform()
+void ComponentTransform::RestoreComponent()
 { 
 	local_transform = backup_local_transform;
 	position = local_transform.TranslatePart();

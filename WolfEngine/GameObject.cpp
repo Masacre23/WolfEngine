@@ -112,21 +112,25 @@ void GameObject::Draw() const
 
 void GameObject::DebugDraw() const
 {
-	glPushMatrix();
-
 	if (selected)
 	{
 		App->renderer->DrawBoundingBox(bbox, Colors::Green);
 		App->renderer->DrawBoundingBox(transform_bbox, Colors::Blue);
-	}
 
-	if (transform != nullptr)
-		if (transform->IsActive())
-			transform->OnDebugDraw();
+		glPushMatrix();
 
-	if (selected)
-	{
+		if (transform != nullptr)
+			if (transform->IsActive())
+				transform->OnDebugDrawNoScale();
+
 		App->renderer->DrawAxis();
+
+		glPopMatrix();
+		glPushMatrix();
+
+		if (transform != nullptr)
+			if (transform->IsActive())
+				transform->OnDebugDraw();
 
 		const Component* mesh = GetComponent(Component::Type::MESH);
 		if (mesh != nullptr)
@@ -134,25 +138,24 @@ void GameObject::DebugDraw() const
 			if (mesh->IsActive())
 				mesh->OnDebugDraw();
 		}
-	}
 
-	glPopMatrix();
+		glPopMatrix();
 
-	if (selected)
-	{
 		const ComponentAnim* anim = (ComponentAnim*)GetComponent(Component::Type::ANIMATION);
 		if (anim != nullptr && anim->draw_bones)
 			DrawHierarchy();
-	}
 
-	const Component* camera = GetComponent(Component::Type::CAMERA);
-	if (camera != nullptr)
-		if (camera->IsActive())
-			camera->OnDebugDraw();
+		const Component* camera = GetComponent(Component::Type::CAMERA);
+		if (camera != nullptr)
+			if (camera->IsActive())
+				camera->OnDebugDraw();
+
+	}
 
 	for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 		if ((*it)->IsActive())
 			(*it)->DebugDraw();
+	
 }
 
 void GameObject::DrawHierarchy() const
@@ -160,7 +163,7 @@ void GameObject::DrawHierarchy() const
 	glDepthRange(0.0, 0.01);
 	glLineWidth(2.0f);
 	
-	App->renderer->DrawColor(Colors::Blue);
+	App->renderer->DrawColor(Colors::Aqua);
 
 	glPushMatrix();
 
@@ -522,20 +525,22 @@ void GameObject::RecursiveUpdateBoundingBox(bool force_recalculation)
 		(*it)->RecursiveUpdateBoundingBox(child_recalc);
 }
 
-void GameObject::RecursiveSaveLocalTransform()
+void GameObject::RecursiveSaveComponents()
 {
-	transform->SaveTransform();
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->SaveComponent();
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveSaveLocalTransform();
+		(*it)->RecursiveSaveComponents();
 }
 
-void GameObject::RecursiveLoadLocalTransform()
+void GameObject::RecursiveRestoreComponents()
 {
-	transform->LoadTransform();
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->RestoreComponent();
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveLoadLocalTransform();
+		(*it)->RecursiveRestoreComponents();
 }
 
 const float4x4& GameObject::GetLocalTransformMatrix() const

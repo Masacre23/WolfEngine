@@ -34,12 +34,12 @@ struct QuadNode
 class MyQuadTree
 {
 public:
-	MyQuadTree(AABB limits);
+	MyQuadTree(const AABB& limits);
 	~MyQuadTree();
 
 	void Draw() const;
 	void Insert(GameObject* game_object);
-	void IntersectCandidates(std::vector<GameObject*>& candidates, AABB primitive) const;
+	void IntersectCandidates(std::vector<GameObject*>& candidates, const AABB& primitive) const;
 
 private:
 	QuadNode* root = nullptr;

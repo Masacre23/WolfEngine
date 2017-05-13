@@ -45,8 +45,8 @@ bool ModuleSceneIni::Start()
 	if (pilot != nullptr)
 		pilot->LoadAnimation(pilot_animations);
 
-	//GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", &Primitives::Cube, "LennaCube");
-	//cube->SetLocalTransform({ 2.0f, 0.0f, 0.0f });
+	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", &Primitives::Cube, "LennaCube");
+	cube->SetLocalTransform({ 2.0f, 0.0f, 0.0f });
 
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)

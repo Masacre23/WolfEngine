@@ -138,7 +138,7 @@ void ModuleEditor::HandleInput(SDL_Event* event)
 	ImGui_ImplSdlGL3_ProcessEvent(event);
 }
 
-void ModuleEditor::Draw()
+void ModuleEditor::Draw() const
 {
 	ImGui::Render();
 }

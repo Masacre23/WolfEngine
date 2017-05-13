@@ -17,8 +17,8 @@ public:
 
 	const float4x4& UpdateGlobalTransform(const float4x4& parent);
 
-	void SaveTransform();
-	void LoadTransform();
+	void SaveComponent();
+	void RestoreComponent();
 
 	void Load(const float3& position, const float3& scale, const Quat& rotation);
 	void Load(const float3& position, const Quat& rotation);
@@ -27,6 +27,7 @@ public:
 	bool OnUpdate();
 	bool OnDraw() const;
 	bool OnDebugDraw() const;
+	bool OnDebugDrawNoScale() const;
 	bool OnEditor();
 
 private:

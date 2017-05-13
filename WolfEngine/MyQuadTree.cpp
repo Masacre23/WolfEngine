@@ -7,7 +7,7 @@
 
 
 
-MyQuadTree::MyQuadTree(AABB bbox)
+MyQuadTree::MyQuadTree(const AABB& bbox)
 {
 	root = new QuadNode();
 	root->limit = bbox;
@@ -120,7 +120,7 @@ void MyQuadTree::Insert(GameObject * game_object)
 	}
 }
 
-void MyQuadTree::IntersectCandidates(std::vector<GameObject*>& candidates, AABB primitive) const
+void MyQuadTree::IntersectCandidates(std::vector<GameObject*>& candidates, const AABB& primitive) const
 {
 	std::vector<QuadNode*> quadnodes;
 	QuadNode* node = root;

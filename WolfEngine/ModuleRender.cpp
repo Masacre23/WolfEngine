@@ -144,7 +144,7 @@ update_status ModuleRender::Update(float dt)
 	if (debug_draw)
 	{
 		PreDebugDraw();
-		DrawAxis();
+		//DrawAxis();
 		DrawBasePlane(Colors::White);
 		PostDebugDraw();
 	}
@@ -403,27 +403,4 @@ void ModuleRender::LoadPrimitivesGeometry()
 	num_indices_triangles = 36;
 
 	Primitives::Cube.Init(num_vertices, num_indices_triangles, vertices, texture_coord, normals, triangles_indices);
-
-	glGenBuffers(1, (GLuint*) &(id_vertices));
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * num_vertices, vertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_texture_check));
-	glBindBuffer(GL_ARRAY_BUFFER, id_texture_check);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, check_coord, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_texture));
-	glBindBuffer(GL_ARRAY_BUFFER, id_texture);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_vertices, texture_coord, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_normals));
-	glBindBuffer(GL_ARRAY_BUFFER, id_normals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_indices_triangles, normals, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) &(id_indices_triangles));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices_triangles);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices_triangles, triangles_indices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

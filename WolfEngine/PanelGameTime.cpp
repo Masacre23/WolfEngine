@@ -26,17 +26,16 @@ void PanelGameTime::Draw()
 		{
 			App->time_controller->Stop();
 		}
-	}
-	
-	ImGui::SameLine();
-	if (ImGui::Button("Pause"))
-	{
-		App->time_controller->Pause();
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Tick"))
-	{
-		App->time_controller->Tick();
+		ImGui::SameLine();
+		if (ImGui::Button("Pause"))
+		{
+			App->time_controller->Pause();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Tick"))
+		{
+			App->time_controller->Tick();
+		}
 	}
 	
 	ImGui::SliderFloat("Speed", &App->time_controller->time_scale, 0.1, 10);

@@ -27,7 +27,7 @@ public:
 	bool CleanUp();
 
 	void HandleInput(SDL_Event* event);
-	void Draw();
+	void Draw() const;
 	
 	void AddLog(const char* fmt);
 public:

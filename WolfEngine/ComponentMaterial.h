@@ -19,6 +19,8 @@ public:
 	bool OnDraw() const;
 	bool OnEditor();
 
+
+
 private:
 	float ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float diffuse[4] = { 1.0f, 1.0f, 1.0f, 1.0f };

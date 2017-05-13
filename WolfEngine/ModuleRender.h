@@ -34,7 +34,7 @@ public:
 	void PreDebugDraw();
 	void PostDebugDraw();
 	void DrawBoundingBox(const AABB& bbox, const Color& color);
-	void DrawBoundingBox(const OBB & bbox, const Color & color);
+	void DrawBoundingBox(const OBB& bbox, const Color & color);
 	void DrawFrustum(const Frustum& frustum, const Color& color);
 	void DrawAxis();
 
