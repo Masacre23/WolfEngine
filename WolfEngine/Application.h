@@ -19,6 +19,7 @@ class ModuleLevel;
 class ModuleAnimations;
 class ModuleAudio;
 class ModuleTimeController;
+class ModulePhysics;
 class ModuleProgramShaders;
 
 class ModuleEditor;
@@ -44,6 +45,7 @@ public:
 	ModuleTextures* textures;
 	ModuleAudio* audio;
 	ModuleTimeController* time_controller;
+	ModulePhysics* physics;
 	ModuleProgramShaders* program_shaders;
 	
 	ModuleEditor* editor;

@@ -68,7 +68,7 @@ void GameObject::Draw() const
 				transform->OnDraw();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
-		App->renderer->DrawColor(Colors::White);
+		App->renderer->debug_drawer->SetColor(Colors::White);
 
 		const Component* material = GetComponent(Component::MATERIAL);
 		bool material_on = false;
@@ -114,8 +114,8 @@ void GameObject::DebugDraw() const
 {
 	if (selected)
 	{
-		App->renderer->DrawBoundingBox(bbox, Colors::Green);
-		App->renderer->DrawBoundingBox(transform_bbox, Colors::Blue);
+		App->renderer->debug_drawer->DrawBoundingBox(bbox, Colors::Green);
+		App->renderer->debug_drawer->DrawBoundingBox(transform_bbox, Colors::Blue);
 
 		glPushMatrix();
 
@@ -123,7 +123,7 @@ void GameObject::DebugDraw() const
 			if (transform->IsActive())
 				transform->OnDebugDrawNoScale();
 
-		App->renderer->DrawAxis();
+		App->renderer->debug_drawer->DrawAxis();
 
 		glPopMatrix();
 		glPushMatrix();
@@ -163,7 +163,7 @@ void GameObject::DrawHierarchy() const
 	glDepthRange(0.0, 0.01);
 	glLineWidth(2.0f);
 	
-	App->renderer->DrawColor(Colors::Aqua);
+	App->renderer->debug_drawer->SetColor(Colors::Aqua);
 
 	glPushMatrix();
 
@@ -189,7 +189,7 @@ void GameObject::DrawHierarchy() const
 		if ((*it)->IsActive())
 			(*it)->RecursiveDrawHierarchy();
 
-	App->renderer->DrawColor(Colors::Black);
+	App->renderer->debug_drawer->SetColor(Colors::Black);
 	glDepthRange(0.01, 1.0);
 }
 

@@ -33,7 +33,7 @@ PrimitivePlane::PrimitivePlane(float width, float position_y, float distance, co
 void PrimitivePlane::Draw() const
 {
 	glLineWidth(2.0f);
-	App->renderer->DrawColor(color);
+	App->renderer->debug_drawer->SetColor(color);
 
 	glBegin(GL_LINES);
 	for (int i = 0; i < num_lines; i++)

@@ -138,6 +138,8 @@
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentParticleSystem.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="PhysicsDebugDraw.cpp" />
+    <ClCompile Include="RenderDebugDraw.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ComponentBillboard.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />

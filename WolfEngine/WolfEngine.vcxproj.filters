@@ -34,6 +34,9 @@
     <Filter Include="Containers">
       <UniqueIdentifier>{d3f4f139-a3c9-4e1e-b4fd-0a36a5039496}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core Modules\Helpers">
+      <UniqueIdentifier>{5e628dc6-4d7e-4922-8670-fea3a229ff70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -161,6 +164,12 @@
     </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderDebugDraw.cpp">
+      <Filter>Core Modules\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsDebugDraw.cpp">
+      <Filter>Core Modules\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

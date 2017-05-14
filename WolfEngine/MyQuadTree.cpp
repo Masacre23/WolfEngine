@@ -33,7 +33,7 @@ void MyQuadTree::Draw() const
 			for (int i = 0; i < 4; ++i)
 				quadnodes.push_back(node->children[i]);
 		}
-		App->renderer->DrawBoundingBox(node->limit, Colors::Aqua);
+		App->renderer->debug_drawer->DrawBoundingBox(node->limit, Colors::Aqua);
 	}
 }
 

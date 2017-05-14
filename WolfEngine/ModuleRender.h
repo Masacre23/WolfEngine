@@ -14,6 +14,7 @@ struct SDL_Rect;
 
 class Color;
 class PrimitivePlane;
+class RenderDebugDrawer;
 
 class ModuleRender : public Module
 {
@@ -33,25 +34,16 @@ public:
 	bool GetVsync() const { return vsync; }
 	bool SetVsync(bool active);
 
-	void DrawColor(const Color& color);
-	void PreDebugDraw();
-	void PostDebugDraw();
-	void DrawBoundingBox(const AABB& bbox, const Color& color);
-	void DrawBoundingBox(const OBB& bbox, const Color& color);
-	void DrawFrustum(const Frustum& frustum, const Color& color);
-	void DrawAxis();
-
 private:
 	void ResetProjection();
-
-	void DrawParallepiped(const float3* corners, const Color& color);
 
 	bool ConstantConfig();
 	bool GetGLError() const;
 
 public:
 	SDL_Renderer* renderer = nullptr;
-	bool debug_draw = true;
+	RenderDebugDrawer* debug_drawer = nullptr;
+	bool draw_debug = true;
 
 private:
 	SDL_GLContext glcontext = NULL;
@@ -59,6 +51,28 @@ private:
 	bool vsync = true;
 
 	PrimitivePlane* base_plane = nullptr;
+};
+
+class RenderDebugDrawer
+{
+public:
+	RenderDebugDrawer();
+	~RenderDebugDrawer();
+
+	void PreDebugDraw();
+	void PostDebugDraw();
+
+	void SetColor(const Color& color);
+	void DrawAxis();
+
+	void DrawBoundingBox(const AABB& bbox, const Color& color);
+	void DrawBoundingBox(const OBB& bbox, const Color& color);
+	void DrawFrustum(const Frustum& frustum, const Color& color);
+	void DrawLine(const float3& from, const float3& to, const Color& color);
+	void DrawPoint(const float3& point, const Color& color);
+
+private:
+	void DrawParallepiped(const float3* corners, const Color& color);
 };
 
 #endif // !MODULERENDER_H

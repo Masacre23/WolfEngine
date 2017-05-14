@@ -7,6 +7,7 @@
 #include "ModuleTextures.h"
 #include "ModuleEditor.h"
 #include "ModuleLevel.h"
+#include "ModulePhysics.h"
 #include "SDL/include/SDL.h"
 #include "OpenGL.h"
 #include "Math.h"
@@ -19,11 +20,12 @@
 #pragma comment (lib, "glu32.lib")
 
 ModuleRender::ModuleRender() : Module(MODULE_RENDER)
-{
+{	
 }
 
 ModuleRender::~ModuleRender()
-{}
+{
+}
 
 bool ModuleRender::Init()
 {
@@ -110,6 +112,8 @@ bool ModuleRender::Init()
 		ret = ret && GetGLError();
 	}
 
+	debug_drawer = new RenderDebugDrawer();
+
 	return ret;
 }
 
@@ -140,11 +144,11 @@ update_status ModuleRender::Update(float dt)
 {
 	BROFILER_CATEGORY("ModuleRender-Update", Profiler::Color::Red);
 
-	if (debug_draw)
+	if (draw_debug)
 	{
-		PreDebugDraw();
+		debug_drawer->PreDebugDraw();
 		base_plane->Draw();
-		PostDebugDraw();
+		debug_drawer->PostDebugDraw();
 	}
 
 	return UPDATE_CONTINUE;
@@ -156,11 +160,12 @@ update_status ModuleRender::PostUpdate(float dt)
 
 	App->level->Draw();
 
-	if (debug_draw)
+	if (draw_debug)
 	{
-		PreDebugDraw();
+		debug_drawer->PreDebugDraw();
 		App->level->DrawDebug();
-		PostDebugDraw();
+		App->physics->DrawDebug();
+		debug_drawer->PostDebugDraw();
 	}
 
 	App->editor->Draw();
@@ -179,6 +184,8 @@ bool ModuleRender::CleanUp()
 
 	RELEASE(base_plane);
 
+	RELEASE(debug_drawer);
+
 	return true;
 }
 
@@ -193,123 +200,6 @@ void ModuleRender::ResetProjection()
 	glLoadMatrixf(App->camera->GetProjectionMatrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-}
-
-void ModuleRender::DrawColor(const Color& color)
-{
-	glColor3f(color.r, color.g, color.b);
-}
-
-void ModuleRender::PreDebugDraw()
-{
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-}
-
-void ModuleRender::PostDebugDraw()
-{
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-}
-
-void ModuleRender::DrawBoundingBox(const AABB& bbox, const Color& color)
-{
-	float3 corners[8];
-	bbox.GetCornerPoints(corners);
-
-	DrawParallepiped(corners, color);
-}
-
-void ModuleRender::DrawBoundingBox(const OBB& bbox, const Color& color)
-{
-	float3 corners[8];
-	bbox.GetCornerPoints(corners);
-
-	DrawParallepiped(corners, color);
-}
-
-void ModuleRender::DrawFrustum(const Frustum& frustum, const Color& color)
-{
-	float3 corners[8];
-	frustum.GetCornerPoints(corners);
-
-	DrawParallepiped(corners, color);
-}
-
-void ModuleRender::DrawAxis()
-{
-	float axis_length = 1.5f;
-
-	glDepthRange(0.0, 0.01);
-
-	glLineWidth(2.0f);
-
-	DrawColor(Colors::Red);
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(axis_length, 0.0, 0.0);
-	glEnd();
-
-	DrawColor(Colors::Green);
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, axis_length, 0.0);
-	glEnd();
-
-	DrawColor(Colors::Blue);
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, axis_length);
-	glEnd();
-
-	glDepthRange(0.01, 1.0);
-
-}
-
-void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
-{
-	DrawColor(color);
-
-	glLineWidth(1.0f);
-	glBegin(GL_LINES);
-	
-	glVertex3fv((GLfloat*) &corners[0]);
-	glVertex3fv((GLfloat*) &corners[1]);
-
-	glVertex3fv((GLfloat*) &corners[0]);
-	glVertex3fv((GLfloat*) &corners[2]);
-
-	glVertex3fv((GLfloat*) &corners[0]);
-	glVertex3fv((GLfloat*) &corners[4]);
-
-	glVertex3fv((GLfloat*) &corners[5]);
-	glVertex3fv((GLfloat*) &corners[1]);
-
-	glVertex3fv((GLfloat*) &corners[5]);
-	glVertex3fv((GLfloat*) &corners[4]);
-
-	glVertex3fv((GLfloat*) &corners[5]);
-	glVertex3fv((GLfloat*) &corners[7]);
-
-	glVertex3fv((GLfloat*) &corners[3]);
-	glVertex3fv((GLfloat*) &corners[7]);
-
-	glVertex3fv((GLfloat*) &corners[3]);
-	glVertex3fv((GLfloat*) &corners[1]);
-
-	glVertex3fv((GLfloat*) &corners[3]);
-	glVertex3fv((GLfloat*) &corners[2]);
-
-	glVertex3fv((GLfloat*) &corners[6]);
-	glVertex3fv((GLfloat*) &corners[7]);
-
-	glVertex3fv((GLfloat*) &corners[6]);
-	glVertex3fv((GLfloat*) &corners[4]);
-
-	glVertex3fv((GLfloat*) &corners[6]);
-	glVertex3fv((GLfloat*) &corners[2]);
-
-	glEnd();
 }
 
 bool ModuleRender::SetVsync(bool active)

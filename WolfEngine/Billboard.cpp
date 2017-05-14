@@ -30,7 +30,7 @@ void Billboard::Draw(float3 scale, float2 texture_scale)
 	glEnable(GL_COLOR_MATERIAL);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	App->renderer->DrawColor(Colors::White);
+	App->renderer->debug_drawer->SetColor(Colors::White);
 
 	glPushMatrix();
 	glScalef(scale.x, scale.y, scale.z);
@@ -53,7 +53,7 @@ void Billboard::Draw(float3 scale, float2 texture_scale)
 	glEnd();
 	glPopMatrix();
 
-	App->renderer->DrawColor(Colors::Black);
+	App->renderer->debug_drawer->SetColor(Colors::Black);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_COLOR_MATERIAL);
 }

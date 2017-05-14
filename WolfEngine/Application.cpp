@@ -6,6 +6,7 @@
 #include "ModuleCamera.h"
 #include "ModuleTextures.h"
 #include "ModuleAnimations.h"
+#include "ModulePhysics.h"
 #include "ModuleAudio.h"
 #include "JsonHandler.h"
 #include "TimerUs.h"
@@ -31,6 +32,7 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(camera = new ModuleCamera());
 	modules.push_back(animations = new ModuleAnimations());
+	modules.push_back(physics = new ModulePhysics());
 	modules.push_back(level = new ModuleLevel());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(program_shaders = new ModuleProgramShaders());

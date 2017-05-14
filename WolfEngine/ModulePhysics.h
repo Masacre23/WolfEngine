@@ -2,6 +2,7 @@
 #define MODULEPHYSICS_H
 
 #include "Module.h"
+#include "Bullet/include/LinearMath/btIDebugDraw.h"
 
 #define MODULE_PHYSICS "ModulePhysics"
 #define PHYSICS_SECTION "Config.Modules.Physics"
@@ -11,8 +12,9 @@ class btCollisionDispatcher;
 class btBroadphaseInterface;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
+class PhysicsDebugDrawer;
 
-class ModulePhysics
+class ModulePhysics : public Module
 {
 public:
 	ModulePhysics();
@@ -25,12 +27,35 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+	void DrawDebug() const;
+
 private:
 	btDefaultCollisionConfiguration* collision_conf = nullptr;
 	btCollisionDispatcher* dispatcher = nullptr;
 	btBroadphaseInterface* broad_phase = nullptr;
 	btSequentialImpulseConstraintSolver* solver = nullptr;
 	btDiscreteDynamicsWorld* world = nullptr;
+	PhysicsDebugDrawer* debug_drawer = nullptr;
+
+	btVector3 gravity = btVector3(0.0f, -9.8f, 0.0f);
+};
+
+class PhysicsDebugDrawer : public btIDebugDraw
+{
+public:
+	PhysicsDebugDrawer() {}
+
+	void drawLine(const btVector3& from, const btVector3& to, const btVector3& color);
+	void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color);
+
+	void setDebugMode(int debugMode);
+	int getDebugMode() const;
+
+	void reportErrorWarning(const char* warningString);
+	void draw3dText(const btVector3& location, const char* textString);
+
+public:
+	DebugDrawModes mode;
 };
 
 #endif // !MODULEPHYSICS_H

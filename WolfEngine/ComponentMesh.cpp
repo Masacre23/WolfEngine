@@ -330,7 +330,7 @@ bool ComponentMesh::OnEditor()
 
 void ComponentMesh::DrawNormals() const
 {
-	App->renderer->DrawColor(Colors::Yellow);
+	App->renderer->debug_drawer->SetColor(Colors::Yellow);
 
 	for (int i = 0; i < num_vertices; i++)
 	{
@@ -340,12 +340,12 @@ void ComponentMesh::DrawNormals() const
 		glEnd();
 	}
 
-	App->renderer->DrawColor(Colors::Black);
+	App->renderer->debug_drawer->SetColor(Colors::Black);
 }
 
 void ComponentMesh::DrawMesh() const
 {
-	App->renderer->DrawColor(Colors::Fuchsia);
+	App->renderer->debug_drawer->SetColor(Colors::Fuchsia);
 
 	unsigned num_triangles = num_indices / 3;
 	for (int i = 0; i < num_triangles; i++)
@@ -366,7 +366,7 @@ void ComponentMesh::DrawMesh() const
 		glEnd();
 	}
 
-	App->renderer->DrawColor(Colors::Black);
+	App->renderer->debug_drawer->SetColor(Colors::Black);
 }
 
 void ComponentMesh::SetAABB() const
