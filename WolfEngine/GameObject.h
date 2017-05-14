@@ -50,7 +50,7 @@ public:
 	void SetLocalTransform(const float3& position, const Quat& rotation);
 	void SetLocalTransform(const float3& position);
 	void LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path, bool is_dynamic = false);
-	void LoadMesh(Primitive* primitive);
+	void LoadMesh(const Primitive& primitive);
 	void LoadMaterial(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
 	void LoadMaterial(const aiString& path);
 	void LoadAnimation(const char * name);

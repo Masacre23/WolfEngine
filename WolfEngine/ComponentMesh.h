@@ -34,7 +34,7 @@ public:
 	~ComponentMesh();
 
 	void Load(aiMesh* mesh, bool is_dynamic = false);
-	void Load(Primitive* primitive);
+	void Load(const Primitive& primitive);
 	void LoadBones();
 
 	bool OnUpdate();

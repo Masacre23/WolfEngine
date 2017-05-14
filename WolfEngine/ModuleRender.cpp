@@ -83,7 +83,6 @@ bool ModuleRender::Init()
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHTING);
-		//glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 		ret = ret && GetGLError();
 
@@ -116,7 +115,7 @@ bool ModuleRender::Init()
 
 bool ModuleRender::Start()
 {
-	LoadPrimitivesGeometry();
+	base_plane = new PrimitivePlane(200.0f, 0.0f, 1.0f, Colors::White);
 
 	return true;
 }
@@ -144,8 +143,7 @@ update_status ModuleRender::Update(float dt)
 	if (debug_draw)
 	{
 		PreDebugDraw();
-		//DrawAxis();
-		DrawBasePlane(Colors::White);
+		base_plane->Draw();
 		PostDebugDraw();
 	}
 
@@ -179,6 +177,8 @@ bool ModuleRender::CleanUp()
 	if (glcontext != NULL)
 		SDL_GL_DeleteContext(glcontext);
 
+	RELEASE(base_plane);
+
 	return true;
 }
 
@@ -204,14 +204,12 @@ void ModuleRender::PreDebugDraw()
 {
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
-	//glEnable(GL_COLOR_MATERIAL);
 }
 
 void ModuleRender::PostDebugDraw()
 {
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	//glDisable(GL_COLOR_MATERIAL);
 }
 
 void ModuleRender::DrawBoundingBox(const AABB& bbox, const Color& color)
@@ -268,76 +266,49 @@ void ModuleRender::DrawAxis()
 
 }
 
-void ModuleRender::DrawBasePlane(const Color& color)
-{
-	float distance_between_lines = 1.0f;
-	float min_distance = -100.f;
-	float max_distance = 100.f;
-	int num_lines = ((int)((max_distance - min_distance) / distance_between_lines)) + 1;
-
-	//glDepthRange(0.1, 0.9);
-	
-	glLineWidth(2.0f);
-	DrawColor(color);
-	for (int i = 0; i < num_lines; i++)
-	{
-		glBegin(GL_LINES);
-		glVertex3f(min_distance + i*distance_between_lines, 0.0, min_distance);
-		glVertex3f(min_distance + i*distance_between_lines, 0.0, max_distance);
-		glEnd();
-	}
-	for (int i = 0; i < num_lines; i++)
-	{
-		glBegin(GL_LINES);
-		glVertex3f(min_distance, 0.0, min_distance + i*distance_between_lines);
-		glVertex3f(max_distance, 0.0, min_distance + i*distance_between_lines);
-		glEnd();
-	}	
-}
-
 void ModuleRender::DrawParallepiped(const float3* corners, const Color& color)
 {
+	DrawColor(color);
+
 	glLineWidth(1.0f);
 	glBegin(GL_LINES);
 	
-	DrawColor(color);
-	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
-	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+	glVertex3fv((GLfloat*) &corners[0]);
+	glVertex3fv((GLfloat*) &corners[1]);
 
-	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
-	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+	glVertex3fv((GLfloat*) &corners[0]);
+	glVertex3fv((GLfloat*) &corners[2]);
 
-	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
-	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+	glVertex3fv((GLfloat*) &corners[0]);
+	glVertex3fv((GLfloat*) &corners[4]);
 
-	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
-	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+	glVertex3fv((GLfloat*) &corners[5]);
+	glVertex3fv((GLfloat*) &corners[1]);
 
-	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
-	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+	glVertex3fv((GLfloat*) &corners[5]);
+	glVertex3fv((GLfloat*) &corners[4]);
 
-	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
-	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+	glVertex3fv((GLfloat*) &corners[5]);
+	glVertex3fv((GLfloat*) &corners[7]);
 
-	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
-	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+	glVertex3fv((GLfloat*) &corners[3]);
+	glVertex3fv((GLfloat*) &corners[7]);
 
-	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
-	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+	glVertex3fv((GLfloat*) &corners[3]);
+	glVertex3fv((GLfloat*) &corners[1]);
 
-	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
-	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+	glVertex3fv((GLfloat*) &corners[3]);
+	glVertex3fv((GLfloat*) &corners[2]);
 
-	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
-	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+	glVertex3fv((GLfloat*) &corners[6]);
+	glVertex3fv((GLfloat*) &corners[7]);
 
-	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
-	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+	glVertex3fv((GLfloat*) &corners[6]);
+	glVertex3fv((GLfloat*) &corners[4]);
 
-	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
-	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+	glVertex3fv((GLfloat*) &corners[6]);
+	glVertex3fv((GLfloat*) &corners[2]);
 
-	DrawColor(Colors::Black);
 	glEnd();
 }
 
@@ -353,7 +324,7 @@ bool ModuleRender::SetVsync(bool active)
 bool ModuleRender::ConstantConfig()
 {
 	bool ret = true;
-
+	
 	if (App->parser->LoadObject(RENDER_SECTION) == true)
 	{
 		vsync = App->parser->GetBoolMandatory("Vsync");
@@ -378,29 +349,4 @@ bool ModuleRender::GetGLError() const
 	}
 
 	return ret;
-}
-
-void ModuleRender::LoadPrimitivesGeometry()
-{
-	//Load Cube
-	float3 A = { -0.5f, -0.5f, 0.5f };
-	float3 B = { 0.5f, -0.5f, 0.5f };
-	float3 C = { -0.5f, 0.5f, 0.5f };
-	float3 D = { 0.5f, 0.5f, 0.5f };
-	float3 E = { -0.5f, -0.5f, -0.5f };
-	float3 F = { 0.5f, -0.5f, -0.5f };
-	float3 G = { -0.5f, 0.5f, -0.5f };
-	float3 H = { 0.5f, 0.5f, -0.5f };
-
-	float vertices[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z, E.x, E.y, E.z, F.x, F.y, F.z, G.x, G.y, G.z, H.x, H.y, H.z, A.x, A.y, A.z,  B.x, B.y, B.z, G.x, G.y, G.z, H.x, H.y, H.z };
-	unsigned int num_vertices = 12;
-	float texture_coord[] = { 0,0, 1,0, 0,1, 1,1, 1,0, 0,0, 1,1, 0,1, 1,1, 0,1, 0,0, 1,0 };
-	float check_coord[] = { 0,0, 4,0, 0,4, 4,4, 4,0, 0,0, 4,4, 0,4, 4,4, 0,4, 0,0, 4,0 };
-
-	float normals[] = { -1,-1,1, 1,-1,1, -1,1,1, 1,1,1, -1,-1,-1, 1,-1,-1, -1,1,-1, 1,1,-1, -1,-1,1, 1,-1,1, -1,1,-1, 1,1,-1 };
-
-	unsigned triangles_indices[] = { 0, 1, 2,  2, 1, 3,  3, 9, 5,  3, 5, 11,  10, 4, 8,  10, 8, 2,  2, 3, 10,  10, 3, 11,  6, 7, 4,  4, 7, 5,  4, 5, 8,  8, 5, 9 };
-	num_indices_triangles = 36;
-
-	Primitives::Cube.Init(num_vertices, num_indices_triangles, vertices, texture_coord, normals, triangles_indices);
 }

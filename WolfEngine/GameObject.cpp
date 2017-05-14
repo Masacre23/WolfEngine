@@ -419,15 +419,15 @@ void GameObject::SetLocalTransform(const float3& position, const float3& scaling
 void GameObject::SetLocalTransform(const float3& position, const Quat& rotation)
 {
 	if (transform == nullptr)
-		SetLocalTransform(position, float3::one, rotation);
+		SetLocalTransform(position, rotation);
 
 	transform->Load(position, rotation);
 }
 
-void GameObject::SetLocalTransform(const float3 & position)
+void GameObject::SetLocalTransform(const float3& position)
 {
 	if (transform == nullptr)
-		SetLocalTransform(position, float3::one, Quat::identity);
+		SetLocalTransform(position);
 
 	transform->Load(position);
 }
@@ -439,7 +439,7 @@ void GameObject::LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiStri
 	mesh->folder_path = folder_path;
 }
 
-void GameObject::LoadMesh(Primitive* primitive)
+void GameObject::LoadMesh(const Primitive& primitive)
 {
 	ComponentMesh* mesh = (ComponentMesh*) CreateComponent(Component::MESH);
 	mesh->Load(primitive);

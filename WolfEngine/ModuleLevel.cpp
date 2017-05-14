@@ -7,6 +7,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "Math.h"
+#include "Primitive.h"
 #include "MyQuadTree.h"
 
 #pragma comment(lib, "assimp/libx86/assimp-vc140-mt.lib")
@@ -104,17 +105,19 @@ GameObject* ModuleLevel::CreateGameObject(const std::string& name, GameObject* p
 	return ret;
 }
 
-GameObject* ModuleLevel::CreateGameObject(Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
+GameObject* ModuleLevel::CreateGameObject(const Primitive& primitive, const std::string& name, GameObject* parent, GameObject* root_object)
 {
 	GameObject* ret = CreateGameObject(name, parent, root_object);
+	ret->SetLocalTransform(primitive.GetPosition());
 	ret->LoadMesh(primitive);
 
 	return ret;
 }
 
-GameObject* ModuleLevel::CreateGameObject(const char* texture, Primitive* primitive, const std::string& name, GameObject* parent, GameObject* root_object)
+GameObject* ModuleLevel::CreateGameObject(const char* texture, const Primitive& primitive, const std::string& name, GameObject* parent, GameObject* root_object)
 {
 	GameObject* ret = CreateGameObject(name, parent, root_object);
+	ret->SetLocalTransform(primitive.GetPosition());
 	ret->LoadMesh(primitive);
 	ret->LoadMaterial(aiString(texture));
 

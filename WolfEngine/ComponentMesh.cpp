@@ -134,10 +134,10 @@ void ComponentMesh::Load(aiMesh* mesh, bool is_dynamic)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ComponentMesh::Load(Primitive* primitive)
+void ComponentMesh::Load(const Primitive& primitive)
 {
-	num_vertices = primitive->num_vertices;
-	num_indices = primitive->num_indices;
+	num_vertices = primitive.GetNumVertices();
+	num_indices = primitive.GetNumIndices();
 
 	int float_dimension = 3;
 	has_normals = true;
@@ -149,13 +149,11 @@ void ComponentMesh::Load(Primitive* primitive)
 	buffer = new float[float_dimension * num_vertices];
 
 	vertices = new float3[num_vertices];
-	memcpy(vertices, primitive->vertices, num_vertices * sizeof(float3));
-	
 	normals = new float3[num_vertices];
-	memcpy(normals, primitive->normals, num_vertices * sizeof(float3));
-	
 	tex_coords = new float2[num_vertices];
-	memcpy(tex_coords, primitive->text_coord, num_vertices * sizeof(float2));
+	indices = new unsigned[num_indices];
+
+	primitive.LoadMesh(vertices, tex_coords, normals, indices);
 
 	unsigned c = 0;
 	for (size_t i = 0; i < num_vertices; ++i)
@@ -179,10 +177,6 @@ void ComponentMesh::Load(Primitive* primitive)
 	glGenBuffers(1, (GLuint*) &(buffer_id));
 	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
 	glBufferData(GL_ARRAY_BUFFER, float_dimension * sizeof(float) * num_vertices, buffer, draw_mode);
-
-	num_indices = primitive->num_indices;
-	indices = new unsigned[num_indices];
-	memcpy(indices, primitive->indices, num_indices * sizeof(unsigned));
 
 	glGenBuffers(1, (GLuint*) &(indices_id));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
