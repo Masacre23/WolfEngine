@@ -24,12 +24,14 @@ public:
 	Component(Type type, GameObject* parent) : type(type), parent(parent) {}
 	virtual ~Component() {}
 
-	virtual void Enable() { enable = true; }
 	virtual bool OnUpdate() { return true; }
 	virtual bool OnDraw() const { return true; }
 	virtual bool OnDebugDraw() const { return true; }
 	virtual bool OnEditor() { return true; }
+
+	virtual void Enable() { enable = true; }
 	virtual void Disable() { enable = false; }
+	virtual void DisableOnEditor() { on_editor = false; }
 
 	virtual void SaveComponent() {}
 	virtual void RestoreComponent() {}
@@ -40,6 +42,7 @@ public:
 
 protected:
 	bool enable = true;
+	bool on_editor = true;
 	Type type;
 	GameObject* parent;
 };

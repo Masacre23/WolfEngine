@@ -42,6 +42,9 @@ public:
 	bool OnDebugDraw() const;
 	bool OnEditor();
 
+	void SaveComponent();
+	void RestoreComponent();
+
 	void DrawNormals() const;
 	void DrawMesh() const;
 
@@ -49,9 +52,6 @@ public:
 
 private:
 	void SetAABB() const;
-
-public:
-	aiString folder_path;
 
 private:
 	unsigned buffer_id = 0;

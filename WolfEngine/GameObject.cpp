@@ -328,9 +328,17 @@ void GameObject::DeleteComponent(Component* component)
 	{
 		if (*it == component)
 		{
-			RELEASE(*it);
-			components.erase(it);
-			break;
+			if (App->time_controller->IsStopped())
+			{
+				RELEASE(*it);
+				components.erase(it);
+				break;
+			}
+			else
+			{
+				(*it)->Disable();
+				(*it)->DisableOnEditor();
+			}
 		}
 	}
 }
@@ -436,7 +444,6 @@ void GameObject::LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiStri
 {
 	ComponentMesh* mesh = (ComponentMesh*)CreateComponent(Component::Type::MESH);
 	mesh->Load(scene_mesh, is_dynamic);
-	mesh->folder_path = folder_path;
 }
 
 void GameObject::LoadMesh(const Primitive& primitive)

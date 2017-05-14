@@ -308,24 +308,54 @@ bool ComponentMesh::OnDebugDraw() const
 
 bool ComponentMesh::OnEditor()
 {
-	if (ImGui::CollapsingHeader("Mesh"))
+	if (on_editor)
 	{
-		ImGui::Checkbox("Active", &enable);
+		if (ImGui::CollapsingHeader("Mesh"))
+		{
+			ImGui::Checkbox("Active", &enable);
 
-		ImGui::SameLine();
+			ImGui::SameLine();
 
-		if (ImGui::Button("Delete"))
-			parent->DeleteComponent(this);
+			if (ImGui::Button("Delete"))
+				parent->DeleteComponent(this);
 
-		if (strcmp(folder_path.data, ""))
-			ImGui::Text(folder_path.data);
-		
-		ImGui::Checkbox("Draw normals", &draw_normals);
+			ImGui::Checkbox("Draw normals", &draw_normals);
 
-		ImGui::Checkbox("Draw mesh", &draw_mesh);
+			ImGui::Checkbox("Draw mesh", &draw_mesh);
+		}
+
+		return ImGui::IsItemClicked();
 	}
 
-	return ImGui::IsItemClicked();
+	return false;
+}
+
+void ComponentMesh::SaveComponent()
+{
+}
+
+void ComponentMesh::RestoreComponent()
+{
+	if (has_bones)
+	{
+		float3* vertex_pointer;
+		float3* normals_pointer;
+
+		glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+		float* buffer_pointer = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+		vertex_pointer = (float3*)buffer_pointer;
+		memcpy(vertex_pointer, vertices, num_vertices * sizeof(float3));
+		if (has_normals)
+		{
+			normals_pointer = (float3*) &(buffer_pointer[3 * num_vertices]);
+			memcpy(normals_pointer, normals, num_vertices * sizeof(float3));
+		}
+	}
+
+	enable = true;
+	on_editor = true;
+	draw_normals = false;
+	draw_mesh = false;
 }
 
 void ComponentMesh::DrawNormals() const

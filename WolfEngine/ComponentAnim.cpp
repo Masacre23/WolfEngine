@@ -49,6 +49,19 @@ bool ComponentAnim::OnEditor()
 	return true;
 }
 
+void ComponentAnim::SaveComponent()
+{
+	backed_animation = current_animation;
+	backed_blend_time = blend_time;
+}
+
+void ComponentAnim::RestoreComponent()
+{
+	blend_time = backed_blend_time;
+	current_animation = backed_animation;
+	StopCurrent();
+}
+
 bool ComponentAnim::OnAnimationUpdate()
 {
 	BROFILER_CATEGORY("ComponentAnimation-OnAnimationUpdate", Profiler::Color::Aquamarine);

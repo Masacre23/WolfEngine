@@ -13,6 +13,8 @@ public:
 	~ComponentAnim();
 
 	bool OnEditor();
+	void SaveComponent();
+	void RestoreComponent();
 
 	bool OnAnimationUpdate();
 
@@ -34,6 +36,9 @@ private:
 	aiString current_animation;
 	int anim_id = -1;
 	int blend_time = 200;
+
+	aiString backed_animation;
+	int backed_blend_time;
 };
 
 #endif

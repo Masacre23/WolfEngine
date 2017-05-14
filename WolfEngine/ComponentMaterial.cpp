@@ -75,20 +75,50 @@ bool ComponentMaterial::OnDraw() const
 
 bool ComponentMaterial::OnEditor()
 {
-	if (ImGui::CollapsingHeader("Material"))
+	if (on_editor)
 	{
-		ImGui::Checkbox("Active", &enable);
+		if (ImGui::CollapsingHeader("Material"))
+		{
+			ImGui::Checkbox("Active", &enable);
 
-		ImGui::SameLine();
+			ImGui::SameLine();
 
-		if (ImGui::Button("Delete"))
-			parent->DeleteComponent(this);
+			if (ImGui::Button("Delete"))
+				parent->DeleteComponent(this);
 
-		ImGui::DragFloat4("Ambient", (float*)&ambient, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat4("Diffuse", (float*)&diffuse, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat4("Specular", (float*)&specular, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("Shiness", (float*)&shiness, 1.0f, 0.0f, 128.0f);
+			ImGui::DragFloat4("Ambient", (float*)&ambient, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat4("Diffuse", (float*)&diffuse, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat4("Specular", (float*)&specular, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Shiness", (float*)&shiness, 1.0f, 0.0f, 128.0f);
+		}
+
+		return ImGui::IsItemClicked();
 	}
+	
+	return false;
+}
 
-	return ImGui::IsItemClicked();
+void ComponentMaterial::SaveComponent()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		backed_ambient[i] = ambient[i];
+		backed_diffuse[i] = diffuse[i];
+		backed_specular[i] = specular[i];
+	}
+	backed_shiness = shiness;
+}
+
+void ComponentMaterial::RestoreComponent()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		ambient[i] = backed_ambient[i];
+		diffuse[i] = backed_diffuse[i];
+		specular[i] = backed_specular[i];
+	}
+	shiness = backed_shiness;
+
+	enable = true;
+	on_editor = true;
 }
