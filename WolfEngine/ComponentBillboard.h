@@ -21,7 +21,7 @@ public:
 	~ComponentBillboard();
 
 	void Enable();
-	bool OnDraw() const;
+	void OnDraw() const;
 	bool OnEditor();
 
 public:

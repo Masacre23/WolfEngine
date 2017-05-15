@@ -55,12 +55,7 @@ void ComponentMaterial::LoadTexture(const aiString& texture_path)
 	texture = App->textures->LoadTexture(texture_path);
 }
 
-bool ComponentMaterial::OnUpdate()
-{
-	return true;
-}
-
-bool ComponentMaterial::OnDraw() const
+void ComponentMaterial::OnDraw() const
 {
 	glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
@@ -68,8 +63,6 @@ bool ComponentMaterial::OnDraw() const
 	glMaterialf(GL_FRONT, GL_SHININESS, shiness);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
-	
-	return true;
 }
 
 bool ComponentMaterial::OnEditor()

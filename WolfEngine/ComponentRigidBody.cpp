@@ -1,3 +1,7 @@
+#include "Application.h"
+#include "ModulePhysics.h"
+#include "GameObject.h"
+#include "ComponentTransform.h"
 #include "ComponentRigidBody.h"
 #include "Interface.h"
 
@@ -10,12 +14,10 @@ ComponentRigidBody::~ComponentRigidBody()
 	RELEASE(collider);
 }
 
-bool ComponentRigidBody::OnDebugDraw() const
+void ComponentRigidBody::OnDebugDraw() const
 {
 	if (collider != nullptr)
 		collider->OnDebugDraw();
-
-	return true;
 }
 
 bool ComponentRigidBody::OnEditor()
@@ -51,6 +53,17 @@ bool ComponentRigidBody::OnEditor()
 	return true;
 }
 
+void ComponentRigidBody::OnPlay()
+{
+	rigid_body = App->physics->AddRigidBody(this);
+}
+
+void ComponentRigidBody::OnStop()
+{
+	if (rigid_body != nullptr)
+		App->physics->DeleteRigidBody(rigid_body);
+}
+
 void ComponentRigidBody::LoadRigidBody(Collider::Type collider_type, float mass, MotionType motion_type)
 {
 	this->motion_type = motion_type;
@@ -62,9 +75,29 @@ void ComponentRigidBody::LoadRigidBody(Collider::Type collider_type, float mass,
 	collider = CreateCollider(collider_type);
 }
 
+void ComponentRigidBody::getWorldTransform(btTransform& worldTrans) const
+{
+	worldTrans.setFromOpenGLMatrix(parent->transform->GetGlobalTransformMatrix().Transposed().ptr());
+}
+
+void ComponentRigidBody::setWorldTransform(const btTransform& worldTrans)
+{
+	btVector3 position = worldTrans.getOrigin();
+	btQuaternion rotation = worldTrans.getRotation();
+
+	float4x4 global_transform = float4x4(rotation, position);
+	float4x4 local_transform = global_transform * parent->GetParent()->GetLocalTransformMatrix().Inverted();
+
+	float3 pos;
+	float3 scale;
+	Quat rot;
+	local_transform.Decompose(pos, rot, scale);
+	parent->SetLocalTransform(pos, scale, rot);
+}
+
 Collider* ComponentRigidBody::CreateCollider(Collider::Type type)
 {
-	static_assert(Collider::Type::UNKNOWN == 3, "Update factory code");
+	static_assert(Collider::Type::UNKNOWN == 3, "Update collider factory code");
 
 	Collider* ret = nullptr;
 

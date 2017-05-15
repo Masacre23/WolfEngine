@@ -1,5 +1,17 @@
 #include "ModulePhysics.h"
-#include "Physics.h"
+#include "ComponentRigidBody.h"
+#include "Math.h"
+#include "Bullet/include/btBulletDynamicsCommon.h"
+
+#ifdef _DEBUG
+#pragma comment (lib, "Bullet/libx86/BulletDynamics_debug.lib")
+#pragma comment (lib, "Bullet/libx86/BulletCollision_debug.lib")
+#pragma comment (lib, "Bullet/libx86/LinearMath_debug.lib")
+#else
+#pragma comment (lib, "Bullet/libx86/BulletDynamics.lib")
+#pragma comment (lib, "Bullet/libx86/BulletCollision.lib")
+#pragma comment (lib, "Bullet/libx86/LinearMath.lib")
+#endif
 
 ModulePhysics::ModulePhysics() : Module(MODULE_PHYSICS)
 {
@@ -64,6 +76,70 @@ update_status ModulePhysics::PostUpdate(float dt)
 	BROFILER_CATEGORY("ModulePhysics-PostUpdate", Profiler::Color::Green);
 
 	return UPDATE_CONTINUE;
+}
+
+btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component)
+{
+	btRigidBody* ret = nullptr;
+	
+	float mass = 0.0f;
+	if (component->GetMotionType() == ComponentRigidBody::MotionType::DYNAMIC)
+		mass = component->GetMass();
+
+	btCollisionShape* collision_shape = CreateCollisionShape(component->GetCollider());
+	shapes.push_back(collision_shape);
+	
+	btVector3 local_inertia(0.0f, 0.0f, 0.0f);
+	if (mass != 0.0f)
+		collision_shape->calculateLocalInertia(mass, local_inertia);
+
+	btRigidBody::btRigidBodyConstructionInfo rigidbody_info(mass, component, collision_shape, local_inertia);
+	ret = new btRigidBody(rigidbody_info);
+	world->addRigidBody(ret);
+
+	return ret;
+}
+
+void ModulePhysics::DeleteRigidBody(btRigidBody* rigid_body)
+{
+	if (rigid_body != nullptr)
+	{
+		world->removeRigidBody(rigid_body);
+	}	
+}
+
+btCollisionShape* ModulePhysics::CreateCollisionShape(Collider* collider)
+{
+	static_assert(Collider::Type::UNKNOWN == 3, "Update collision shape factory code");
+
+	btCollisionShape* ret = nullptr;
+
+	switch (collider->GetType())
+	{
+	case Collider::Type::BOX:
+		ret = new btBoxShape(((ColliderBox*)collider)->GetBox().r);
+		break;
+	case Collider::Type::SPHERE:
+		ret = new btSphereShape(((ColliderSphere*)collider)->GetSphere().r);
+		break;
+	case Collider::Type::CAPSULE:
+		ret = new btCapsuleShape(((ColliderCapsule*)collider)->GetCapsule().r, ((ColliderCapsule*)collider)->GetCapsule().Height());
+		break;
+	}
+
+	return ret;
+}
+
+void ModulePhysics::DeleteCollisionShape(btCollisionShape* collision_shape)
+{
+	for (std::vector<btCollisionShape*>::iterator it = shapes.begin(); it != shapes.end(); ++it)
+	{
+		if (*it == collision_shape)
+		{
+			RELEASE(*it);
+			shapes.erase(it);
+		}
+	}
 }
 
 void ModulePhysics::DrawDebug() const

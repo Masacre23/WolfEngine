@@ -320,9 +320,6 @@
     <ClInclude Include="Primitive.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="ComponentParticleSystem.h">
       <Filter>Game Object</Filter>
     </ClInclude>
@@ -346,6 +343,12 @@
     </ClInclude>
     <ClInclude Include="Interface.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MathGeoLib\include\MathBuildConfig.h">
+      <Filter>3rd Party\MathGeoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="MathGeoLib\include\MathGeoLib.h">
+      <Filter>3rd Party\MathGeoLib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

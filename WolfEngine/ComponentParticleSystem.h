@@ -31,7 +31,7 @@ public:
 	void Init(unsigned max_particles, const float2& _emit_size, unsigned _falling_time, float falling_height, const char* texture_file, const float2& psize);
 	void Clear();
 	void Rain(Billboard* b);
-	bool OnDraw();
+	void OnDraw();
 	bool OnEditor();
 
 public:

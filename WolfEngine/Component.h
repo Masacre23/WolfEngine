@@ -25,10 +25,13 @@ public:
 	Component(Type type, GameObject* parent) : type(type), parent(parent) {}
 	virtual ~Component() {}
 
-	virtual bool OnUpdate() { return true; }
-	virtual bool OnDraw() const { return true; }
-	virtual bool OnDebugDraw() const { return true; }
-	virtual bool OnEditor() { return true; }
+	virtual void OnUpdate() {}
+	virtual void OnDraw() const {}
+	virtual void OnDebugDraw() const {}
+	virtual bool OnEditor() { return false; }
+
+	virtual void OnPlay() {}
+	virtual void OnStop() {}
 
 	virtual void Enable() { enable = true; }
 	virtual void Disable() { enable = false; }

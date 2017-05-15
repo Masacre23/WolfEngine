@@ -37,9 +37,9 @@ public:
 	void Load(const Primitive& primitive);
 	void LoadBones();
 
-	bool OnUpdate();
-	bool OnDraw() const;
-	bool OnDebugDraw() const;
+	void OnUpdate();
+	void OnDraw() const;
+	void OnDebugDraw() const;
 	bool OnEditor();
 
 	void SaveComponent();

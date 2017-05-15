@@ -63,7 +63,7 @@ void ModuleTimeController::Play()
 {
 	backed_time_scale = time_scale;
 
-	App->level->SaveGameObjects();
+	App->level->OnPlay();
 	
 	game_timer->Start();
 
@@ -97,7 +97,7 @@ void ModuleTimeController::Stop()
 {
 	time_scale = backed_time_scale;
 
-	App->level->RestoreGameObjects();
+	App->level->OnStop();
 
 	frame_count = 0;
 	game_timer->Stop();

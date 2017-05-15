@@ -34,6 +34,8 @@ public:
 	void DrawHierarchy() const;
 
 	void SetParent(GameObject* parent);
+	const GameObject* GetParent() const { return parent; }
+
 	Component* CreateComponent(Component::Type type);
 	void DeleteComponent(Component* component);
 
@@ -66,8 +68,8 @@ public:
 
 	void RecursiveUpdateTransforms(const float4x4& parent = float4x4::identity);
 	void RecursiveUpdateBoundingBox(bool force_recalculation = false);
-	void RecursiveSaveComponents();
-	void RecursiveRestoreComponents();
+	void RecursiveOnPlay();
+	void RecursiveOnStop();
 
 	const float4x4& GetLocalTransformMatrix() const;
 	const float4x4& GetGlobalTransformMatrix() const;

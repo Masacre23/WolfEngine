@@ -46,7 +46,7 @@ bool ComponentAnim::OnEditor()
 		}
 	}
 
-	return true;
+	return ImGui::IsItemClicked();
 }
 
 void ComponentAnim::SaveComponent()

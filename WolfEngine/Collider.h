@@ -36,6 +36,8 @@ public:
 	void OnEditor();
 	void OnDebugDraw();
 
+	const OBB& GetBox() const { return box; }
+
 private:
 	OBB box;
 };
@@ -45,6 +47,8 @@ class ColliderSphere : public Collider
 public:
 	ColliderSphere();
 
+	const Sphere& GetSphere() const { return sphere; }
+
 private:
 	Sphere sphere;
 };
@@ -53,6 +57,8 @@ class ColliderCapsule : public Collider
 {
 public:
 	ColliderCapsule();
+
+	const Capsule& GetCapsule() const { return capsule; }
 
 private:
 	Capsule capsule;

@@ -27,22 +27,18 @@ ComponentCamera::~ComponentCamera()
 	RELEASE(frustum);
 }
 
-bool ComponentCamera::OnUpdate()
+void ComponentCamera::OnUpdate()
 {
 	if (parent != nullptr)
 	{
 		SetPosition(parent->transform->GetPosition());
 		SetOrientation(parent->transform->GetRotation());
 	}		
-
-	return true;
 }
 
-bool ComponentCamera::OnDebugDraw() const
+void ComponentCamera::OnDebugDraw() const
 {
 	App->renderer->debug_drawer->DrawFrustum(*frustum, Colors::Yellow);
-
-	return true;
 }
 
 bool ComponentCamera::OnEditor()

@@ -197,14 +197,14 @@ void ModuleLevel::InsertGameObjectQuadTree(GameObject * game_object)
 	quadtree->Insert(game_object);
 }
 
-void ModuleLevel::SaveGameObjects()
+void ModuleLevel::OnPlay()
 {
-	root->RecursiveSaveComponents();
+	root->RecursiveOnPlay();
 }
 
-void ModuleLevel::RestoreGameObjects()
+void ModuleLevel::OnStop()
 {
-	root->RecursiveRestoreComponents();
+	root->RecursiveOnStop();
 
 	root->RecursiveUpdateTransforms();
 }

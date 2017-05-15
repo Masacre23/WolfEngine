@@ -203,7 +203,7 @@ void ComponentMesh::LoadBones()
 	}
 }
 
-bool ComponentMesh::OnUpdate()
+void ComponentMesh::OnUpdate()
 {
 	BROFILER_CATEGORY("ComponentMesh-OnUpdate", Profiler::Color::Aqua);
 
@@ -245,11 +245,9 @@ bool ComponentMesh::OnUpdate()
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	}
-
-	return true;
 }
 
-bool ComponentMesh::OnDraw() const
+void ComponentMesh::OnDraw() const
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
@@ -290,19 +288,15 @@ bool ComponentMesh::OnDraw() const
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	App->program_shaders->UnuseProgram();
-
-	return true;
 }
 
-bool ComponentMesh::OnDebugDraw() const
+void ComponentMesh::OnDebugDraw() const
 {
 	if (draw_normals)
 		DrawNormals();
 
 	if (draw_mesh)
 		DrawMesh();
-
-	return true;
 }
 
 bool ComponentMesh::OnEditor()

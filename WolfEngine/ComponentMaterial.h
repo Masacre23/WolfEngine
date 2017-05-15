@@ -15,8 +15,7 @@ public:
 	void Load(aiMaterial* material, const aiString& folder_path);
 	void LoadTexture(const aiString& texture_path);
 
-	bool OnUpdate();
-	bool OnDraw() const;
+	void OnDraw() const;
 	bool OnEditor();
 
 	void SaveComponent();

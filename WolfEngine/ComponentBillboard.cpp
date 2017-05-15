@@ -38,7 +38,7 @@ void ComponentBillboard::Enable()
 	}
 }
 
-bool ComponentBillboard::OnDraw() const
+void ComponentBillboard::OnDraw() const
 {
 	//grid.back().back()->ComputeQuad(App->camera->GetPosition());
 //	grid.back().back()->Draw();
@@ -55,8 +55,6 @@ bool ComponentBillboard::OnDraw() const
 		}
 	}
 	glDisable(GL_ALPHA_TEST);
-
-	return true;
 }
 
 bool ComponentBillboard::OnEditor()

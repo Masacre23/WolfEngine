@@ -15,25 +15,16 @@ ComponentTransform::~ComponentTransform()
 {
 }
 
-bool ComponentTransform::OnUpdate()
-{
-	return true;
-}
-
-bool ComponentTransform::OnDraw() const
+void ComponentTransform::OnDraw() const
 {
 	float* transform = global_transform.Transposed().ptr();
 	glMultMatrixf(transform);
-
-	return true;
 }
 
-bool ComponentTransform::OnDebugDraw() const
+void ComponentTransform::OnDebugDraw() const
 {
 	float* transform = global_transform.Transposed().ptr();
 	glMultMatrixf(transform);
-
-	return true;
 }
 
 bool ComponentTransform::OnEditor()

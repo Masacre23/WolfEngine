@@ -79,13 +79,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)DevIL\include;$(ProjectDir)assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Bullet\include;$(ProjectDir)DevIL\include;$(ProjectDir)assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)DevIL\libx86;$(ProjectDir)assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Bullet\libx86;$(ProjectDir)DevIL\libx86;$(ProjectDir)assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -202,6 +202,8 @@
     <ClInclude Include="Interface.h" />
     <ClInclude Include="JsonHandler.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="MathGeoLib\include\MathBuildConfig.h" />
+    <ClInclude Include="MathGeoLib\include\MathGeoLib.h" />
     <ClInclude Include="MemLeaks.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleAnimations.h" />
@@ -228,7 +230,6 @@
     <ClInclude Include="PanelInterface.h" />
     <ClInclude Include="PanelMenuBar.h" />
     <ClInclude Include="parson\parson.h" />
-    <ClInclude Include="Physics.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Timer.h" />

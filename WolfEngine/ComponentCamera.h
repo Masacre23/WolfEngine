@@ -10,8 +10,8 @@ public:
 	ComponentCamera(GameObject* parent = nullptr);
 	~ComponentCamera();
 
-	bool OnUpdate();
-	bool OnDebugDraw() const;
+	void OnUpdate();
+	void OnDebugDraw() const;
 	bool OnEditor();
 
 	void SetFOV(float fov);

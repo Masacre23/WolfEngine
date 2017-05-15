@@ -10,9 +10,8 @@ public:
 	ComponentTransform(GameObject* parent);
 	~ComponentTransform();
 
-	bool OnUpdate();
-	bool OnDraw() const;
-	bool OnDebugDraw() const;
+	void OnDraw() const;
+	void OnDebugDraw() const;
 	bool OnEditor();
 
 	const float3& GetPosition() const { return position; }

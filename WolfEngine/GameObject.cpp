@@ -250,7 +250,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 8, "Update factory code");
+	static_assert(Component::Type::UNKNOWN == 8, "Update component factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -552,22 +552,28 @@ void GameObject::RecursiveUpdateBoundingBox(bool force_recalculation)
 		(*it)->RecursiveUpdateBoundingBox(child_recalc);
 }
 
-void GameObject::RecursiveSaveComponents()
+void GameObject::RecursiveOnPlay()
 {
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		(*it)->SaveComponent();
 
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->OnPlay();
+
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveSaveComponents();
+		(*it)->RecursiveOnPlay();
 }
 
-void GameObject::RecursiveRestoreComponents()
+void GameObject::RecursiveOnStop()
 {
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->OnStop();
+
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		(*it)->RestoreComponent();
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveRestoreComponents();
+		(*it)->RecursiveOnStop();
 }
 
 const float4x4& GameObject::GetLocalTransformMatrix() const

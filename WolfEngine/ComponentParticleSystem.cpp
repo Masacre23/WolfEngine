@@ -52,7 +52,7 @@ void ComponentParticleSystem::Rain(Billboard* b)
 	b->position.y -= 0.1f / scale.y;
 }
 
-bool ComponentParticleSystem::OnDraw()
+void ComponentParticleSystem::OnDraw()
 {
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.1f);
@@ -63,7 +63,6 @@ bool ComponentParticleSystem::OnDraw()
 		particles[i].billboard->Draw(scale, texture_scale);
 	}
 	glDisable(GL_ALPHA_TEST);
-	return false;
 }
 
 bool ComponentParticleSystem::OnEditor()

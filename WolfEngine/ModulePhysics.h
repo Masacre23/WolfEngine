@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Bullet/include/LinearMath/btIDebugDraw.h"
+#include <vector>
 
 #define MODULE_PHYSICS "ModulePhysics"
 #define PHYSICS_SECTION "Config.Modules.Physics"
@@ -13,6 +14,11 @@ class btBroadphaseInterface;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
 class PhysicsDebugDrawer;
+
+class btRigidBody;
+class ComponentRigidBody;
+class btCollisionShape;
+class Collider;
 
 class ModulePhysics : public Module
 {
@@ -29,6 +35,12 @@ public:
 
 	void DrawDebug() const;
 
+	btRigidBody* AddRigidBody(ComponentRigidBody* component);
+	void DeleteRigidBody(btRigidBody* rigid_body);
+
+	btCollisionShape* CreateCollisionShape(Collider* collider);
+	void DeleteCollisionShape(btCollisionShape* collision_shape);
+
 private:
 	btDefaultCollisionConfiguration* collision_conf = nullptr;
 	btCollisionDispatcher* dispatcher = nullptr;
@@ -38,6 +50,8 @@ private:
 	PhysicsDebugDrawer* debug_drawer = nullptr;
 
 	btVector3 gravity = btVector3(0.0f, -9.8f, 0.0f);
+
+	std::vector<btCollisionShape*> shapes;
 };
 
 class PhysicsDebugDrawer : public btIDebugDraw

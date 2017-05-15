@@ -17,6 +17,8 @@
 	@brief Specifies all build flags for the library. */
 #pragma once
 
+#define MATH_BULLET_INTEROP
+
 // If MATH_ENABLE_NAMESPACE is defined, all math symbols are put inside a namespace.
 #define MATH_ENABLE_NAMESPACE
 
