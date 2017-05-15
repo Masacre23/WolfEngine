@@ -2,8 +2,7 @@
 #include "OpenGL.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 
 ComponentBillboard::ComponentBillboard(GameObject* parent, int lines, int cols) : lines(lines), cols(cols), Component(Component::Type::BILLBOARD, parent)
 {

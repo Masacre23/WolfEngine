@@ -4,8 +4,7 @@
 #define MODULE_EDITOR "ModuleEditor"
 
 #include "Module.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 #include <vector>
 #include <string>
 

@@ -10,8 +10,7 @@
 #include "ModuleLevel.h"
 #include "ModuleProgramShaders.h"
 #include "Primitive.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 
 ComponentMesh::ComponentMesh(GameObject* parent) : Component(Component::Type::MESH, parent)
 {
@@ -336,6 +335,16 @@ void ComponentMesh::SaveComponent()
 
 void ComponentMesh::RestoreComponent()
 {
+	ResetMesh();
+
+	enable = true;
+	on_editor = true;
+	draw_normals = false;
+	draw_mesh = false;
+}
+
+void ComponentMesh::ResetMesh()
+{
 	if (has_bones)
 	{
 		float3* vertex_pointer;
@@ -351,11 +360,6 @@ void ComponentMesh::RestoreComponent()
 			memcpy(normals_pointer, normals, num_vertices * sizeof(float3));
 		}
 	}
-
-	enable = true;
-	on_editor = true;
-	draw_normals = false;
-	draw_mesh = false;
 }
 
 void ComponentMesh::DrawNormals() const

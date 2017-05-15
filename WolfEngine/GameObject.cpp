@@ -6,6 +6,7 @@
 #include "ComponentAnim.h"
 #include "ComponentBillboard.h"
 #include "ComponentParticleSystem.h"
+#include "ComponentRigidBody.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -114,18 +115,19 @@ void GameObject::DebugDraw() const
 {
 	if (selected)
 	{
-		App->renderer->debug_drawer->DrawBoundingBox(bbox, Colors::Green);
-		App->renderer->debug_drawer->DrawBoundingBox(transform_bbox, Colors::Blue);
+		/*App->renderer->debug_drawer->DrawBoundingBox(bbox, Colors::Green);
+		App->renderer->debug_drawer->DrawBoundingBox(transform_bbox, Colors::Blue);*/
 
-		glPushMatrix();
-
+		float4x4 transform_noscale = float4x4::identity;
 		if (transform != nullptr)
 			if (transform->IsActive())
-				transform->OnDebugDrawNoScale();
+			{
+				transform_noscale = transform->GetGlobalTransformMatrix();
+				transform_noscale.RemoveScale();
+			}
+				
+		App->renderer->debug_drawer->DrawAxis(transform_noscale);
 
-		App->renderer->debug_drawer->DrawAxis();
-
-		glPopMatrix();
 		glPushMatrix();
 
 		if (transform != nullptr)
@@ -137,6 +139,13 @@ void GameObject::DebugDraw() const
 		{
 			if (mesh->IsActive())
 				mesh->OnDebugDraw();
+		}
+
+		const Component* rigidbody = GetComponent(Component::Type::RIGIDBODY);
+		if (rigidbody != nullptr)
+		{
+			if (rigidbody->IsActive())
+				rigidbody->OnDebugDraw();
 		}
 
 		glPopMatrix();
@@ -241,7 +250,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 7, "Update factory code");
+	static_assert(Component::Type::UNKNOWN == 8, "Update factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -310,6 +319,8 @@ Component* GameObject::CreateComponent(Component::Type type)
 		particle_system = (ComponentParticleSystem*)ret;
 		particle_system->Init(500, float2(0, 0), 100, 10, "Resources/rainSprite.tga", float2(1.0f,1.0));
 		break;
+	case Component::RIGIDBODY:
+		ret = new ComponentRigidBody(this);
 	case Component::UNKNOWN:
 		break;
 	default:
@@ -487,12 +498,21 @@ void GameObject::LoadAnimation(const std::list<std::string>& animations)
 
 void GameObject::LoadBones()
 {
-	ComponentMesh* mesh = (ComponentMesh*) GetComponent(Component::MESH);
+	ComponentMesh* mesh = (ComponentMesh*) GetComponent(Component::Type::MESH);
 	if (mesh != nullptr)
 		mesh->LoadBones();
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
 		(*it)->LoadBones();
+}
+
+void GameObject::LoadRigidBody(Collider::Type collider_type, float mass, ComponentRigidBody::MotionType motion_type)
+{
+	ComponentRigidBody* rigid_body = (ComponentRigidBody*)GetComponent(Component::Type::RIGIDBODY);
+	if (rigid_body == nullptr)
+		rigid_body = (ComponentRigidBody*)CreateComponent(Component::Type::RIGIDBODY);
+
+	rigid_body->LoadRigidBody(collider_type, mass, motion_type);
 }
 
 void GameObject::SetAABB(AABB box)

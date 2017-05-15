@@ -13,6 +13,7 @@
 #include "MyQuadTree.h"
 #include "Billboard.h"
 #include "ComponentParticleSystem.h"
+#include "ComponentRigidBody.h"
 #include "Primitive.h"
 
 ModuleSceneIni::ModuleSceneIni(bool start_enabled) : Module("ModuleSceneIni",start_enabled)
@@ -46,6 +47,7 @@ bool ModuleSceneIni::Start()
 		pilot->LoadAnimation(pilot_animations);
 
 	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveCube(float3(2.0f, 0.0f, 0.0f), float3::one), "LennaCube");
+	cube->LoadRigidBody(Collider::Type::BOX);
 
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)

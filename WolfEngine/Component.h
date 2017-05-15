@@ -17,6 +17,7 @@ public:
 		ANIMATION,
 		BILLBOARD,
 		PARTICLE,
+		RIGIDBODY,
 		UNKNOWN
 	};
 

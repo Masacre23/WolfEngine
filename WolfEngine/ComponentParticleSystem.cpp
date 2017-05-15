@@ -2,8 +2,7 @@
 #include "Billboard.h"
 #include "Application.h"
 #include "ModuleCamera.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 #include "OpenGL.h"
 #include <stdlib.h>
 

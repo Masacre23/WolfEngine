@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include <list>
+#include <vector>
 #include <assimp/types.h>
 #include "Math.h"
 
@@ -32,6 +33,7 @@ public:
 	bool draw_bones = true;
 
 private:
+	std::vector<GameObject*> nodes;
 	std::list<aiString> animations;
 	aiString current_animation;
 	int anim_id = -1;
@@ -39,6 +41,7 @@ private:
 
 	aiString backed_animation;
 	int backed_blend_time;
+	bool backed_is_playing;
 };
 
 #endif

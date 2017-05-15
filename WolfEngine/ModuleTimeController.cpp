@@ -61,6 +61,8 @@ update_status ModuleTimeController::PreUpdate(float dt)
 
 void ModuleTimeController::Play()
 {
+	backed_time_scale = time_scale;
+
 	App->level->SaveGameObjects();
 	
 	game_timer->Start();
@@ -93,6 +95,8 @@ void ModuleTimeController::Tick()
 
 void ModuleTimeController::Stop()
 {
+	time_scale = backed_time_scale;
+
 	App->level->RestoreGameObjects();
 
 	frame_count = 0;

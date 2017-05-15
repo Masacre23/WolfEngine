@@ -6,6 +6,7 @@
 #include <string>
 #include "Component.h"
 #include "Math.h"
+#include "ComponentRigidBody.h"
 
 class Component;
 class ComponentTransform;
@@ -49,6 +50,7 @@ public:
 	void SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation);
 	void SetLocalTransform(const float3& position, const Quat& rotation);
 	void SetLocalTransform(const float3& position);
+
 	void LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path, bool is_dynamic = false);
 	void LoadMesh(const Primitive& primitive);
 	void LoadMaterial(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path);
@@ -56,6 +58,8 @@ public:
 	void LoadAnimation(const char * name);
 	void LoadAnimation(const std::list<std::string>& animations);
 	void LoadBones();
+	void LoadRigidBody(Collider::Type collider_type, float mass = 1.0f, ComponentRigidBody::MotionType motion_type = ComponentRigidBody::MotionType::DYNAMIC);
+
 	void SetAABB(AABB box);
 
 	void ChangeAnim(const char* name, unsigned int duration);

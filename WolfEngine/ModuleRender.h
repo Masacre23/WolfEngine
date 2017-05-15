@@ -63,13 +63,13 @@ public:
 	void PostDebugDraw();
 
 	void SetColor(const Color& color);
-	void DrawAxis();
+	void DrawAxis(const float4x4& transform = float4x4::identity);
 
-	void DrawBoundingBox(const AABB& bbox, const Color& color);
-	void DrawBoundingBox(const OBB& bbox, const Color& color);
-	void DrawFrustum(const Frustum& frustum, const Color& color);
-	void DrawLine(const float3& from, const float3& to, const Color& color);
-	void DrawPoint(const float3& point, const Color& color);
+	void DrawBoundingBox(const AABB& bbox, const Color& color, const float4x4& transform = float4x4::identity);
+	void DrawBoundingBox(const OBB& bbox, const Color& color, const float4x4& transform = float4x4::identity);
+	void DrawFrustum(const Frustum& frustum, const Color& color, const float4x4& transform = float4x4::identity);
+	void DrawLine(const float3& from, const float3& to, const Color& color, const float4x4& transform = float4x4::identity);
+	void DrawPoint(const float3& point, const Color& color, const float4x4& transform = float4x4::identity);
 
 private:
 	void DrawParallepiped(const float3* corners, const Color& color);

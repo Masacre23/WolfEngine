@@ -1,8 +1,7 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 #include <string>
 
 class Panel

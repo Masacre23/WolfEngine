@@ -6,8 +6,7 @@
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
 #include "GameObject.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 
 ComponentMaterial::ComponentMaterial(GameObject* parent) : Component(Component::Type::MATERIAL, parent)
 {

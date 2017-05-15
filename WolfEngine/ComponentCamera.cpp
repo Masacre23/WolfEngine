@@ -5,8 +5,7 @@
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "OpenGL.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 #include "Color.h"
 
 ComponentCamera::ComponentCamera(GameObject* parent) : Component(Component::Type::CAMERA, parent)

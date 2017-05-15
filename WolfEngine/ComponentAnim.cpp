@@ -3,8 +3,7 @@
 #include "ModuleAnimations.h"
 #include "ComponentTransform.h"
 #include "GameObject.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 #include <vector>
 #include <assimp/scene.h>
 
@@ -29,14 +28,15 @@ bool ComponentAnim::OnEditor()
 		ImGui::TextWrapped("Current animation:");
 		ImGui::TextWrapped("%s", current_animation.data);
 
-		if (ImGui::Button("Play"))
-			PlayCurrent(true);
-
 		if (anim_id != -1)
 		{
-			ImGui::SameLine();
 			if (ImGui::Button("Stop"))
 				StopCurrent();
+		}
+		else
+		{
+			if (ImGui::Button("Play"))
+				PlayCurrent(true);
 		}
 
 		for (std::list<aiString>::iterator it = animations.begin(); it != animations.end(); ++it)
@@ -53,6 +53,7 @@ void ComponentAnim::SaveComponent()
 {
 	backed_animation = current_animation;
 	backed_blend_time = blend_time;
+	backed_is_playing = IsPlaying();
 }
 
 void ComponentAnim::RestoreComponent()
@@ -60,6 +61,8 @@ void ComponentAnim::RestoreComponent()
 	blend_time = backed_blend_time;
 	current_animation = backed_animation;
 	StopCurrent();
+	if (backed_is_playing)
+		PlayCurrent(true);
 }
 
 bool ComponentAnim::OnAnimationUpdate()

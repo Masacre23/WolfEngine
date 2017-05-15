@@ -171,6 +171,12 @@
     <ClCompile Include="PhysicsDebugDraw.cpp">
       <Filter>Core Modules\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentRigidBody.cpp">
+      <Filter>Game Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -331,6 +337,15 @@
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentRigidBody.h">
+      <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

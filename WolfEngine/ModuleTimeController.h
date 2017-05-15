@@ -77,6 +77,8 @@ private:
 
 	int counter_frames = 0;
 	float prev_time = 0;
+
+	bool backed_time_scale = 1.0f;
 };
 
 #endif

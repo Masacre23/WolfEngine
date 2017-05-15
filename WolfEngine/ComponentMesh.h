@@ -45,6 +45,8 @@ public:
 	void SaveComponent();
 	void RestoreComponent();
 
+	void ResetMesh();
+
 	void DrawNormals() const;
 	void DrawMesh() const;
 

@@ -29,9 +29,12 @@ void RenderDebugDrawer::SetColor(const Color& color)
 	glColor3f(color.r, color.g, color.b);
 }
 
-void RenderDebugDrawer::DrawAxis()
+void RenderDebugDrawer::DrawAxis(const float4x4& transform)
 {
 	float axis_length = 1.5f;
+
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)transform.Transposed().ptr());
 
 	glDepthRange(0.0, 0.01);
 
@@ -57,34 +60,47 @@ void RenderDebugDrawer::DrawAxis()
 
 	glDepthRange(0.01, 1.0);
 
+	glPopMatrix();
 }
 
-void RenderDebugDrawer::DrawBoundingBox(const AABB& bbox, const Color& color)
+void RenderDebugDrawer::DrawBoundingBox(const AABB& bbox, const Color& color, const float4x4& transform)
 {
 	float3 corners[8];
 	bbox.GetCornerPoints(corners);
 
+	glPushMatrix();
+	glMultMatrixf((GLfloat*) transform.Transposed().ptr());
 	DrawParallepiped(corners, color);
+	glPopMatrix();
 }
 
-void RenderDebugDrawer::DrawBoundingBox(const OBB& bbox, const Color& color)
+void RenderDebugDrawer::DrawBoundingBox(const OBB& bbox, const Color& color, const float4x4& transform)
 {
 	float3 corners[8];
 	bbox.GetCornerPoints(corners);
 
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)transform.Transposed().ptr());
 	DrawParallepiped(corners, color);
+	glPopMatrix();
 }
 
-void RenderDebugDrawer::DrawFrustum(const Frustum& frustum, const Color& color)
+void RenderDebugDrawer::DrawFrustum(const Frustum& frustum, const Color& color, const float4x4& transform)
 {
 	float3 corners[8];
 	frustum.GetCornerPoints(corners);
 
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)transform.Transposed().ptr());
 	DrawParallepiped(corners, color);
+	glPopMatrix();
 }
 
-void RenderDebugDrawer::DrawLine(const float3& from, const float3& to, const Color& color)
+void RenderDebugDrawer::DrawLine(const float3& from, const float3& to, const Color& color, const float4x4& transform)
 {
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)transform.Transposed().ptr());
+
 	glColor3f(color.r, color.g, color.b);
 
 	glLineWidth(2.0f);
@@ -95,10 +111,15 @@ void RenderDebugDrawer::DrawLine(const float3& from, const float3& to, const Col
 	glVertex3fv((GLfloat*)&to);
 
 	glEnd();
+
+	glPopMatrix();
 }
 
-void RenderDebugDrawer::DrawPoint(const float3& point, const Color& color)
+void RenderDebugDrawer::DrawPoint(const float3& point, const Color& color, const float4x4& transform)
 {
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)transform.Transposed().ptr());
+
 	glColor3f(color.r, color.g, color.b);
 
 	glPointSize(2.0f);
@@ -108,6 +129,8 @@ void RenderDebugDrawer::DrawPoint(const float3& point, const Color& color)
 	glVertex3fv((GLfloat*)&point);
 
 	glEnd();
+
+	glPopMatrix();
 }
 
 void RenderDebugDrawer::DrawParallepiped(const float3* corners, const Color& color)

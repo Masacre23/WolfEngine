@@ -7,6 +7,11 @@ ModulePhysics::ModulePhysics() : Module(MODULE_PHYSICS)
 
 ModulePhysics::~ModulePhysics()
 {
+	RELEASE(debug_drawer);
+	RELEASE(solver);
+	RELEASE(broad_phase);
+	RELEASE(dispatcher);
+	RELEASE(collision_conf);
 }
 
 bool ModulePhysics::Init()
@@ -17,13 +22,12 @@ bool ModulePhysics::Init()
 	solver = new btSequentialImpulseConstraintSolver();
 	debug_drawer = new PhysicsDebugDrawer();
 
-	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_conf);
-
 	return true;
 }
 
 bool ModulePhysics::Start()
 {
+	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_conf);
 	world->setDebugDrawer(debug_drawer);
 	world->setGravity(gravity);
 
@@ -32,12 +36,9 @@ bool ModulePhysics::Start()
 
 bool ModulePhysics::CleanUp()
 {
-	RELEASE(debug_drawer);
-	RELEASE(world);
-	RELEASE(solver);
-	RELEASE(broad_phase);
-	RELEASE(dispatcher);
-	RELEASE(collision_conf);
+	APPLOG("Cleaning physic world");
+
+	RELEASE(world);	
 
 	return true;
 }
