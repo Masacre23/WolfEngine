@@ -17,6 +17,7 @@
 #include "ModuleRender.h"
 #include "ModuleTimeController.h"
 #include "ModuleTextures.h"
+#include "ModuleProgramShaders.h"
 #include "OpenGL.h"
 #include "Color.h"
 #include "Primitive.h"
@@ -93,6 +94,7 @@ void GameObject::Draw() const
 		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
+		App->program_shaders->UnuseProgram(); 
 
 		glPopMatrix();
 

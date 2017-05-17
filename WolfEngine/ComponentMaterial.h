@@ -27,6 +27,8 @@ private:
 	float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float shiness = 0.0f;
 	unsigned texture = 0;
+	bool has_shader = false;
+	char* shader = nullptr;
 
 	float backed_ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float backed_diffuse[4] = { 1.0f, 1.0f, 1.0f, 1.0f };

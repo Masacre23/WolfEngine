@@ -8,7 +8,6 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleLevel.h"
-#include "ModuleProgramShaders.h"
 #include "Primitive.h"
 #include "Interface.h"
 
@@ -276,9 +275,7 @@ void ComponentMesh::OnDraw() const
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
-	App->program_shaders->UseProgram("Prueba");
-	glUniform4f(App->program_shaders->GetUniformLocation("Prueba", "light_position"), 0, 2, -2, 0);
-	glUniform1i(App->program_shaders->GetUniformLocation("Prueba", "tex_coord"), 0);
+
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -287,7 +284,6 @@ void ComponentMesh::OnDraw() const
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	App->program_shaders->UnuseProgram();
 }
 
 void ComponentMesh::OnDebugDraw() const

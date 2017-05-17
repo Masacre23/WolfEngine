@@ -1,6 +1,7 @@
 #include "ComponentMaterial.h"
 #include "Application.h"
 #include "ModuleTextures.h"
+#include "ModuleProgramShaders.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -63,6 +64,12 @@ void ComponentMaterial::OnDraw() const
 	glMaterialf(GL_FRONT, GL_SHININESS, shiness);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
+
+	if (has_shader) {
+		App->program_shaders->UseProgram("Prueba");
+		glUniform4f(App->program_shaders->GetUniformLocation("Prueba", "light_position"), 0, 2, -2, 0);
+		glUniform1i(App->program_shaders->GetUniformLocation("Prueba", "tex_coord"), 0);
+	}
 }
 
 bool ComponentMaterial::OnEditor()
@@ -77,6 +84,8 @@ bool ComponentMaterial::OnEditor()
 
 			if (ImGui::Button("Delete"))
 				parent->DeleteComponent(this);
+
+			ImGui::Checkbox("Has Shader", &has_shader);
 
 			ImGui::DragFloat4("Ambient", (float*)&ambient, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat4("Diffuse", (float*)&diffuse, 0.01f, 0.0f, 1.0f);
