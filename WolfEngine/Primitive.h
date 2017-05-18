@@ -10,7 +10,8 @@ public:
 	enum Type
 	{
 		CUBE,
-		PLANE
+		PLANE,
+		SPHERE
 	};
 
 	Primitive();
@@ -59,6 +60,19 @@ public:
 	PrimitiveCube(const float3& position, const float3& size);
 
 	void LoadMesh(float3* vertices, float2* tex_coord, float3* normals, unsigned* indices) const;
+};
+
+class PrimitiveSphere : public Primitive
+{
+public:
+	PrimitiveSphere(float radius, unsigned int rings, unsigned int sectors);
+
+	void LoadMesh(float3* vertices, float2* tex_coord, float3* normals, unsigned* indices) const;
+
+private:
+	float radius;
+	unsigned int rings;
+	unsigned int sectors;
 };
 
 
