@@ -65,7 +65,7 @@ public:
 class PrimitiveSphere : public Primitive
 {
 public:
-	PrimitiveSphere(float radius, unsigned int rings, unsigned int sectors);
+	PrimitiveSphere(float radius, unsigned int rings = 20, unsigned int sectors = 20);
 
 	void LoadMesh(float3* vertices, float2* tex_coord, float3* normals, unsigned* indices) const;
 

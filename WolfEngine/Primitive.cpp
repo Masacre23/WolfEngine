@@ -92,7 +92,7 @@ void PrimitiveCube::LoadMesh(float3* vertices, float2* tex_coord, float3* normal
 	memcpy(indices, triangles_indices, num_indices * sizeof(unsigned));
 }
 
-PrimitiveSphere::PrimitiveSphere(float radius, unsigned int rings, unsigned int sectors): radius(radius), rings(rings), sectors(sectors)
+PrimitiveSphere::PrimitiveSphere(float radius, unsigned int rings, unsigned int sectors) : Primitive(), radius(radius), rings(rings), sectors(sectors)
 {	
 	type = Primitive::Type::SPHERE;
 	num_vertices = rings * sectors;
@@ -132,11 +132,12 @@ void PrimitiveSphere::LoadMesh(float3 * vertices, float2 * tex_coord, float3 * n
 	int i = 0;
 	for (r = 0; r < rings; r++) for (s = 0; s < sectors; s++) {
 		indices[i] = r * sectors + s;
-		indices[i + 1] = r * sectors + (s + 1);
-		indices[i + 2] = (r + 1) * sectors + (s + 1);
+		indices[i + 1] = (r + 1) * sectors + (s + 1);
+		indices[i + 2] = r * sectors + (s + 1);
 		indices[i + 3] = r * sectors + s;
-		indices[i + 4] = (r + 1) * sectors + (s + 1);
-		indices[i + 5] = (r + 1) * sectors + s;
+		indices[i + 4] = (r + 1) * sectors + s;
+		indices[i + 5] = (r + 1) * sectors + (s + 1);
+		
 		i += 6;
 	}
 }

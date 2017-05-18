@@ -49,7 +49,7 @@ bool ModuleSceneIni::Start()
 	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveCube(float3(2.0f, 0.0f, 0.0f), float3::one), "LennaCube");
 	cube->LoadRigidBody(Collider::Type::BOX);
 
-	GameObject* sphere = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveSphere(1.0f, 20, 20), "LennaSphere");
+	GameObject* sphere = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveSphere(1.0f), "LennaSphere");
 
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)

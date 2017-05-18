@@ -371,7 +371,7 @@ void ComponentMesh::DrawMesh() const
 {
 	App->renderer->debug_drawer->SetColor(Colors::Fuchsia);
 
-	/*unsigned num_triangles = num_indices / 3;
+	unsigned num_triangles = num_indices / 3;
 	for (int i = 0; i < num_triangles; i++)
 	{
 		unsigned first = indices[3 *i];
@@ -388,14 +388,7 @@ void ComponentMesh::DrawMesh() const
 		glVertex3f(vertices[third].x, vertices[third].y, vertices[third].z);
 		glVertex3f(vertices[first].x, vertices[first].y, vertices[first].z);
 		glEnd();
-	}*/
-	glBegin(GL_LINES);
-	for (int i = 0; i < num_indices; ++i) 
-	{
-		int j = indices[i];
-		glVertex3f(vertices[j].x, vertices[j].y, vertices[j].z);
 	}
-	glEnd();
 
 	App->renderer->debug_drawer->SetColor(Colors::Black);
 }
