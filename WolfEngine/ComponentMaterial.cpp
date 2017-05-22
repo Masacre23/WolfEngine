@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleProgramShaders.h"
+#include "ModuleCamera.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -67,7 +68,9 @@ void ComponentMaterial::OnDraw() const
 
 	if (has_shader) {
 		App->program_shaders->UseProgram("Prueba");
-		glUniform4f(App->program_shaders->GetUniformLocation("Prueba", "light_position"), 0, 2, -2, 0);
+		glUniform4f(App->program_shaders->GetUniformLocation("Prueba", "light_position"), 1, 1, 1, 0);
+		float3 camera = App->camera->GetPosition();
+		glUniform3f(App->program_shaders->GetUniformLocation("Prueba", "camera"), camera.x, camera.y, camera.z );
 		glUniform1i(App->program_shaders->GetUniformLocation("Prueba", "tex_coord"), 0);
 	}
 }
