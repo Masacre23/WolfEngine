@@ -42,12 +42,12 @@ bool ComponentRigidBody::OnEditor()
 		}
 
 		ImGui::DragFloat("Mass", &mass, 0.1f, 0.0f, 100.0f);
+		ImGui::Separator();
 
 		if (collider != nullptr)
-		{
-			ImGui::Separator();
 			collider->OnEditor();
-		}
+		else
+			ImGui::TextWrapped("No collider found");
 	}
 
 	return true;
@@ -69,10 +69,27 @@ void ComponentRigidBody::LoadRigidBody(Collider::Type collider_type, float mass,
 	this->motion_type = motion_type;
 	this->mass = mass;
 
+	LoadCollider(collider_type);
+}
+
+void ComponentRigidBody::LoadRigidBody(float mass, MotionType motion_type)
+{
+	this->motion_type = motion_type;
+	this->mass = mass;
+}
+
+void ComponentRigidBody::LoadCollider(Collider::Type collider_type)
+{
 	if (collider != nullptr)
 		RELEASE(collider);
 
 	collider = CreateCollider(collider_type);
+}
+
+void ComponentRigidBody::LoadCollider(Collider::Type collider_type, float3* vertices, unsigned num_vertices)
+{
+	LoadCollider(collider_type);
+	collider->SetOnVertices(vertices, num_vertices, parent->transform->GetGlobalTransformMatrix());
 }
 
 void ComponentRigidBody::getWorldTransform(btTransform& worldTrans) const

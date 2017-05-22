@@ -44,7 +44,11 @@ bool ModuleSceneIni::Start()
 
 	GameObject* pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae", true);
 	if (pilot != nullptr)
+	{
 		pilot->LoadAnimation(pilot_animations);
+		pilot->LoadRigidBody(Collider::Type::BOX, 1.0f, ComponentRigidBody::MotionType::DYNAMIC);
+	}
+		
 
 	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveCube(float3::one, float3(2.0f, 2.0f, 0.0f)), "LennaCube");
 	cube->LoadRigidBody(Collider::Type::BOX);

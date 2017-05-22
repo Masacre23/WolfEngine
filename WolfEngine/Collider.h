@@ -21,6 +21,8 @@ public:
 	virtual void OnEditor() {}
 	virtual void OnDebugDraw() {}
 
+	virtual void SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform = float4x4::identity) {}
+
 	Type GetType() { return type; }
 
 protected:
@@ -35,6 +37,7 @@ public:
 
 	void OnEditor();
 	void OnDebugDraw();
+	void SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform = float4x4::identity);
 
 	const OBB& GetBox() const { return box; }
 
@@ -46,6 +49,10 @@ class ColliderSphere : public Collider
 {
 public:
 	ColliderSphere();
+
+	void OnEditor();
+	void OnDebugDraw();
+	void SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform = float4x4::identity);
 
 	const Sphere& GetSphere() const { return sphere; }
 

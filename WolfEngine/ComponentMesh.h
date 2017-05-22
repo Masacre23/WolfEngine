@@ -52,6 +52,9 @@ public:
 
 	void SetUseNormals(bool material_on) { use_normals = has_normals && material_on; }
 
+	unsigned GetNumVertices() const { return num_vertices; }
+	const float3* GetVertices() const { return vertices; }
+
 private:
 	void SetAABB() const;
 

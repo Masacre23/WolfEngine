@@ -510,11 +510,67 @@ void GameObject::LoadBones()
 
 void GameObject::LoadRigidBody(Collider::Type collider_type, float mass, ComponentRigidBody::MotionType motion_type)
 {
+	LoadRigidBody(mass, motion_type);
+	LoadCollider(collider_type);
+}
+
+void GameObject::LoadRigidBody(float mass, ComponentRigidBody::MotionType motion_type)
+{
 	ComponentRigidBody* rigid_body = (ComponentRigidBody*)GetComponent(Component::Type::RIGIDBODY);
 	if (rigid_body == nullptr)
 		rigid_body = (ComponentRigidBody*)CreateComponent(Component::Type::RIGIDBODY);
 
-	rigid_body->LoadRigidBody(collider_type, mass, motion_type);
+	rigid_body->LoadRigidBody(mass, motion_type);
+}
+
+void GameObject::LoadCollider(Collider::Type collider_type)
+{
+	ComponentRigidBody* rigid_body = (ComponentRigidBody*)GetComponent(Component::Type::RIGIDBODY);
+	if (rigid_body == nullptr)
+	{
+		rigid_body = (ComponentRigidBody*)CreateComponent(Component::Type::RIGIDBODY);
+		rigid_body->LoadRigidBody();
+	}
+	
+	std::vector<ComponentMesh*> meshes;
+	CollectMeshesOnChilds(meshes);
+
+	if (meshes.size() > 0)
+	{
+		unsigned numvert_total = 0;
+		for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+			numvert_total += (*it)->GetNumVertices();
+
+		float3* vert_total = new float3[numvert_total];
+		unsigned offset = 0;
+		for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+		{
+			unsigned num_vertices = (*it)->GetNumVertices();
+			float3* vertex_pointer = (float3*) &(vert_total[3 * offset]);
+			memcpy(vert_total, (*it)->GetVertices(), num_vertices * sizeof(float3));
+			offset += num_vertices;
+		}
+
+		rigid_body->LoadCollider(collider_type, vert_total, numvert_total);
+
+		RELEASE_ARRAY(vert_total);
+		meshes.clear();
+	}
+	else
+	{
+		rigid_body->LoadCollider(collider_type);
+	}
+	
+}
+
+void GameObject::CollectMeshesOnChilds(std::vector<ComponentMesh*>& meshes)
+{
+	ComponentMesh* mesh = (ComponentMesh*) GetComponent(Component::Type::MESH);
+	if (mesh != nullptr)
+		meshes.push_back(mesh);
+
+	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
+		(*it)->CollectMeshesOnChilds(meshes);
 }
 
 void GameObject::SetAABB(AABB box)

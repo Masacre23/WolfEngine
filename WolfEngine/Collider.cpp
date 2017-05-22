@@ -15,7 +15,7 @@ Collider::~Collider()
 ColliderBox::ColliderBox() : Collider(Type::BOX)
 {
 	box.pos = float3::zero;
-	box.r = float3::one;
+	box.r = 0.5f * float3::one;
 	box.axis[0] = float3::unitX;
 	box.axis[1] = float3::unitY;
 	box.axis[2] = float3::unitZ;
@@ -38,12 +38,39 @@ void ColliderBox::OnDebugDraw()
 	App->renderer->debug_drawer->DrawBoundingBox(box, Colors::Green);
 }
 
+void ColliderBox::SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform)
+{
+	AABB aabb;
+	aabb.SetNegativeInfinity();
+	aabb.Enclose(vertices, num_vertices);
+	
+	box.SetNegativeInfinity();
+	box.SetFrom(aabb, transform);
+}
+
 ColliderSphere::ColliderSphere() : Collider(Type::SPHERE)
 {
 	sphere.r = 1.0;
 	sphere.pos = float3::zero;
 
 	transform = float4x4::FromTRS(sphere.pos, Quat::identity, float3::one);
+}
+
+void ColliderSphere::OnEditor()
+{
+	ImGui::TextWrapped("Sphere Collider");
+
+	//ImGui::DragFloat3("Position", (float*)&box.pos, 0.1f);
+	ImGui::DragFloat("Radius", (float*)&sphere.r, 0.1f);
+}
+
+void ColliderSphere::OnDebugDraw()
+{
+
+}
+
+void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform)
+{
 }
 
 ColliderCapsule::ColliderCapsule() : Collider(Type::CAPSULE)

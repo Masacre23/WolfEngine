@@ -61,6 +61,8 @@ public:
 	void LoadAnimation(const std::list<std::string>& animations);
 	void LoadBones();
 	void LoadRigidBody(Collider::Type collider_type, float mass = 1.0f, ComponentRigidBody::MotionType motion_type = ComponentRigidBody::MotionType::DYNAMIC);
+	void LoadRigidBody(float mass = 1.0f, ComponentRigidBody::MotionType motion_type = ComponentRigidBody::MotionType::DYNAMIC);
+	void LoadCollider(Collider::Type collider_type);
 
 	void SetAABB(AABB box);
 
@@ -76,6 +78,8 @@ public:
 
 private:
 	void RecursiveDrawHierarchy() const;
+
+	void CollectMeshesOnChilds(std::vector<ComponentMesh*>& meshes);
 
 public:
 	AABB initial_bbox;
