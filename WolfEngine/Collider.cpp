@@ -40,6 +40,10 @@ void ColliderBox::OnDebugDraw()
 
 ColliderSphere::ColliderSphere() : Collider(Type::SPHERE)
 {
+	sphere.r = 1.0;
+	sphere.pos = float3::zero;
+
+	transform = float4x4::FromTRS(sphere.pos, Quat::identity, float3::one);
 }
 
 ColliderCapsule::ColliderCapsule() : Collider(Type::CAPSULE)
