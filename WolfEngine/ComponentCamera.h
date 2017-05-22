@@ -32,7 +32,7 @@ private:
 
 public:
 	Frustum* frustum;
-	bool frustum_culling = true;
+	bool frustum_culling = false;
 
 };
 

@@ -196,8 +196,13 @@ void ModuleRender::WindowResize(int width, int height)
 
 void ModuleRender::ResetProjection()
 {
+	/*glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(App->camera->GetProjectionMatrix());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();*/
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(App->camera->GetProjectionMatrix());
+	glOrtho(-1, 1, -1, 1, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }

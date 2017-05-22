@@ -7,6 +7,8 @@
 #include "ComponentBillboard.h"
 #include "ComponentParticleSystem.h"
 #include "ComponentRigidBody.h"
+#include "ComponentRectTransform.h"
+#include "ComponentImage.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -105,6 +107,20 @@ void GameObject::Draw() const
 		if(particle_system != nullptr)
 			if (particle_system->IsActive())
 				particle_system->OnDraw();
+
+		ComponentRectTransform* rect_transform = (ComponentRectTransform*) GetComponent(Component::Type::RECT_TRANSFORM);
+		if (rect_transform != nullptr)
+		{
+			if (rect_transform->IsActive())
+				rect_transform->OnDraw();
+		}
+
+		ComponentImage* image = (ComponentImage*)GetComponent(Component::Type::IMAGE);
+		if (image != nullptr)
+		{
+			if (image->IsActive())
+				image->OnDraw();
+		}
 
 		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
 			if ((*it)->IsActive())
@@ -252,7 +268,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 8, "Update component factory code");
+	static_assert(Component::Type::UNKNOWN == 10, "Update component factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -323,6 +339,13 @@ Component* GameObject::CreateComponent(Component::Type type)
 		break;
 	case Component::RIGIDBODY:
 		ret = new ComponentRigidBody(this);
+		break;
+	case Component::RECT_TRANSFORM:
+		ret = new ComponentRectTransform(this);
+		break;
+	case Component::IMAGE:
+		ret = new ComponentImage(this);
+		break;
 	case Component::UNKNOWN:
 		break;
 	default:
