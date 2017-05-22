@@ -1,13 +1,17 @@
 varying vec3 normal;
 varying vec3 vertex;
+varying vec3 light;
 varying vec2 tex_coord;
+uniform vec4 light_position;
 
 
 void main()
 {
-	vertex = vec3(gl_ModelViewMatrix * gl_Vertex);
-	normal = normalize(gl_NormalMatrix * gl_Normal);
+	light = vec3(light_position);
+	vertex = vec3(gl_Vertex);
+	normal = vec3(gl_Normal);
 	tex_coord = vec2(gl_MultiTexCoord0);
+	
 	
 	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
 }
