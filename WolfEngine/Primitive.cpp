@@ -96,7 +96,7 @@ PrimitiveSphere::PrimitiveSphere(float radius, unsigned int rings, unsigned int 
 {	
 	type = Primitive::Type::SPHERE;
 	num_vertices = rings * sectors;
-	num_indices = rings * sectors * 6;
+	num_indices = (rings-1) * (sectors-1) * 6;
 }
 
 void PrimitiveSphere::LoadMesh(float3 * vertices, float2 * tex_coord, float3 * normals, unsigned * indices) const
@@ -130,7 +130,7 @@ void PrimitiveSphere::LoadMesh(float3 * vertices, float2 * tex_coord, float3 * n
 	}
 
 	int i = 0;
-	for (r = 0; r < rings; r++) for (s = 0; s < sectors; s++) {
+	for (r = 0; r < rings-1; r++) for (s = 0; s < sectors-1; s++) {
 		indices[i] = r * sectors + s;
 		indices[i + 1] = (r + 1) * sectors + (s + 1);
 		indices[i + 2] = r * sectors + (s + 1);
