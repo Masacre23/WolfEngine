@@ -25,6 +25,7 @@ private:
 	MyQuadTree* quad_tree = nullptr;
 	GameObject* grass = nullptr;
 	GameObject* rain = nullptr;
+	GameObject* image = nullptr;
 };
 
 #endif
