@@ -18,6 +18,8 @@ public:
 		BILLBOARD,
 		PARTICLE,
 		RIGIDBODY,
+		RECT_TRANSFORM,
+		IMAGE,
 		UNKNOWN
 	};
 
