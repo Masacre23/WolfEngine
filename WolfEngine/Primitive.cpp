@@ -9,11 +9,7 @@ Primitive::Primitive()
 {
 }
 
-Primitive::Primitive(const float3& size, const Color& color) : size(size), color(color)
-{
-}
-
-Primitive::Primitive(const float3& position, const float3& size, const Color& color) : size(size), position(position), color(color)
+Primitive::Primitive(const float3& position, const Color& color) : position(position), color(color)
 {
 }
 
@@ -21,14 +17,27 @@ Primitive::~Primitive()
 {
 }
 
-PrimitivePlane::PrimitivePlane() : Primitive()
+PrimitivePlane::PrimitivePlane() : Primitive(), lines_distance(1.0f)
 {
+	num_lines = 2;
+	edges = 0.5f;
+
+	type = Primitive::Type::PLANE;
+	num_vertices = 12;
+	num_indices = 6;
 }
 
-PrimitivePlane::PrimitivePlane(float width, float position_y, float distance, const Color& color) : Primitive(float3(0.0f, 0.0f, position_y), float3(width, 0.0f, width), color), lines_distance(distance)
+PrimitivePlane::PrimitivePlane(float width, float distance, const float3& position, const Color& color) : Primitive(position,color), lines_distance(distance), width(width)
 {
+	if (lines_distance <= 0.0f)
+		lines_distance = 1.0f;
+
 	num_lines = ((int)((width) / lines_distance)) + 1;
 	edges = width * 0.5f;
+
+	type = Primitive::Type::PLANE;
+	num_vertices = 12;
+	num_indices = 6;
 }
 
 void PrimitivePlane::Draw() const
@@ -47,6 +56,26 @@ void PrimitivePlane::Draw() const
 	glEnd();
 }
 
+void PrimitivePlane::LoadMesh(float3* vertices, float2* tex_coord, float3* normals, unsigned* indices) const
+{
+	float half = width * 0.5f;
+
+	float3 A = { -half, 0.0f, -half };
+	float3 B = { half, 0.0f, -half };
+	float3 C = { -half, 0.0f, half };
+	float3 D = { half, 0.0f, half };
+
+	float vert[] = { A.x, A.y, A.z,  B.x, B.y, B.z,  C.x, C.y, C.z,  D.x, D.y, D.z};
+	float texture_coord[] = { 0,0, 1,0, 0,1, 1,1 };
+	float norm[] = { 0,1,0, 0,1,0, 0,1,0, 0,1,0 };
+	unsigned plane_indices[] = { 0, 2, 1,  2, 3, 1 };
+
+	memcpy(vertices, vert, 3 * num_vertices * sizeof(float));
+	memcpy(tex_coord, texture_coord, 2 * num_vertices * sizeof(float));
+	memcpy(normals, norm, 3 * num_vertices * sizeof(float));
+	memcpy(indices, plane_indices, num_indices * sizeof(unsigned));
+}
+
 PrimitiveCube::PrimitiveCube() : Primitive()
 {
 	type = Primitive::Type::CUBE;
@@ -54,14 +83,7 @@ PrimitiveCube::PrimitiveCube() : Primitive()
 	num_indices = 36;
 }
 
-PrimitiveCube::PrimitiveCube(const float3& size) : Primitive(size)
-{
-	type = Primitive::Type::CUBE;
-	num_vertices = 12;
-	num_indices = 36;
-}
-
-PrimitiveCube::PrimitiveCube(const float3& position, const float3& size) : Primitive(position, size)
+PrimitiveCube::PrimitiveCube(const float3& size, const float3& position, const Color& color) : Primitive(position, color), size(size)
 {
 	type = Primitive::Type::CUBE;
 	num_vertices = 12;
@@ -92,7 +114,7 @@ void PrimitiveCube::LoadMesh(float3* vertices, float2* tex_coord, float3* normal
 	memcpy(indices, triangles_indices, num_indices * sizeof(unsigned));
 }
 
-PrimitiveSphere::PrimitiveSphere(float radius, unsigned int rings, unsigned int sectors) : Primitive(), radius(radius), rings(rings), sectors(sectors)
+PrimitiveSphere::PrimitiveSphere(float radius, const float3& position, const Color& color, unsigned int rings, unsigned int sectors) : Primitive(position, color), radius(radius), rings(rings), sectors(sectors)
 {	
 	type = Primitive::Type::SPHERE;
 	num_vertices = rings * sectors;

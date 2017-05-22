@@ -119,7 +119,7 @@ bool ModuleRender::Init()
 
 bool ModuleRender::Start()
 {
-	base_plane = new PrimitivePlane(200.0f, 0.0f, 1.0f, Colors::White);
+	base_plane = new PrimitivePlane(200.0f, 1.0f, float3(0.0f, 0.0f, 0.0f), Colors::White);
 
 	return true;
 }
@@ -144,7 +144,7 @@ update_status ModuleRender::Update(float dt)
 {
 	BROFILER_CATEGORY("ModuleRender-Update", Profiler::Color::Red);
 
-	if (draw_debug)
+	if (draw_debug && draw_base_plane)
 	{
 		debug_drawer->PreDebugDraw();
 		base_plane->Draw();

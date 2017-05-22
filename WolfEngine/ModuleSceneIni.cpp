@@ -46,10 +46,12 @@ bool ModuleSceneIni::Start()
 	if (pilot != nullptr)
 		pilot->LoadAnimation(pilot_animations);
 
-	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveCube(float3(2.0f, 0.0f, 0.0f), float3::one), "LennaCube");
+	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveCube(float3::one, float3(2.0f, 2.0f, 0.0f)), "LennaCube");
 	cube->LoadRigidBody(Collider::Type::BOX);
 
-	GameObject* sphere = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveSphere(1.0f), "LennaSphere");
+	GameObject* sphere = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveSphere(1.0f, float3(-2.0f, 2.0f, 0.0f)), "LennaSphere");
+
+	GameObject* plane = App->level->CreateGameObject("Resources/chess.jpg", PrimitivePlane(6.0f), "Floor");
 
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)

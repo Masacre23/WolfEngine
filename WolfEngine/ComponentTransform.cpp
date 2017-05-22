@@ -58,7 +58,7 @@ const float4x4& ComponentTransform::UpdateGlobalTransform(const float4x4& parent
 	return global_transform;
 }
 
-void ComponentTransform::Load(const float3& position, const float3& scale, const Quat& rotation)
+void ComponentTransform::SetLocalTransform(const float3& position, const float3& scale, const Quat& rotation)
 {
 	this->position = position;
 	this->scale = scale;
@@ -68,7 +68,7 @@ void ComponentTransform::Load(const float3& position, const float3& scale, const
 	RecalculateLocalTransform();
 }
 
-void ComponentTransform::Load(const float3& position, const Quat& rotation)
+void ComponentTransform::SetLocalTransform(const float3& position, const Quat& rotation)
 {
 	this->position = position;
 	this->rotation = rotation;
@@ -77,7 +77,7 @@ void ComponentTransform::Load(const float3& position, const Quat& rotation)
 	RecalculateLocalTransform();
 }
 
-void ComponentTransform::Load(const float3 & position)
+void ComponentTransform::SetLocalTransform(const float3 & position)
 {
 	this->position = position;
 

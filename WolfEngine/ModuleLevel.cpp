@@ -76,8 +76,9 @@ void ModuleLevel::DrawDebug() const
 {
 	BROFILER_CATEGORY("ModuleLevel-DebugDraw", Profiler::Color::GreenYellow);
 
-	quadtree->Draw();
-	camera->Draw();
+	if (draw_quadtree_structure)
+		quadtree->Draw();
+
 	std::vector<GameObject*> testObjects;
 	testObjects.clear();
 
@@ -145,7 +146,7 @@ GameObject* ModuleLevel::ImportScene(const char* folder, const char* file, bool 
 	return res;
 }
 
-GameObject * ModuleLevel::AddCamera()
+GameObject* ModuleLevel::AddCamera()
 {
 	camera = CreateGameObject("Game Camera");
 	camera->CreateComponent(Component::Type::CAMERA);

@@ -5,6 +5,7 @@
 #include "ModuleCamera.h"
 #include "ModuleTimeController.h"
 #include "ModuleRender.h"
+#include "ModuleLevel.h"
 #include "ComponentCamera.h"
 #include "SDL\include\SDL.h"
 #include "Math.h"
@@ -102,6 +103,17 @@ void PanelConfiguration::Draw()
 		float aspect_ratio = editor_camera->frustum->AspectRatio();
 		if (ImGui::DragFloat("Aspect Ratio", &aspect_ratio, 0.1f, 0.1f, 1000.0f))
 			editor_camera->SetAspectRatio(aspect_ratio);
+	}
+
+	if (ImGui::CollapsingHeader("Debug"))
+	{
+		ImGui::Checkbox("Debug draw", &App->renderer->draw_debug);
+
+		ImGui::Separator();
+
+		ImGui::Checkbox("Base plane", &App->renderer->draw_base_plane);
+
+		ImGui::Checkbox("Quadtree structure", &App->level->draw_quadtree_structure);
 	}
 
 	if (ImGui::CollapsingHeader("Window"))

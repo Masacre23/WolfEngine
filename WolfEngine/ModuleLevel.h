@@ -48,6 +48,9 @@ private:
 
 	void GetGLError(const char* string) const;
 
+public:
+	bool draw_quadtree_structure = false;
+
 private:
 	GameObject* root = nullptr;
 	GameObject* camera = nullptr;

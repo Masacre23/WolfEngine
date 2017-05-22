@@ -44,6 +44,7 @@ public:
 	SDL_Renderer* renderer = nullptr;
 	RenderDebugDrawer* debug_drawer = nullptr;
 	bool draw_debug = true;
+	bool draw_base_plane = true;
 
 private:
 	SDL_GLContext glcontext = NULL;

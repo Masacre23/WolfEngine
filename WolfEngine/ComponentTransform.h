@@ -24,9 +24,9 @@ public:
 	void SaveComponent();
 	void RestoreComponent();
 
-	void Load(const float3& position, const float3& scale, const Quat& rotation);
-	void Load(const float3& position, const Quat& rotation);
-	void Load(const float3& position);
+	void SetLocalTransform(const float3& position, const float3& scale, const Quat& rotation);
+	void SetLocalTransform(const float3& position, const Quat& rotation);
+	void SetLocalTransform(const float3& position);
 
 private:
 	void RecalculateLocalTransform();
