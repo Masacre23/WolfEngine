@@ -36,6 +36,33 @@ bool ComponentRigidBody::OnEditor()
 			ImGui::DragFloat("Mass", &mass, 0.1f, 0.0f, 100.0f);
 		ImGui::Separator();
 
+		int current_selected = -1;
+		if (collider != nullptr)
+			current_selected = collider->GetType();
+
+		int new_selected = current_selected;
+		const char* collider_names[] = { "Box", "Sphere", "Capsule" };
+		if (ImGui::Button("Collider.."))
+			ImGui::OpenPopup("Collider Type");
+		ImGui::SameLine();
+		ImGui::Text(current_selected == -1 ? "<None>" : collider_names[current_selected]);
+
+		if (ImGui::BeginPopup("Collider Type"))
+		{
+			ImGui::Text("Collider Types");
+			ImGui::Separator();
+			for (int i = 0; i < IM_ARRAYSIZE(collider_names); i++)
+				if (ImGui::Selectable(collider_names[i]))
+					new_selected = i;
+			ImGui::EndPopup();
+		}
+
+		if (new_selected != current_selected)
+		{
+			current_selected = new_selected;
+			parent->LoadCollider(Collider::Type(current_selected));
+		}
+
 		if (collider != nullptr)
 			collider->OnEditor();
 		else

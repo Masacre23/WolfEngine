@@ -5,6 +5,7 @@
 #include "Color.h"
 #include "Interface.h"
 #include "GameObject.h"
+#include "ModuleTimeController.h"
 
 Collider::Collider(Type type, ComponentRigidBody* parent) : type(type), parent(parent)
 {
@@ -33,8 +34,6 @@ ColliderBox::ColliderBox(ComponentRigidBody* parent) : Collider(Type::BOX, paren
 
 void ColliderBox::OnEditor()
 {
-	ImGui::TextWrapped("Box Collider");
-
 	ImGui::DragFloat3("Position", (float*)&box.pos, 0.1f);
 	float3 size = 2.0f * box.r;
 	ImGui::DragFloat3("Size", (float*)&size, 0.1f);
@@ -45,7 +44,8 @@ void ColliderBox::OnEditor()
 
 void ColliderBox::OnDebugDraw()
 {
-	App->renderer->debug_drawer->DrawBoundingBox(box, Colors::Green);
+	if (App->time_controller->IsStopped())
+		App->renderer->debug_drawer->DrawBoundingBox(box, Colors::Green);
 }
 
 void ColliderBox::SetOnVertices(float3* vertices, unsigned num_vertices)
@@ -69,8 +69,6 @@ ColliderSphere::ColliderSphere(ComponentRigidBody* parent) : Collider(Type::SPHE
 
 void ColliderSphere::OnEditor()
 {
-	ImGui::TextWrapped("Sphere Collider");
-
 	ImGui::DragFloat3("Position", (float*)&sphere.pos, 0.1f);
 	ImGui::DragFloat("Radius", (float*)&sphere.r, 0.1f);
 
@@ -79,7 +77,8 @@ void ColliderSphere::OnEditor()
 
 void ColliderSphere::OnDebugDraw()
 {
-	App->renderer->debug_drawer->DrawSphere(sphere, Colors::Green);
+	if (App->time_controller->IsStopped())
+		App->renderer->debug_drawer->DrawSphere(sphere, Colors::Green);
 }	
 
 void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices)
