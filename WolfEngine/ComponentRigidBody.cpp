@@ -24,24 +24,16 @@ bool ComponentRigidBody::OnEditor()
 {
 	if (ImGui::CollapsingHeader("RigidBody"))
 	{
-
 		ImGui::TextWrapped("Motion type:");
-		switch (motion_type)
-		{
-		case ComponentRigidBody::STATIC:
-			ImGui::TextWrapped("Static");
-			break;
-		case ComponentRigidBody::KINEMATIC:
-			ImGui::TextWrapped("Kinematic");
-			break;
-		case ComponentRigidBody::DYNAMIC:
-			ImGui::TextWrapped("Dynamic");
-			break;
-		default:
-			break;
-		}
 
-		ImGui::DragFloat("Mass", &mass, 0.1f, 0.0f, 100.0f);
+		int type = motion_type;
+		ImGui::RadioButton("Static", &type, 0);
+		ImGui::RadioButton("Kinematic", &type, 1);
+		ImGui::RadioButton("Dynamic", &type, 2);
+		motion_type = MotionType(type);
+
+		if (motion_type == MotionType::DYNAMIC)
+			ImGui::DragFloat("Mass", &mass, 0.1f, 0.0f, 100.0f);
 		ImGui::Separator();
 
 		if (collider != nullptr)

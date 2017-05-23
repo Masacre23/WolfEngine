@@ -13,7 +13,7 @@ class ComponentRigidBody : public Component, public btMotionState
 public:
 	enum MotionType
 	{
-		STATIC,
+		STATIC = 0,
 		KINEMATIC,
 		DYNAMIC
 	};
