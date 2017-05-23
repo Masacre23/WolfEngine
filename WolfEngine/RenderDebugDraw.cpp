@@ -133,6 +133,11 @@ void RenderDebugDrawer::DrawPoint(const float3& point, const Color& color, const
 	glPopMatrix();
 }
 
+void RenderDebugDrawer::DrawSphere(const Sphere& sphere, const Color& color, const float4x4& transform)
+{
+
+}
+
 void RenderDebugDrawer::DrawParallepiped(const float3* corners, const Color& color)
 {
 	glColor3f(color.r, color.g, color.b);

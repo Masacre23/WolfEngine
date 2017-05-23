@@ -476,6 +476,21 @@ void GameObject::SetLocalTransform(const float3& position)
 	transform->SetLocalTransform(position);
 }
 
+void GameObject::SetActive(bool state)
+{
+	if (active != state)
+	{
+		active = state;
+		if (App->time_controller->IsPlaying())
+		{
+			if (state == true)
+				RecursiveOnPlay();
+			else
+				RecursiveOnStop();
+		}
+	}
+}
+
 void GameObject::LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path, bool is_dynamic)
 {
 	ComponentMesh* mesh = (ComponentMesh*)CreateComponent(Component::Type::MESH);
@@ -531,13 +546,13 @@ void GameObject::LoadBones()
 		(*it)->LoadBones();
 }
 
-void GameObject::LoadRigidBody(Collider::Type collider_type, float mass, ComponentRigidBody::MotionType motion_type)
+void GameObject::LoadRigidBody(Collider::Type collider_type, ComponentRigidBody::MotionType motion_type, float mass)
 {
-	LoadRigidBody(mass, motion_type);
+	LoadRigidBody(motion_type, mass);
 	LoadCollider(collider_type);
 }
 
-void GameObject::LoadRigidBody(float mass, ComponentRigidBody::MotionType motion_type)
+void GameObject::LoadRigidBody(ComponentRigidBody::MotionType motion_type, float mass)
 {
 	ComponentRigidBody* rigid_body = (ComponentRigidBody*)GetComponent(Component::Type::RIGIDBODY);
 	if (rigid_body == nullptr)
@@ -569,8 +584,8 @@ void GameObject::LoadCollider(Collider::Type collider_type)
 		for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
 		{
 			unsigned num_vertices = (*it)->GetNumVertices();
-			float3* vertex_pointer = (float3*) &(vert_total[3 * offset]);
-			memcpy(vert_total, (*it)->GetVertices(), num_vertices * sizeof(float3));
+			float3* vertex_pointer = &(vert_total[offset]);
+			memcpy(vertex_pointer, (*it)->GetVertices(), num_vertices * sizeof(float3));
 			offset += num_vertices;
 		}
 
@@ -642,7 +657,8 @@ void GameObject::RecursiveOnPlay()
 		(*it)->OnPlay();
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveOnPlay();
+		if ((*it)->IsActive())
+			(*it)->RecursiveOnPlay();
 }
 
 void GameObject::RecursiveOnStop()
@@ -654,7 +670,8 @@ void GameObject::RecursiveOnStop()
 		(*it)->RestoreComponent();
 
 	for (std::vector<GameObject*>::iterator it = childs.begin(); it != childs.end(); ++it)
-		(*it)->RecursiveOnStop();
+		if ((*it)->IsActive())
+			(*it)->RecursiveOnStop();
 }
 
 const float4x4& GameObject::GetLocalTransformMatrix() const

@@ -36,7 +36,13 @@ bool ModuleSceneIni::Start()
 	/*App->level->ImportScene("Resources/Models/Batman/", "Batman.obj");
 	App->level->ImportScene("Resources/Models/", "magnetto2.fbx");*/
 	App->level->AddCamera();
-	//App->level->ImportScene("Resources/Models/street/", "Street.obj");
+
+	GameObject* city = App->level->ImportScene("Resources/Models/street/", "Street.obj");
+	if (city != nullptr)
+	{
+		for (std::vector<GameObject*>::iterator it = city->childs.begin(); it != city->childs.end(); ++it)
+			(*it)->LoadRigidBody(Collider::Type::BOX, ComponentRigidBody::MotionType::STATIC);
+	}
 
 	App->animations->Load("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 	App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
@@ -45,10 +51,10 @@ bool ModuleSceneIni::Start()
 	GameObject* pilot = App->level->ImportScene("Resources/Models/ArmyPilot/", "ArmyPilot.dae", true);
 	if (pilot != nullptr)
 	{
+		pilot->SetLocalTransform(float3(0.0f, 2.0f, 0.0f));
 		pilot->LoadAnimation(pilot_animations);
-		pilot->LoadRigidBody(Collider::Type::BOX, 1.0f, ComponentRigidBody::MotionType::DYNAMIC);
+		pilot->LoadRigidBody(Collider::Type::BOX);
 	}
-		
 
 	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveCube(float3::one, float3(2.0f, 2.0f, 0.0f)), "LennaCube");
 	cube->LoadRigidBody(Collider::Type::BOX);
@@ -56,7 +62,8 @@ bool ModuleSceneIni::Start()
 	GameObject* sphere = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveSphere(1.0f, float3(-2.0f, 2.0f, 0.0f)), "LennaSphere");
 	sphere->LoadRigidBody(Collider::Type::SPHERE);
 	
-	GameObject* plane = App->level->CreateGameObject("Resources/chess.jpg", PrimitivePlane(6.0f), "Floor");
+	/*GameObject* plane = App->level->CreateGameObject("Resources/chess.jpg", PrimitivePlane(6.0f), "Floor");
+	plane->LoadRigidBody(Collider::Type::BOX, ComponentRigidBody::MotionType::STATIC);*/
 
 	//GameObject* camera = App->level->CreateGameObject("TestCamera");
 	//if (camera != nullptr)

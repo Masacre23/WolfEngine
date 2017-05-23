@@ -23,7 +23,7 @@ PrimitivePlane::PrimitivePlane() : Primitive(), lines_distance(1.0f)
 	edges = 0.5f;
 
 	type = Primitive::Type::PLANE;
-	num_vertices = 12;
+	num_vertices = 4;
 	num_indices = 6;
 }
 
@@ -36,7 +36,7 @@ PrimitivePlane::PrimitivePlane(float width, float distance, const float3& positi
 	edges = width * 0.5f;
 
 	type = Primitive::Type::PLANE;
-	num_vertices = 12;
+	num_vertices = 4;
 	num_indices = 6;
 }
 
@@ -121,7 +121,7 @@ PrimitiveSphere::PrimitiveSphere(float radius, const float3& position, const Col
 	num_indices = (rings-1) * (sectors-1) * 6;
 }
 
-void PrimitiveSphere::LoadMesh(float3 * vertices, float2 * tex_coord, float3 * normals, unsigned * indices) const
+void PrimitiveSphere::LoadMesh(float3* vertices, float2* tex_coord, float3* normals, unsigned* indices) const
 {
 	float const R = 1. / (float)(rings - 1);
 	float const S = 1. / (float)(sectors - 1);
@@ -130,36 +130,40 @@ void PrimitiveSphere::LoadMesh(float3 * vertices, float2 * tex_coord, float3 * n
 	int v = 0;
 	int n = 0;
 	int t = 0;
-	for (r = 0; r < rings; r++) for (s = 0; s < sectors; s++) {
-		float const y = sin(-pi/2 + pi * r * R);
-		float const x = cos(2 * pi * s * S) * sin(pi * r * R);
-		float const z = sin(2 * pi * s * S) * sin(pi * r * R);
+	for (r = 0; r < rings; r++) 
+		for (s = 0; s < sectors; s++) 
+		{
+			float const y = sin(-pi/2 + pi * r * R);
+			float const x = cos(2 * pi * s * S) * sin(pi * r * R);
+			float const z = sin(2 * pi * s * S) * sin(pi * r * R);
 
-		tex_coord[t].x = s*S;
-		tex_coord[t].y = r*R;
+			tex_coord[t].x = s*S;
+			tex_coord[t].y = r*R;
 
-		vertices[v].x = x * radius;
-		vertices[v].y = y * radius;
-		vertices[v].z = z * radius;
+			vertices[v].x = x * radius;
+			vertices[v].y = y * radius;
+			vertices[v].z = z * radius;
 
-		normals[n].x = x;
-		normals[n].y = y;
-		normals[n].z = z;
+			normals[n].x = x;
+			normals[n].y = y;
+			normals[n].z = z;
 
-		++t;
-		++v;
-		++n;
-	}
+			++t;
+			++v;
+			++n;
+		}
 
 	int i = 0;
-	for (r = 0; r < rings-1; r++) for (s = 0; s < sectors-1; s++) {
-		indices[i] = r * sectors + s;
-		indices[i + 1] = (r + 1) * sectors + (s + 1);
-		indices[i + 2] = r * sectors + (s + 1);
-		indices[i + 3] = r * sectors + s;
-		indices[i + 4] = (r + 1) * sectors + s;
-		indices[i + 5] = (r + 1) * sectors + (s + 1);
+	for (r = 0; r < rings-1; r++) 
+		for (s = 0; s < sectors-1; s++) 
+		{
+			indices[i] = r * sectors + s;
+			indices[i + 1] = (r + 1) * sectors + (s + 1);
+			indices[i + 2] = r * sectors + (s + 1);
+			indices[i + 3] = r * sectors + s;
+			indices[i + 4] = (r + 1) * sectors + s;
+			indices[i + 5] = (r + 1) * sectors + (s + 1);
 		
-		i += 6;
-	}
+			i += 6;
+		}
 }

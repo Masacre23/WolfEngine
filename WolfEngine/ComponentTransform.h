@@ -16,6 +16,7 @@ public:
 
 	const float3& GetPosition() const { return position; }
 	const Quat& GetRotation() const { return rotation; }
+	const float3& GetScale() const { return scale; }
 	const float4x4& GetLocalTransformMatrix() const { return local_transform; }
 	const float4x4& GetGlobalTransformMatrix() const { return global_transform; }
 

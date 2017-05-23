@@ -1,10 +1,12 @@
 #include "Application.h"
 #include "ModuleRender.h"
+#include "ComponentRigidBody.h"
 #include "Collider.h"
 #include "Color.h"
 #include "Interface.h"
+#include "GameObject.h"
 
-Collider::Collider(Type type) : type(type)
+Collider::Collider(Type type, ComponentRigidBody* parent) : type(type), parent(parent)
 {
 }
 
@@ -12,7 +14,13 @@ Collider::~Collider()
 {
 }
 
-ColliderBox::ColliderBox() : Collider(Type::BOX)
+void Collider::RecalculateLocalTransform(const float3& position)
+{
+	transform = float4x4::identity;
+	transform.SetTranslatePart(position);
+}
+
+ColliderBox::ColliderBox(ComponentRigidBody* parent) : Collider(Type::BOX, parent)
 {
 	box.pos = float3::zero;
 	box.r = 0.5f * float3::one;
@@ -20,17 +28,19 @@ ColliderBox::ColliderBox() : Collider(Type::BOX)
 	box.axis[1] = float3::unitY;
 	box.axis[2] = float3::unitZ;
 
-	transform = float4x4::FromTRS(box.pos, Quat::identity, float3::one);
+	RecalculateLocalTransform(box.pos);
 }
 
 void ColliderBox::OnEditor()
 {
 	ImGui::TextWrapped("Box Collider");
 
-	//ImGui::DragFloat3("Position", (float*)&box.pos, 0.1f);
+	ImGui::DragFloat3("Position", (float*)&box.pos, 0.1f);
 	float3 size = 2.0f * box.r;
 	ImGui::DragFloat3("Size", (float*)&size, 0.1f);
 	box.r = size * 0.5f;
+
+	RecalculateLocalTransform(box.pos);
 }
 
 void ColliderBox::OnDebugDraw()
@@ -38,7 +48,7 @@ void ColliderBox::OnDebugDraw()
 	App->renderer->debug_drawer->DrawBoundingBox(box, Colors::Green);
 }
 
-void ColliderBox::SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform)
+void ColliderBox::SetOnVertices(float3* vertices, unsigned num_vertices)
 {
 	AABB aabb;
 	aabb.SetNegativeInfinity();
@@ -46,33 +56,46 @@ void ColliderBox::SetOnVertices(float3* vertices, unsigned num_vertices, const f
 	
 	box.SetNegativeInfinity();
 	box.SetFrom(aabb, transform);
+	RecalculateLocalTransform(box.pos);
 }
 
-ColliderSphere::ColliderSphere() : Collider(Type::SPHERE)
+ColliderSphere::ColliderSphere(ComponentRigidBody* parent) : Collider(Type::SPHERE, parent)
 {
-	sphere.r = 1.0;
+	sphere.r = 0.1;
 	sphere.pos = float3::zero;
 
-	transform = float4x4::FromTRS(sphere.pos, Quat::identity, float3::one);
+	RecalculateLocalTransform(sphere.pos);
 }
 
 void ColliderSphere::OnEditor()
 {
 	ImGui::TextWrapped("Sphere Collider");
 
-	//ImGui::DragFloat3("Position", (float*)&box.pos, 0.1f);
+	ImGui::DragFloat3("Position", (float*)&sphere.pos, 0.1f);
 	ImGui::DragFloat("Radius", (float*)&sphere.r, 0.1f);
+
+	RecalculateLocalTransform(sphere.pos);
 }
 
 void ColliderSphere::OnDebugDraw()
 {
+	App->renderer->debug_drawer->DrawSphere(sphere, Colors::Green);
+}	
 
-}
-
-void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform)
+void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices)
 {
+	AABB aabb;
+	aabb.SetNegativeInfinity();
+	aabb.Enclose(vertices, num_vertices);
+
+	OBB obb;
+	obb.SetNegativeInfinity();
+	obb.SetFrom(aabb, transform);
+
+	sphere = obb.MaximalContainedSphere();
+	RecalculateLocalTransform(sphere.pos);
 }
 
-ColliderCapsule::ColliderCapsule() : Collider(Type::CAPSULE)
+ColliderCapsule::ColliderCapsule(ComponentRigidBody* parent) : Collider(Type::CAPSULE, parent)
 {
 }

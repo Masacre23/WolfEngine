@@ -52,6 +52,7 @@ public:
 	void SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation);
 	void SetLocalTransform(const float3& position, const Quat& rotation);
 	void SetLocalTransform(const float3& position);
+	void SetActive(bool state);
 
 	void LoadMesh(aiMesh* scene_mesh, const aiScene* scene, const aiString& folder_path, bool is_dynamic = false);
 	void LoadMesh(const Primitive& primitive);
@@ -60,8 +61,8 @@ public:
 	void LoadAnimation(const char * name);
 	void LoadAnimation(const std::list<std::string>& animations);
 	void LoadBones();
-	void LoadRigidBody(Collider::Type collider_type, float mass = 1.0f, ComponentRigidBody::MotionType motion_type = ComponentRigidBody::MotionType::DYNAMIC);
-	void LoadRigidBody(float mass = 1.0f, ComponentRigidBody::MotionType motion_type = ComponentRigidBody::MotionType::DYNAMIC);
+	void LoadRigidBody(Collider::Type collider_type, ComponentRigidBody::MotionType motion_type = ComponentRigidBody::MotionType::DYNAMIC, float mass = 1.0f);
+	void LoadRigidBody(ComponentRigidBody::MotionType motion_type = ComponentRigidBody::MotionType::DYNAMIC, float mass = 1.0f);
 	void LoadCollider(Collider::Type collider_type);
 
 	void SetAABB(AABB box);
@@ -94,13 +95,13 @@ public:
 	ComponentParticleSystem* particle_system = nullptr;
 
 	bool selected = false;
-	bool active = true;
 	bool is_bone = false;
 
 	GameObject* root = nullptr;
 
 private:
 	GameObject* parent = nullptr;
+	bool active = true;
 	
 };
 

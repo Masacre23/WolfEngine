@@ -3,6 +3,9 @@
 
 #include "Math.h"
 
+class ComponentRigidBody;
+class btCollisionShape;
+
 class Collider
 {
 public:
@@ -15,29 +18,42 @@ public:
 	};
 
 public:
-	Collider(Type type);
+	Collider(Type type, ComponentRigidBody* parent);
 	~Collider();
 
 	virtual void OnEditor() {}
 	virtual void OnDebugDraw() {}
 
-	virtual void SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform = float4x4::identity) {}
+	virtual void SetOnVertices(float3* vertices, unsigned num_vertices) {}
+	virtual const float3& GetPosition() const { return float3::zero; }
+
+	void SetCollisionShape(btCollisionShape* collision_shape) { this->collision_shape = collision_shape; }
+	btCollisionShape* GetCollisionShape() const { return collision_shape; }
+	void UnsetCollisionShape() { collision_shape = nullptr; }
 
 	Type GetType() { return type; }
 
+	const float4x4& GetLocalTransform() const { return transform; }
+
 protected:
+	void RecalculateLocalTransform(const float3& position = float3::zero);
+
+protected:
+	ComponentRigidBody* parent;
 	float4x4 transform = float4x4::identity;
 	Type type;
+	btCollisionShape* collision_shape = nullptr;
 };
 
 class ColliderBox : public Collider
 {
 public:
-	ColliderBox();
+	ColliderBox(ComponentRigidBody* parent);
 
 	void OnEditor();
 	void OnDebugDraw();
-	void SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform = float4x4::identity);
+	void SetOnVertices(float3* vertices, unsigned num_vertices);
+	const float3& GetPosition() const { return box.pos; }
 
 	const OBB& GetBox() const { return box; }
 
@@ -48,11 +64,12 @@ private:
 class ColliderSphere : public Collider
 {
 public:
-	ColliderSphere();
+	ColliderSphere(ComponentRigidBody* parent);
 
 	void OnEditor();
 	void OnDebugDraw();
-	void SetOnVertices(float3* vertices, unsigned num_vertices, const float4x4& transform = float4x4::identity);
+	void SetOnVertices(float3* vertices, unsigned num_vertices);
+	const float3& GetPosition() const { return sphere.pos; }
 
 	const Sphere& GetSphere() const { return sphere; }
 
@@ -63,7 +80,7 @@ private:
 class ColliderCapsule : public Collider
 {
 public:
-	ColliderCapsule();
+	ColliderCapsule(ComponentRigidBody* parent);
 
 	const Capsule& GetCapsule() const { return capsule; }
 

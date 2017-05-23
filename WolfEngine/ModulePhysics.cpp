@@ -50,6 +50,10 @@ bool ModulePhysics::CleanUp()
 {
 	APPLOG("Cleaning physic world");
 
+	for (std::list<btCollisionShape*>::iterator it = shapes.begin(); it != shapes.end(); ++it)
+		RELEASE(*it);
+	shapes.clear();
+
 	RELEASE(world);	
 
 	return true;
@@ -78,7 +82,7 @@ update_status ModulePhysics::PostUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component)
+btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component, const float3& scaling)
 {
 	btRigidBody* ret = nullptr;
 	
@@ -87,6 +91,7 @@ btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component)
 		mass = component->GetMass();
 
 	btCollisionShape* collision_shape = CreateCollisionShape(component->GetCollider());
+	SetCollisionShapeScale(collision_shape, scaling);
 	shapes.push_back(collision_shape);
 	
 	btVector3 local_inertia(0.0f, 0.0f, 0.0f);
@@ -100,11 +105,15 @@ btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component)
 	return ret;
 }
 
-void ModulePhysics::DeleteRigidBody(btRigidBody* rigid_body)
+void ModulePhysics::DeleteRigidBody(btRigidBody* rigid_body, btCollisionShape* collision_shape)
 {
 	if (rigid_body != nullptr)
 	{
 		world->removeRigidBody(rigid_body);
+		if (collision_shape != nullptr)
+		{
+			DeleteCollisionShape(collision_shape);
+		}
 	}	
 }
 
@@ -132,14 +141,41 @@ btCollisionShape* ModulePhysics::CreateCollisionShape(Collider* collider)
 
 void ModulePhysics::DeleteCollisionShape(btCollisionShape* collision_shape)
 {
-	for (std::vector<btCollisionShape*>::iterator it = shapes.begin(); it != shapes.end(); ++it)
+	for (std::list<btCollisionShape*>::iterator it = shapes.begin(); it != shapes.end(); ++it)
 	{
 		if (*it == collision_shape)
 		{
 			RELEASE(*it);
 			shapes.erase(it);
+			break;
 		}
 	}
+}
+
+btCollisionShape* ModulePhysics::GetCollisionShape(btRigidBody* rigid_body)
+{
+	btCollisionShape* ret;
+
+	if (rigid_body != nullptr)
+		ret = rigid_body->getCollisionShape();
+
+	return ret;
+}
+
+void ModulePhysics::SetCollisionShapeScale(btCollisionShape* collision_shape, const float3& scaling)
+{
+	if (collision_shape != nullptr)
+	{
+		collision_shape->setLocalScaling(scaling);
+	}
+}
+
+const float3& ModulePhysics::GetCollisionShapeScale(btCollisionShape* collision_shape) const
+{
+	if (collision_shape != nullptr)
+		return collision_shape->getLocalScaling();
+
+	return float3::one;
 }
 
 void ModulePhysics::DrawDebug() const

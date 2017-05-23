@@ -33,7 +33,9 @@ void PanelInterface::Draw()
 	{
 		go->selected = true;
 
-		ImGui::Checkbox(" ", &go->active); //WARNING: Don't delete space
+		bool active = go->IsActive();
+		ImGui::Checkbox(" ", &active); //WARNING: Don't delete space
+		go->SetActive(active);
 		ImGui::SameLine();
 
 		char buf[1024];

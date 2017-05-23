@@ -71,6 +71,7 @@ public:
 	void DrawFrustum(const Frustum& frustum, const Color& color, const float4x4& transform = float4x4::identity);
 	void DrawLine(const float3& from, const float3& to, const Color& color, const float4x4& transform = float4x4::identity);
 	void DrawPoint(const float3& point, const Color& color, const float4x4& transform = float4x4::identity);
+	void DrawSphere(const Sphere& sphere, const Color& color, const float4x4& transform = float4x4::identity);
 
 private:
 	void DrawParallepiped(const float3* corners, const Color& color);
