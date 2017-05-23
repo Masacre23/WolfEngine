@@ -16,6 +16,7 @@ public:
 
 	const float3& GetPosition() const { return position; }
 	const Quat& GetRotation() const { return rotation; }
+	const float3& GetRotationEuler() const { return rotation_euler; }
 	const float3& GetScale() const { return scale; }
 	const float4x4& GetLocalTransformMatrix() const { return local_transform; }
 	const float4x4& GetGlobalTransformMatrix() const { return global_transform; }
@@ -44,6 +45,7 @@ private:
 	float3 scale = float3::one;
 	Quat rotation = Quat::identity;
 	float3 rotation_euler = float3::zero;
+	float3 backup_rotatio_euler = float3::zero;
 };
 
 #endif
