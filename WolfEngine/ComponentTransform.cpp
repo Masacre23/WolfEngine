@@ -92,14 +92,15 @@ void ComponentTransform::RecalculateLocalTransform()
 
 void ComponentTransform::SaveComponent()
 { 
-	backup_local_transform = local_transform; 
+	backup_local_transform = local_transform;
+	backup_rotatio_euler = rotation_euler;
 }
 
 void ComponentTransform::RestoreComponent()
 { 
 	local_transform = backup_local_transform;
 	position = local_transform.TranslatePart();
-	rotation_euler = local_transform.RotatePart().ToEulerXYZ();
+	rotation_euler = backup_rotatio_euler;
 	rotation = Quat::FromEulerXYZ(rotation_euler[0], rotation_euler[1], rotation_euler[2]);
 	scale = local_transform.GetScale();
 	transform_change = true;

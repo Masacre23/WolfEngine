@@ -87,11 +87,8 @@ void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices)
 	aabb.SetNegativeInfinity();
 	aabb.Enclose(vertices, num_vertices);
 
-	OBB obb;
-	obb.SetNegativeInfinity();
-	obb.SetFrom(aabb, transform);
-
-	sphere = obb.MaximalContainedSphere();
+	sphere = aabb.MaximalContainedSphere();
+	sphere.r = MAX(aabb.maxPoint.x - aabb.minPoint.x, MAX(aabb.maxPoint.y - aabb.minPoint.y, aabb.maxPoint.z - aabb.minPoint.z)) / 2.0f;
 	RecalculateLocalTransform(sphere.pos);
 }
 
