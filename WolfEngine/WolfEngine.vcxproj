@@ -79,13 +79,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Bullet\include;$(ProjectDir)DevIL\include;$(ProjectDir)assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)FreeType\include\freetype2;$(ProjectDir)FreeType\include;$(ProjectDir)Bullet\include;$(ProjectDir)DevIL\include;$(ProjectDir)assimp\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Bullet\libx86;$(ProjectDir)DevIL\libx86;$(ProjectDir)assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)FreeType\libx86;$(ProjectDir)Bullet\libx86;$(ProjectDir)DevIL\libx86;$(ProjectDir)assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,6 +142,7 @@
     <ClCompile Include="ComponentRectTransform.cpp" />
     <ClCompile Include="ComponentRigidBody.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="FreeType.cpp" />
     <ClCompile Include="PhysicsDebugDraw.cpp" />
     <ClCompile Include="RenderDebugDraw.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="ComponentRectTransform.h" />
     <ClInclude Include="ComponentRigidBody.h" />
     <ClInclude Include="ComponentTransform.h" />
+    <ClInclude Include="FreeType.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="ComponentBillboard.h" />

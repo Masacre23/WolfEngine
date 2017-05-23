@@ -186,6 +186,7 @@
     <ClCompile Include="ComponentImage.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="FreeType.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -365,5 +366,6 @@
     <ClInclude Include="ComponentImage.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="FreeType.h" />
   </ItemGroup>
 </Project>
