@@ -141,7 +141,9 @@ void GameObject::DebugDraw() const
 			if (transform->IsActive())
 			{
 				transform_noscale = transform->GetGlobalTransformMatrix();
-				transform_noscale.RemoveScale();
+				float3 scale = transform_noscale.ExtractScale();
+				scale = float3::one.Div(scale);
+				transform_noscale = float4x4::FromTRS(transform_noscale.TranslatePart(), transform_noscale.RotatePart(), scale);
 			}
 				
 		App->renderer->debug_drawer->DrawAxis(transform_noscale);

@@ -124,6 +124,9 @@ void ComponentRigidBody::getWorldTransform(btTransform& worldTrans) const
 {
 	float4x4 object_global = parent->transform->GetGlobalTransformMatrix();
 	float4x4 collider_global = object_global * collider->GetLocalTransform();
+	float3 scale = collider_global.ExtractScale();
+	scale = float3::one.Div(scale);
+	collider_global = float4x4::FromTRS(collider_global.TranslatePart(), collider_global.RotatePart(), scale);
 
 	worldTrans.setFromOpenGLMatrix(collider_global.Transposed().ptr());
 }
