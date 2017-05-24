@@ -34,7 +34,7 @@ ColliderBox::ColliderBox(ComponentRigidBody* parent) : Collider(Type::BOX, paren
 
 void ColliderBox::OnEditor()
 {
-	ImGui::DragFloat3("Position", (float*)&box.pos, 0.1f);
+	ImGui::DragFloat3("Center", (float*)&box.pos, 0.1f);
 	float3 size = 2.0f * box.r;
 	ImGui::DragFloat3("Size", (float*)&size, 0.1f);
 	box.r = size * 0.5f;
@@ -45,7 +45,7 @@ void ColliderBox::OnEditor()
 void ColliderBox::OnDebugDraw()
 {
 	if (App->time_controller->IsStopped())
-		App->renderer->debug_drawer->DrawBoundingBox(box, Colors::Green);
+		App->renderer->debug_drawer->DrawBox(box, Colors::Green, transform);
 }
 
 void ColliderBox::SetOnVertices(float3* vertices, unsigned num_vertices)
@@ -69,7 +69,7 @@ ColliderSphere::ColliderSphere(ComponentRigidBody* parent) : Collider(Type::SPHE
 
 void ColliderSphere::OnEditor()
 {
-	ImGui::DragFloat3("Position", (float*)&sphere.pos, 0.1f);
+	ImGui::DragFloat3("Center", (float*)&sphere.pos, 0.1f);
 	ImGui::DragFloat("Radius", (float*)&sphere.r, 0.1f);
 
 	RecalculateLocalTransform(sphere.pos);
@@ -78,7 +78,7 @@ void ColliderSphere::OnEditor()
 void ColliderSphere::OnDebugDraw()
 {
 	if (App->time_controller->IsStopped())
-		App->renderer->debug_drawer->DrawSphere(sphere, Colors::Green);
+		App->renderer->debug_drawer->DrawSphere(sphere, Colors::Green, transform);
 }	
 
 void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices)
@@ -87,11 +87,82 @@ void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices)
 	aabb.SetNegativeInfinity();
 	aabb.Enclose(vertices, num_vertices);
 
-	sphere = aabb.MaximalContainedSphere();
-	sphere.r = MAX(aabb.maxPoint.x - aabb.minPoint.x, MAX(aabb.maxPoint.y - aabb.minPoint.y, aabb.maxPoint.z - aabb.minPoint.z)) / 2.0f;
+	LineSegment line;
+	line.a = aabb.maxPoint;
+	line.b = aabb.minPoint;
+	sphere.pos = aabb.CenterPoint();
+	sphere.r = line.Length() / 2.0f;
+
 	RecalculateLocalTransform(sphere.pos);
 }
 
 ColliderCapsule::ColliderCapsule(ComponentRigidBody* parent) : Collider(Type::CAPSULE, parent)
 {
+	capsule.r = 2.0f;
+	capsule.l.a.x = 0.0f;
+	capsule.l.a.y = 0.5f;
+	capsule.l.a.z = 0.0f;
+	capsule.l.b.x = 0.0f;
+	capsule.l.b.y = -0.5f;
+	capsule.l.b.z = 0.0f;
+
+	total_height = capsule.Height();
+
+	RecalculateLocalTransform(capsule.l.CenterPoint());
+}
+
+void ColliderCapsule::OnEditor()
+{
+	float3 center = capsule.l.CenterPoint();
+	float radius = capsule.r;
+	float height = total_height;
+
+	ImGui::DragFloat3("Center", (float*)&center, 0.1f);
+
+	ImGui::DragFloat("Radius", (float*)&radius, 0.1f);
+
+	ImGui::DragFloat("Height", (float*)&height, 0.1f);
+
+	float segment_height = height - 2.0f * radius;
+	if (segment_height < 0.0f)
+	{
+		if (height != total_height)
+			total_height = height;
+		height = 2.0f * radius;
+		segment_height = 0.0f;	
+	}
+	else
+		total_height = height;
+
+	capsule.r = radius;
+	capsule.l.a = center + 0.5f * segment_height * float3::unitY;
+	capsule.l.b = center - 0.5f * segment_height * float3::unitY;
+
+	RecalculateLocalTransform(center);
+}
+
+void ColliderCapsule::OnDebugDraw()
+{
+	if (App->time_controller->IsStopped())
+		App->renderer->debug_drawer->DrawCapsule(capsule, Colors::Green, transform);
+}
+
+void ColliderCapsule::SetOnVertices(float3* vertices, unsigned num_vertices)
+{
+	AABB aabb;
+	aabb.SetNegativeInfinity();
+	aabb.Enclose(vertices, num_vertices);
+
+	float3 center = aabb.CenterPoint();
+	capsule.r = (aabb.maxPoint - aabb.FaceCenterPoint(3)).Length();
+	capsule.l.a.x = center.x;
+	capsule.l.a.y = aabb.maxPoint.y;
+	capsule.l.a.z = center.z;
+	capsule.l.b.x = center.x;
+	capsule.l.b.y = aabb.minPoint.y;
+	capsule.l.b.z = center.z;
+
+	total_height = capsule.Height();
+
+	RecalculateLocalTransform(capsule.l.CenterPoint());
 }

@@ -132,7 +132,7 @@ btCollisionShape* ModulePhysics::CreateCollisionShape(Collider* collider)
 		ret = new btSphereShape(((ColliderSphere*)collider)->GetSphere().r);
 		break;
 	case Collider::Type::CAPSULE:
-		ret = new btCapsuleShape(((ColliderCapsule*)collider)->GetCapsule().r, ((ColliderCapsule*)collider)->GetCapsule().Height());
+		ret = new btCapsuleShape(((ColliderCapsule*)collider)->GetCapsule().r, ((ColliderCapsule*)collider)->GetCapsule().LineLength());
 		break;
 	}
 

@@ -82,10 +82,16 @@ class ColliderCapsule : public Collider
 public:
 	ColliderCapsule(ComponentRigidBody* parent);
 
+	void OnEditor();
+	void OnDebugDraw();
+	void SetOnVertices(float3* vertices, unsigned num_vertices);
+	const float3& GetPosition() const { return capsule.l.CenterPoint(); }
+
 	const Capsule& GetCapsule() const { return capsule; }
 
 private:
 	Capsule capsule;
+	float total_height = 0.0f;
 };
 
 #endif // !COLLIDER_H
