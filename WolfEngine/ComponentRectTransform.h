@@ -14,10 +14,9 @@ public:
 	bool OnEditor();
 
 public:
-	int posx;
-	int posy;
-	int sizex;
-	int sizey;
+	float pos[2] = {400, 400};
+	float sizex;
+	float sizey;
 
 	bool draggable;
 	bool invisible;

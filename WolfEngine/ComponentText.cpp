@@ -1,6 +1,8 @@
 #include "ComponentText.h"
 #include "Interface.h"
 #include "freetype.h"
+#include "GameObject.h"
+#include "ComponentRectTransform.h"
 
 freetype::font_data font;
 
@@ -16,11 +18,12 @@ ComponentText::~ComponentText()
 void ComponentText::OnDraw() const
 {
 	// Blue text
-	glColor3ub(0, 0, 0xff);
+	glColor3ub(color[0], color[1], color[2]);
 
 	glPushMatrix();
 	glLoadIdentity();
-	freetype::print(font, 500, 400, text);
+	ComponentRectTransform* rt = (ComponentRectTransform*)parent->GetComponent(Component::Type::RECT_TRANSFORM);
+	freetype::print(font, rt->pos[0], rt->pos[1], text);
 	glPopMatrix();
 }
 
@@ -30,10 +33,12 @@ bool ComponentText::OnEditor()
 
 	if (node_open)
 	{
-		static char buf[1024];
+		static char buf[64];
 		strcpy(buf, (const char*)text);
 		ImGui::InputText("", buf, IM_ARRAYSIZE(buf));
 		text = buf;
+
+		ImGui::InputInt3("Color", color);
 	}
 
 	return ImGui::IsItemClicked();
