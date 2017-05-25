@@ -8,7 +8,7 @@ freetype::font_data font;
 
 ComponentText::ComponentText(GameObject* parent) : Component(Component::Type::TEXT, parent)
 {
-	font.init("Test.ttf", 16);
+	font.init("Test.ttf", size);
 }
 
 ComponentText::~ComponentText()
@@ -17,7 +17,6 @@ ComponentText::~ComponentText()
 
 void ComponentText::OnDraw() const
 {
-	// Blue text
 	glColor3ub(color[0], color[1], color[2]);
 
 	glPushMatrix();
@@ -38,7 +37,12 @@ bool ComponentText::OnEditor()
 		ImGui::InputText("", buf, IM_ARRAYSIZE(buf));
 		text = buf;
 
-		ImGui::InputInt3("Color", color);
+		ImGui::DragInt3("Color", color);
+
+		ImGui::DragInt("Size", &size);
+
+		if(ImGui::Button("Apply"))
+			font.init("Test.ttf", size);
 	}
 
 	return ImGui::IsItemClicked();
