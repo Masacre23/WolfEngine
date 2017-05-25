@@ -17,6 +17,7 @@ public:
 public:
 	char* text = "Holiii";
 	int color[3] = {0,0,0};
+	int size = 16;
 };
 
 #endif
