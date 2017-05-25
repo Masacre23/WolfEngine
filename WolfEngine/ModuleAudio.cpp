@@ -15,10 +15,12 @@ bool ModuleAudio::Init()
 {
 	APPLOG("Loading Audio Mixer");
 	
-	if (!BASS_Init(-1, 44100, BASS_DEVICE_DEFAULT, 0, nullptr))
-	{
+	BASS_Init(-1, 44100, 0, 0, NULL);
+	BASS_SetVolume(1);
+	HSAMPLE sample = BASS_SampleLoad(false, "Resources/Audio/batman.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+	HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
 
-	}
+	BASS_ChannelPlay(channel, FALSE);
 	return true;
 }
 
@@ -34,8 +36,7 @@ bool ModuleAudio::CleanUp()
 bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 {
 	bool ret = true;
-
-	
+	//BASS_ChannelPlay(channel, FALSE);
 	return ret;
 }
 

@@ -192,6 +192,7 @@
     <ClCompile Include="ComponentText.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentAudioSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -380,5 +381,6 @@
     <ClInclude Include="Bass.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentAudioSource.h" />
   </ItemGroup>
 </Project>

@@ -31,6 +31,8 @@ private:
 	float DEFAULT_FADE = 2.0f;
 	int VOLUME_MUSIC = 1;
 	int VOLUME_FX = 1;
+
+	//HCHANNEL channel;
 };
 
 

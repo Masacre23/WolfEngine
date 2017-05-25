@@ -141,6 +141,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="ComponentAnim.cpp" />
+    <ClCompile Include="ComponentAudioSource.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
     <ClCompile Include="ComponentImage.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentAnim.h" />
+    <ClInclude Include="ComponentAudioSource.h" />
     <ClInclude Include="ComponentCamera.h" />
     <ClInclude Include="ComponentImage.h" />
     <ClInclude Include="ComponentMaterial.h" />
