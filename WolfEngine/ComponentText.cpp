@@ -20,7 +20,7 @@ void ComponentText::OnDraw() const
 
 	glPushMatrix();
 	glLoadIdentity();
-	freetype::print(font, 500, 400, "Holiii");
+	freetype::print(font, 500, 400, text);
 	glPopMatrix();
 }
 
@@ -30,6 +30,10 @@ bool ComponentText::OnEditor()
 
 	if (node_open)
 	{
+		static char buf[1024];
+		strcpy(buf, (const char*)text);
+		ImGui::InputText("", buf, IM_ARRAYSIZE(buf));
+		text = buf;
 	}
 
 	return ImGui::IsItemClicked();

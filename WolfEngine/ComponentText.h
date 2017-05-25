@@ -13,6 +13,9 @@ public:
 	void OnDraw() const;
 	//void OnDebugDraw() const;
 	bool OnEditor();
+
+public:
+	char* text = "Holiii";
 };
 
 #endif

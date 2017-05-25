@@ -82,7 +82,7 @@ bool ModuleSceneIni::Start()
 	//rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
 	//rain->CreateComponent(Component::Type::PARTICLE);
 
-	image = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Imagen");
+	image = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Text");
 	image->CreateComponent(Component::Type::RECT_TRANSFORM);
 	image->CreateComponent(Component::Type::TEXT);
 
