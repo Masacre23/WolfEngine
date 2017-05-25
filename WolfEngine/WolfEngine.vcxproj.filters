@@ -372,11 +372,13 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="FreeType.h">
-	<ClInclude Include="Bass.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="ComponentText.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Bass.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

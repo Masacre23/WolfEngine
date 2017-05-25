@@ -248,12 +248,8 @@
     <ClInclude Include="parson\parson.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Primitive.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerUs.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="WolfEngine.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
