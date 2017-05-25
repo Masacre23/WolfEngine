@@ -74,6 +74,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -92,12 +98,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)DevIL\include;$(ProjectDir)assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)FreeType\include\freetype2;$(ProjectDir)FreeType\include;$(ProjectDir)Bullet\include;$(ProjectDir)DevIL\include;$(ProjectDir)assimp\include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <OmitFramePointers>false</OmitFramePointers>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)DevIL\libx86;$(ProjectDir)assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)FreeType\libx86;$(ProjectDir)Bullet\libx86;$(ProjectDir)DevIL\libx86;$(ProjectDir)assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,6 +148,7 @@
     <ClCompile Include="ComponentParticleSystem.cpp" />
     <ClCompile Include="ComponentRectTransform.cpp" />
     <ClCompile Include="ComponentRigidBody.cpp" />
+    <ClCompile Include="ComponentText.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
     <ClCompile Include="FreeType.cpp" />
     <ClCompile Include="PhysicsDebugDraw.cpp" />
@@ -193,6 +201,7 @@
     <ClInclude Include="ComponentParticleSystem.h" />
     <ClInclude Include="ComponentRectTransform.h" />
     <ClInclude Include="ComponentRigidBody.h" />
+    <ClInclude Include="ComponentText.h" />
     <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="FreeType.h" />
     <ClInclude Include="GameObject.h" />

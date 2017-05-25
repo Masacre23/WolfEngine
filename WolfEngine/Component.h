@@ -20,6 +20,7 @@ public:
 		RIGIDBODY,
 		RECT_TRANSFORM,
 		IMAGE,
+		TEXT,
 		UNKNOWN
 	};
 

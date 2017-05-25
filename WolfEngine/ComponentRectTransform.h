@@ -9,6 +9,10 @@ public:
 	ComponentRectTransform(GameObject * parent);
 	~ComponentRectTransform();
 
+	void OnDraw() const;
+	//void OnDebugDraw() const;
+	bool OnEditor();
+
 public:
 	int posx;
 	int posy;
