@@ -367,5 +367,12 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="FreeType.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Bass.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="WolfEngine.rc" />
   </ItemGroup>
 </Project>
