@@ -9,11 +9,14 @@ public:
 	ComponentRectTransform(GameObject * parent);
 	~ComponentRectTransform();
 
+	void OnDraw() const;
+	//void OnDebugDraw() const;
+	bool OnEditor();
+
 public:
-	int posx;
-	int posy;
-	int sizex;
-	int sizey;
+	float pos[2] = {400, 400};
+	float sizex;
+	float sizey;
 
 	bool draggable;
 	bool invisible;

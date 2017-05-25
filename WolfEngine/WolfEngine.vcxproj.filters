@@ -186,7 +186,12 @@
     <ClCompile Include="ComponentImage.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="FreeType.cpp" />
+    <ClCompile Include="FreeType.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentText.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -366,13 +371,12 @@
     <ClInclude Include="ComponentImage.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="FreeType.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Bass.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="FreeType.h">
+	<ClInclude Include="Bass.h">
+      <Filter>UI</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="WolfEngine.rc" />
+    <ClInclude Include="ComponentText.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

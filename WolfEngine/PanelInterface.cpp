@@ -45,9 +45,9 @@ void PanelInterface::Draw()
 		go->SetActive(active);
 		ImGui::SameLine();
 
-		char buf[1024];
+		static char buf[64] = "";
 		strcpy(buf, go->name.c_str());
-        ImGui::InputText("", buf, IM_ARRAYSIZE(buf));
+        ImGui::InputText(" ", buf, IM_ARRAYSIZE(buf)); //WARNING: Don't delete space
 
 		go->name = buf;
 
