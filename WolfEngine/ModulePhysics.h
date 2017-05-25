@@ -20,6 +20,7 @@ class btRigidBody;
 class ComponentRigidBody;
 class btCollisionShape;
 class Collider;
+class btTriangleMesh;
 
 class ModulePhysics : public Module
 {
@@ -39,12 +40,14 @@ public:
 	btRigidBody* AddRigidBody(ComponentRigidBody* component, const float3& scaling = float3::one);
 	void DeleteRigidBody(btRigidBody* rigid_body, btCollisionShape* collision_shape = nullptr);
 
+	btCollisionShape* GetCollisionShape(btRigidBody* rigid_body);
+	const float3& GetCollisionShapeScale(btCollisionShape* collision_shape) const;
+
+private:
 	btCollisionShape* CreateCollisionShape(Collider* collider);
 	void DeleteCollisionShape(btCollisionShape* collision_shape);
-	btCollisionShape* GetCollisionShape(btRigidBody* rigid_body);
 
-	void SetCollisionShapeScale(btCollisionShape* collision_shape, const float3& scaling = float3::one);
-	const float3& GetCollisionShapeScale(btCollisionShape* collision_shape) const;
+	btTriangleMesh* CreateTriangleMesh(Collider* collider);
 
 private:
 	btDefaultCollisionConfiguration* collision_conf = nullptr;
@@ -57,6 +60,7 @@ private:
 	btVector3 gravity = btVector3(0.0f, -9.8f, 0.0f);
 
 	std::list<btCollisionShape*> shapes;
+	std::list<btTriangleMesh*> triangle_meshes;
 };
 
 class PhysicsDebugDrawer : public btIDebugDraw

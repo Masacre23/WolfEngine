@@ -1,4 +1,5 @@
 #include "PanelConsole.h"
+#include "Application.h"
 
 PanelConsole::PanelConsole(bool active) : Panel("Console", active)
 {
@@ -11,6 +12,8 @@ PanelConsole::~PanelConsole()
 
 void PanelConsole::Draw()
 {
+	BROFILER_CATEGORY("PanelConsole-Draw", Profiler::Color::Azure);
+
 	ImGui::Begin("Console", &active, ImGuiWindowFlags_ShowBorders);
 	ImGui::TextUnformatted(Buf.begin());
 	if (ScrollToBottom)

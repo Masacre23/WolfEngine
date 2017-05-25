@@ -140,6 +140,8 @@ void ModuleEditor::HandleInput(SDL_Event* event)
 
 void ModuleEditor::Draw() const
 {
+	BROFILER_CATEGORY("ModuleEditor-Draw", Profiler::Color::GreenYellow);
+
 	ImGui::Render();
 }
 

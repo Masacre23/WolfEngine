@@ -15,6 +15,8 @@ PanelHierachy::~PanelHierachy()
 
 GameObject* PanelHierachy::DrawInterfaceHierachy()
 {
+	BROFILER_CATEGORY("PanelHierarchy-Draw", Profiler::Color::Azure);
+
 	bool b = true;
 	static GameObject* ret = nullptr;
 	id = 0;

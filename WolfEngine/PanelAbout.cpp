@@ -13,6 +13,8 @@ PanelAbout::~PanelAbout()
 
 void PanelAbout::Draw()
 {
+	BROFILER_CATEGORY("PanelAbout-Draw", Profiler::Color::Azure);
+
 	ImGui::Begin("About", &active, ImGuiWindowFlags_ShowBorders);
 	ImGui::Text("Engine name: ");
 	ImGui::SameLine();

@@ -39,6 +39,9 @@ public:
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
 
+	void SetSelectedGameObject(GameObject* selected) { selected_gameobject = selected; }
+	GameObject* GetSelectedGameObject() const { return selected_gameobject; }
+
 	void InsertGameObjectQuadTree(GameObject * game_object);
 	void OnPlay();
 	void OnStop();
@@ -55,6 +58,8 @@ private:
 	GameObject* root = nullptr;
 	GameObject* camera = nullptr;
 	MyQuadTree* quadtree = nullptr;
+
+	GameObject* selected_gameobject = nullptr;
 };
 
 #endif // !MODULELEVEL_H

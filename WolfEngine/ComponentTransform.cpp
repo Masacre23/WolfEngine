@@ -63,7 +63,7 @@ void ComponentTransform::SetLocalTransform(const float3& position, const float3&
 	this->position = position;
 	this->scale = scale;
 	this->rotation = rotation;
-	rotation_euler = rotation.ToEulerXYZ().Abs();
+	rotation_euler = rotation.ToEulerXYZ();
 
 	RecalculateLocalTransform();
 }
@@ -72,7 +72,7 @@ void ComponentTransform::SetLocalTransform(const float3& position, const Quat& r
 {
 	this->position = position;
 	this->rotation = rotation;
-	rotation_euler = rotation.ToEulerXYZ().Abs();
+	rotation_euler = rotation.ToEulerXYZ();
 
 	RecalculateLocalTransform();
 }

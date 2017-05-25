@@ -53,7 +53,9 @@ public:
 	void SetUseNormals(bool material_on) { use_normals = has_normals && material_on; }
 
 	unsigned GetNumVertices() const { return num_vertices; }
+	unsigned GetNumIndices() const { return num_indices; }
 	const float3* GetVertices() const { return vertices; }
+	const unsigned* GetIndices() const { return indices; }
 
 private:
 	void SetAABB() const;

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModulePhysics.h"
+#include "ModuleTimeController.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
 #include "ComponentRigidBody.h"
@@ -41,11 +42,21 @@ bool ComponentRigidBody::OnEditor()
 			current_selected = collider->GetType();
 
 		int new_selected = current_selected;
-		const char* collider_names[] = { "Box", "Sphere", "Capsule" };
+		const char* collider_names[] = { "Box", "Sphere", "Capsule", "Mesh" };
 		if (ImGui::Button("Collider.."))
 			ImGui::OpenPopup("Collider Type");
 		ImGui::SameLine();
 		ImGui::Text(current_selected == -1 ? "<None>" : collider_names[current_selected]);
+		if (collider != nullptr)
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Delete"))
+			{
+				if (!App->time_controller->IsStopped())
+					this->OnStop();
+				RELEASE(collider);
+			}
+		}
 
 		if (ImGui::BeginPopup("Collider Type"))
 		{
@@ -65,8 +76,6 @@ bool ComponentRigidBody::OnEditor()
 
 		if (collider != nullptr)
 			collider->OnEditor();
-		else
-			ImGui::TextWrapped("No collider found");
 	}
 
 	return true;
@@ -74,9 +83,13 @@ bool ComponentRigidBody::OnEditor()
 
 void ComponentRigidBody::OnPlay()
 {
-	rigid_body = App->physics->AddRigidBody(this, parent->transform->GetScale());
 	if (collider != nullptr)
+	{
+		rigid_body = App->physics->AddRigidBody(this, parent->transform->GetScale());
 		collider->SetCollisionShape(App->physics->GetCollisionShape(rigid_body));
+	}
+	else
+		APPLOG("Warning: Rigidbody on GameObject %s does not have a collider", parent->name);
 }
 
 void ComponentRigidBody::OnStop()
@@ -114,10 +127,12 @@ void ComponentRigidBody::LoadCollider(Collider::Type collider_type)
 	collider = CreateCollider(collider_type);
 }
 
-void ComponentRigidBody::LoadCollider(Collider::Type collider_type, float3* vertices, unsigned num_vertices)
+void ComponentRigidBody::LoadCollider(Collider::Type collider_type, std::vector<ComponentMesh*>& meshes)
 {
 	LoadCollider(collider_type);
-	collider->SetOnVertices(vertices, num_vertices);
+	collider->SetMeshes(meshes);
+	if (collider_type != Collider::Type::MESH)
+		collider->SetShapeOnMeshes();
 }
 
 void ComponentRigidBody::getWorldTransform(btTransform& worldTrans) const
@@ -155,7 +170,7 @@ void ComponentRigidBody::setWorldTransform(const btTransform& worldTrans)
 
 Collider* ComponentRigidBody::CreateCollider(Collider::Type type)
 {
-	static_assert(Collider::Type::UNKNOWN == 3, "Update collider factory code");
+	static_assert(Collider::Type::UNKNOWN == 4, "Update collider factory code");
 
 	Collider* ret = nullptr;
 
@@ -169,6 +184,9 @@ Collider* ComponentRigidBody::CreateCollider(Collider::Type type)
 		break;
 	case Collider::CAPSULE:
 		ret = new ColliderCapsule(this);
+		break;
+	case Collider::MESH:
+		ret = new ColliderMesh(this);
 		break;
 	default:
 		break;

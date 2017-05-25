@@ -24,6 +24,8 @@ PanelConfiguration::~PanelConfiguration()
 
 void PanelConfiguration::Draw()
 {
+	BROFILER_CATEGORY("PanelConfiguration-Draw", Profiler::Color::Azure);
+
 	ImGui::Begin("Configuration", &active, ImGuiWindowFlags_ShowBorders);
 	ImGui::Text("Options");
 

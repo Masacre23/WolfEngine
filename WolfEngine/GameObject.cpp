@@ -576,31 +576,11 @@ void GameObject::LoadCollider(Collider::Type collider_type)
 	CollectMeshesOnChilds(meshes);
 
 	if (meshes.size() > 0)
-	{
-		unsigned numvert_total = 0;
-		for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
-			numvert_total += (*it)->GetNumVertices();
-
-		float3* vert_total = new float3[numvert_total];
-		unsigned offset = 0;
-		for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
-		{
-			unsigned num_vertices = (*it)->GetNumVertices();
-			float3* vertex_pointer = &(vert_total[offset]);
-			memcpy(vertex_pointer, (*it)->GetVertices(), num_vertices * sizeof(float3));
-			offset += num_vertices;
-		}
-
-		rigid_body->LoadCollider(collider_type, vert_total, numvert_total);
-
-		RELEASE_ARRAY(vert_total);
-		meshes.clear();
-	}
+		rigid_body->LoadCollider(collider_type, meshes);
 	else
-	{
 		rigid_body->LoadCollider(collider_type);
-	}
-	
+
+	meshes.clear();
 }
 
 void GameObject::CollectMeshesOnChilds(std::vector<ComponentMesh*>& meshes)
@@ -652,6 +632,8 @@ void GameObject::RecursiveUpdateBoundingBox(bool force_recalculation)
 
 void GameObject::RecursiveOnPlay()
 {
+	BROFILER_CATEGORY("GameObject-OnPlay", Profiler::Color::Azure);
+
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		(*it)->SaveComponent();
 
@@ -665,6 +647,8 @@ void GameObject::RecursiveOnPlay()
 
 void GameObject::RecursiveOnStop()
 {
+	BROFILER_CATEGORY("GameObject-OnStop", Profiler::Color::Azure);
+
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		(*it)->OnStop();
 

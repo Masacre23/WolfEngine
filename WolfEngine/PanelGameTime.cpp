@@ -12,7 +12,11 @@ PanelGameTime::~PanelGameTime()
 
 void PanelGameTime::Draw()
 {
-	ImGui::Begin("", new bool(true), ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize);
+	BROFILER_CATEGORY("PanelGameTime-Draw", Profiler::Color::Azure);
+	
+	bool active = true;
+	ImGui::Begin("", &active, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize);
+
 	if (App->time_controller->IsStopped())
 	{
 		if (ImGui::Button("Play"))

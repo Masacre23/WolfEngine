@@ -1,6 +1,12 @@
+#include "Application.h"
 #include "ModulePhysics.h"
+#include "ModuleLevel.h"
+#include "GameObject.h"
 #include "ComponentRigidBody.h"
+#include "ComponentMesh.h"
+#include "Collider.h"
 #include "Math.h"
+#include "Color.h"
 #include "Bullet/include/btBulletDynamicsCommon.h"
 
 #ifdef _DEBUG
@@ -40,6 +46,9 @@ bool ModulePhysics::Init()
 bool ModulePhysics::Start()
 {
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_conf);
+
+	debug_drawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+
 	world->setDebugDrawer(debug_drawer);
 	world->setGravity(gravity);
 
@@ -53,6 +62,10 @@ bool ModulePhysics::CleanUp()
 	for (std::list<btCollisionShape*>::iterator it = shapes.begin(); it != shapes.end(); ++it)
 		RELEASE(*it);
 	shapes.clear();
+
+	for (std::list<btTriangleMesh*>::iterator it = triangle_meshes.begin(); it != triangle_meshes.end(); ++it)
+		RELEASE(*it);
+	triangle_meshes.clear();
 
 	RELEASE(world);	
 
@@ -91,7 +104,7 @@ btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component, const fl
 		mass = component->GetMass();
 
 	btCollisionShape* collision_shape = CreateCollisionShape(component->GetCollider());
-	SetCollisionShapeScale(collision_shape, scaling);
+	collision_shape->setLocalScaling(scaling);
 	shapes.push_back(collision_shape);
 	
 	btVector3 local_inertia(0.0f, 0.0f, 0.0f);
@@ -101,6 +114,8 @@ btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component, const fl
 	btRigidBody::btRigidBodyConstructionInfo rigidbody_info(mass, component, collision_shape, local_inertia);
 	ret = new btRigidBody(rigidbody_info);
 	world->addRigidBody(ret);
+
+	collision_shape->getShapeType();
 
 	return ret;
 }
@@ -119,7 +134,7 @@ void ModulePhysics::DeleteRigidBody(btRigidBody* rigid_body, btCollisionShape* c
 
 btCollisionShape* ModulePhysics::CreateCollisionShape(Collider* collider)
 {
-	static_assert(Collider::Type::UNKNOWN == 3, "Update collision shape factory code");
+	static_assert(Collider::Type::UNKNOWN == 4, "Update collision shape factory code");
 
 	btCollisionShape* ret = nullptr;
 
@@ -133,6 +148,10 @@ btCollisionShape* ModulePhysics::CreateCollisionShape(Collider* collider)
 		break;
 	case Collider::Type::CAPSULE:
 		ret = new btCapsuleShape(((ColliderCapsule*)collider)->GetCapsule().r, ((ColliderCapsule*)collider)->GetCapsule().LineLength());
+		break;
+	case Collider::Type::MESH:
+		btTriangleMesh* tri_mesh = CreateTriangleMesh(collider);
+		ret = new btBvhTriangleMeshShape(tri_mesh, false);
 		break;
 	}
 
@@ -152,6 +171,42 @@ void ModulePhysics::DeleteCollisionShape(btCollisionShape* collision_shape)
 	}
 }
 
+btTriangleMesh* ModulePhysics::CreateTriangleMesh(Collider* collider)
+{
+	btTriangleMesh* ret = new btTriangleMesh();
+
+	std::vector<ComponentMesh*> meshes = collider->GetMeshes();
+	if (meshes.size() > 0)
+	{
+		for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+		{
+			unsigned num_vertices = (*it)->GetNumVertices();
+			unsigned num_indices = (*it)->GetNumIndices();
+			unsigned num_triangles = num_indices / 3;
+
+			const float3* vertex = (*it)->GetVertices();
+			const unsigned* indices = (*it)->GetIndices();
+
+			for (int i = 0; i < num_triangles; i++)
+			{
+				int row0 = indices[3 * i];
+				if (row0 > num_vertices)
+					APPLOG("ERRORRRR");
+				int row1 = indices[3 * i + 1];
+				if (row1 > num_vertices)
+					APPLOG("ERRORRRR");
+				int row2 = indices[3 * i + 2];
+				if (row2 > num_vertices)
+					APPLOG("ERRORRRR");
+				ret->addTriangle(vertex[row0], vertex[row1], vertex[row2]);
+			}
+		}
+		triangle_meshes.push_back(ret);
+	}
+
+	return ret;
+}
+
 btCollisionShape* ModulePhysics::GetCollisionShape(btRigidBody* rigid_body)
 {
 	btCollisionShape* ret;
@@ -160,14 +215,6 @@ btCollisionShape* ModulePhysics::GetCollisionShape(btRigidBody* rigid_body)
 		ret = rigid_body->getCollisionShape();
 
 	return ret;
-}
-
-void ModulePhysics::SetCollisionShapeScale(btCollisionShape* collision_shape, const float3& scaling)
-{
-	if (collision_shape != nullptr)
-	{
-		collision_shape->setLocalScaling(scaling);
-	}
 }
 
 const float3& ModulePhysics::GetCollisionShapeScale(btCollisionShape* collision_shape) const
@@ -180,5 +227,34 @@ const float3& ModulePhysics::GetCollisionShapeScale(btCollisionShape* collision_
 
 void ModulePhysics::DrawDebug() const
 {
-	world->debugDrawWorld();
+	BROFILER_CATEGORY("ModulePhysics-DebugDraw", Profiler::Color::GreenYellow);
+
+	//With a lot of meshes as shapes, the world debug takes forever (~200 ms)
+	//Maybe can be improved by overriding some debugDrawWorld functions
+	//In the end, is better to just debugDraw the selected item
+
+	//world->debugDrawWorld();
+
+	//Maybe better to only show shapes on the selected element
+
+	GameObject* selected = App->level->GetSelectedGameObject();
+	if (selected != nullptr)
+	{
+		ComponentRigidBody* rigid_body = (ComponentRigidBody*)selected->GetComponent(Component::Type::RIGIDBODY);
+		if (rigid_body != nullptr)
+		{
+			Collider* collider = rigid_body->GetCollider();
+			if (collider != nullptr)
+			{
+				btCollisionShape* shape = collider->GetCollisionShape();
+				if (shape != nullptr)
+				{
+					btTransform world_transform;
+					rigid_body->getWorldTransform(world_transform);
+					world->debugDrawObject(world_transform, shape, btVector3(0.0f, 1.0f, 0.0f));
+				}
+			}
+		}
+	}
+	
 }

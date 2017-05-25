@@ -31,7 +31,7 @@ public:
 	void LoadRigidBody(Collider::Type collider_type, float mass = 0.0f, MotionType motion_type = MotionType::STATIC);
 	void LoadRigidBody(float mass = 0.0f, MotionType motion_type = MotionType::STATIC);
 	void LoadCollider(Collider::Type collider_type);
-	void LoadCollider(Collider::Type collider_type, float3* vertices, unsigned num_vertices);
+	void LoadCollider(Collider::Type collider_type, std::vector<ComponentMesh*>& meshes);
 
 	Collider* GetCollider() const { return collider; }
 	MotionType GetMotionType() const { return motion_type; }

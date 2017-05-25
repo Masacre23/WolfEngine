@@ -2,8 +2,10 @@
 #define COLLIDER_H
 
 #include "Math.h"
+#include <vector>
 
 class ComponentRigidBody;
+class ComponentMesh;
 class btCollisionShape;
 
 class Collider
@@ -14,6 +16,7 @@ public:
 		BOX = 0,
 		SPHERE,
 		CAPSULE,
+		MESH,
 		UNKNOWN
 	};
 
@@ -24,25 +27,32 @@ public:
 	virtual void OnEditor() {}
 	virtual void OnDebugDraw() {}
 
-	virtual void SetOnVertices(float3* vertices, unsigned num_vertices) {}
 	virtual const float3& GetPosition() const { return float3::zero; }
+
+	void SetShapeOnMeshes();
+	void SetMeshes(std::vector<ComponentMesh*>& meshes);
 
 	void SetCollisionShape(btCollisionShape* collision_shape) { this->collision_shape = collision_shape; }
 	btCollisionShape* GetCollisionShape() const { return collision_shape; }
 	void UnsetCollisionShape() { collision_shape = nullptr; }
 
 	Type GetType() { return type; }
+	const std::vector<ComponentMesh*>& GetMeshes() const { return meshes; }
 
 	const float4x4& GetLocalTransform() const { return transform; }
 
 protected:
 	void RecalculateLocalTransform(const float3& position = float3::zero);
 
+private:
+	virtual void SetOnVertices(float3* vertices, unsigned num_vertices) {}
+
 protected:
 	ComponentRigidBody* parent;
 	float4x4 transform = float4x4::identity;
 	Type type;
 	btCollisionShape* collision_shape = nullptr;
+	std::vector<ComponentMesh*> meshes;
 };
 
 class ColliderBox : public Collider
@@ -92,6 +102,17 @@ public:
 private:
 	Capsule capsule;
 	float total_height = 0.0f;
+};
+
+class ColliderMesh : public Collider
+{
+public:
+	ColliderMesh(ComponentRigidBody* parent);
+
+	void OnEditor();
+
+private:
+
 };
 
 #endif // !COLLIDER_H

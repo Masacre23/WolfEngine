@@ -24,6 +24,8 @@ PanelMenuBar::~PanelMenuBar()
 
 void PanelMenuBar::Draw()
 {
+	BROFILER_CATEGORY("PanelMenuBar-Draw", Profiler::Color::Azure);
+
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
 	{

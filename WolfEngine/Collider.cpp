@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ComponentRigidBody.h"
+#include "ComponentMesh.h"
 #include "Collider.h"
 #include "Color.h"
 #include "Interface.h"
@@ -13,6 +14,32 @@ Collider::Collider(Type type, ComponentRigidBody* parent) : type(type), parent(p
 
 Collider::~Collider()
 {
+}
+
+void Collider::SetShapeOnMeshes()
+{
+	unsigned numvert_total = 0;
+	for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+		numvert_total += (*it)->GetNumVertices();
+
+	float3* vert_total = new float3[numvert_total];
+	unsigned offset = 0;
+	for (std::vector<ComponentMesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+	{
+		unsigned num_vertices = (*it)->GetNumVertices();
+		float3* vertex_pointer = &(vert_total[offset]);
+		memcpy(vertex_pointer, (*it)->GetVertices(), num_vertices * sizeof(float3));
+		offset += num_vertices;
+	}
+
+	SetOnVertices(vert_total, numvert_total);
+
+	RELEASE_ARRAY(vert_total);
+}
+
+void Collider::SetMeshes(std::vector<ComponentMesh*>& meshes)
+{
+	this->meshes = meshes;
 }
 
 void Collider::RecalculateLocalTransform(const float3& position)
@@ -87,11 +114,16 @@ void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices)
 	aabb.SetNegativeInfinity();
 	aabb.Enclose(vertices, num_vertices);
 
-	LineSegment line;
+	/*LineSegment line;
 	line.a = aabb.maxPoint;
 	line.b = aabb.minPoint;
 	sphere.pos = aabb.CenterPoint();
-	sphere.r = line.Length() / 2.0f;
+	sphere.r = line.Length() / 2.0f;*/
+
+	sphere.pos = aabb.CenterPoint();
+	sphere.r = 0.0f;
+	for (unsigned i = 0; i < num_vertices; i++)
+		sphere.ExtendRadiusToContain(vertices[i]);
 
 	RecalculateLocalTransform(sphere.pos);
 }
@@ -165,4 +197,13 @@ void ColliderCapsule::SetOnVertices(float3* vertices, unsigned num_vertices)
 	total_height = capsule.Height();
 
 	RecalculateLocalTransform(capsule.l.CenterPoint());
+}
+
+ColliderMesh::ColliderMesh(ComponentRigidBody* parent) : Collider(Type::MESH, parent)
+{
+}
+
+void ColliderMesh::OnEditor()
+{
+
 }
