@@ -82,9 +82,13 @@ bool ModuleSceneIni::Start()
 	//rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
 	//rain->CreateComponent(Component::Type::PARTICLE);
 
-	image = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Text");
+	image = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Image");
 	image->CreateComponent(Component::Type::RECT_TRANSFORM);
-	image->CreateComponent(Component::Type::TEXT);
+	image->CreateComponent(Component::Type::IMAGE);
+
+	text = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Text");
+	text->CreateComponent(Component::Type::RECT_TRANSFORM);
+	text->CreateComponent(Component::Type::TEXT);
 
 	App->program_shaders->Load("Prueba", "Resources/Shaders/vertex_shader.txt", "Resources/Shaders/fragment_shader.txt");
 

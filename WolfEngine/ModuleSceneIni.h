@@ -26,6 +26,7 @@ private:
 	GameObject* grass = nullptr;
 	GameObject* rain = nullptr;
 	GameObject* image = nullptr;
+	GameObject* text = nullptr;
 };
 
 #endif
