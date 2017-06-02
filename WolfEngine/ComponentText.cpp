@@ -9,6 +9,7 @@ freetype::font_data font;
 ComponentText::ComponentText(GameObject* parent) : Component(Component::Type::TEXT, parent)
 {
 	font.init("Test.ttf", size);
+	rect_transform = (ComponentRectTransform*)parent->GetComponent(Component::Type::RECT_TRANSFORM);
 }
 
 ComponentText::~ComponentText()
@@ -21,8 +22,7 @@ void ComponentText::OnDraw() const
 
 	glPushMatrix();
 	glLoadIdentity();
-	ComponentRectTransform* rt = (ComponentRectTransform*)parent->GetComponent(Component::Type::RECT_TRANSFORM);
-	freetype::print(font, rt->pos[0], rt->pos[1], text);
+	freetype::print(font, rect_transform->pos[0], rect_transform->pos[1], text);
 	glPopMatrix();
 }
 

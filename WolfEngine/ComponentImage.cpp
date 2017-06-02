@@ -4,10 +4,13 @@
 #include "FreeType.h"
 #include "Application.h"
 #include "ModuleTextures.h"
+#include "ComponentRectTransform.h"
+#include "GameObject.h"
 
 ComponentImage::ComponentImage(GameObject* parent) : Component(Component::Type::IMAGE, parent)
 {
 	texture = App->textures->LoadTexture(aiString(path));
+	rect_transform = (ComponentRectTransform*)parent->GetComponent(Component::Type::RECT_TRANSFORM);
 }
 
 ComponentImage::~ComponentImage()
@@ -40,22 +43,29 @@ void ComponentImage::OnDraw() const
 	//glClear(GL_COLOR_BUFFER_BIT);
 	glPushMatrix();
 	glLoadIdentity();
+	glTranslatef(rect_transform->pos[0], rect_transform->pos[1], 0);
 	glBindTexture(GL_TEXTURE_2D, App->textures->texture_debug);
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	glTexCoord2i(0, 0);
 	glVertex2i(0, 0);
 	glTexCoord2i(1, 0);
-	glVertex2i(100, 0);
+	glVertex2i(rect_transform->size[0], 0);
 	glTexCoord2i(1, 1);
-	glVertex2i(100, 100);
+	glVertex2i(rect_transform->size[0], rect_transform->size[1]);
 	glTexCoord2i(0, 1);
-	glVertex2i(0, 100);
+	glVertex2i(0, rect_transform->size[1]);
 	glEnd();
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glFlush();
+
+	/*glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(400, 400, 0);
+	glMultMatrixf(modelview_matrix);
+	glPopMatrix();*/
 
 	glPopAttrib();
 

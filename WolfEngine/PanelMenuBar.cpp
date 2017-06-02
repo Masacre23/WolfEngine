@@ -8,6 +8,7 @@
 #include "PanelAbout.h"
 #include "PanelConfiguration.h"
 #include "Globals.h"
+#include "ModuleLevel.h"
 
 PanelMenuBar::PanelMenuBar(bool active) : Panel("Menu", active)
 {
@@ -69,10 +70,17 @@ void PanelMenuBar::Draw()
 		if (ImGui::MenuItem("Quit", "Alt+F4")) {}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Configuration"))
+	if (ImGui::BeginMenu("Edit"))
 	{
 		if (ImGui::MenuItem("Options", "1", &(config->active)))
 			!config->active;
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("GameObject"))
+	{
+		if (ImGui::MenuItem("Create Empty"))
+			App->level->CreateGameObject("GameObject", App->level->GetRoot(), App->level->GetRoot());
 		ImGui::EndMenu();
 	}
 

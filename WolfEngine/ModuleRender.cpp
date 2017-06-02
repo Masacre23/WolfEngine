@@ -168,7 +168,7 @@ update_status ModuleRender::PostUpdate(float dt)
 		debug_drawer->PostDebugDraw();
 	}
 
-	//App->editor->Draw();
+	App->editor->Draw();
 
 	SDL_GL_SwapWindow(App->window->GetWindow());
 

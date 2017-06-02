@@ -20,6 +20,8 @@ bool ComponentRectTransform::OnEditor()
 	if (node_open)
 	{
 		ImGui::DragFloat2("Position", pos);
+
+		ImGui::DragFloat2("Size", size);
 	}
 
 	return ImGui::IsItemClicked();

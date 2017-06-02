@@ -15,8 +15,7 @@ public:
 
 public:
 	float pos[2] = {400, 400};
-	float sizex;
-	float sizey;
+	float size[2] = {100, 100};
 
 	bool draggable;
 	bool invisible;

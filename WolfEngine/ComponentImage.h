@@ -3,6 +3,8 @@
 #include "Component.h"
 #include "OpenGL.h"
 
+class ComponentRectTransform;
+
 class ComponentImage : public Component
 {
 public:
@@ -15,6 +17,7 @@ public:
 public:
 	char* path = "Resources/Lenna.png";
 	GLuint texture;
+	ComponentRectTransform* rect_transform = nullptr;
 };
 
 #endif
