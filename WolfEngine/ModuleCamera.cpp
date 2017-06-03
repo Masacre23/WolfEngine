@@ -67,8 +67,8 @@ update_status ModuleCamera::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) movement -= direction_right;
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
 		movement += direction_right;
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) movement += direction_up;
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) movement -= direction_up;
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) movement -= direction_up;
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) movement += direction_up;
 	
 	movement += direction_forward * App->input->mouse_wheel.y * SPEED_ZOOM;
 	float3 translation = movement * SPEED_TRANSLATION * (shift_pressed ? 2 : 1) * real_dt;

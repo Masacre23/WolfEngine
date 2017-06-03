@@ -9,6 +9,8 @@
 #include "PanelConfiguration.h"
 #include "Globals.h"
 #include "ModuleLevel.h"
+#include "Primitive.h"
+#include "GameObject.h"
 
 PanelMenuBar::PanelMenuBar(bool active) : Panel("Menu", active)
 {
@@ -80,7 +82,33 @@ void PanelMenuBar::Draw()
 	if (ImGui::BeginMenu("GameObject"))
 	{
 		if (ImGui::MenuItem("Create Empty"))
-			App->level->CreateGameObject("GameObject", App->level->GetRoot(), App->level->GetRoot());
+			App->level->CreateGameObject("GameObject");
+		if (ImGui::BeginMenu("3D Object"))
+		{
+			if (ImGui::MenuItem("Cube"))
+				App->level->CreateGameObject("Resources/Default.png", PrimitiveCube(float3::one, float3(0.0f, 0.0f, 0.0f)), "Cube");
+			if (ImGui::MenuItem("Sphere"))
+				App->level->CreateGameObject("Resources/Default.png", PrimitiveSphere(1.0f, float3(0.0f, 0.0f, 0.0f)), "Sphere");
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("UI"))
+		{
+			if (ImGui::MenuItem("Text"))
+			{
+				GameObject* go = App->level->CreateGameObject("Text");
+				go->CreateComponent(Component::Type::RECT_TRANSFORM);
+				go->CreateComponent(Component::Type::TEXT);
+			}
+
+			if (ImGui::MenuItem("Image"))
+			{
+				GameObject* go = App->level->CreateGameObject("Image");
+				go->CreateComponent(Component::Type::RECT_TRANSFORM);
+				go->CreateComponent(Component::Type::IMAGE);
+			}
+			ImGui::EndMenu();
+		}
 		ImGui::EndMenu();
 	}
 
