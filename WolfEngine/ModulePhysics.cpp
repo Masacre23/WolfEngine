@@ -74,7 +74,7 @@ bool ModulePhysics::CleanUp()
 
 void ModulePhysics::OnPlay()
 {
-	debug_drawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	debug_drawer->setDebugMode(debug_draw_mode);
 }
 
 void ModulePhysics::OnStop()
@@ -248,33 +248,8 @@ void ModulePhysics::DrawDebug() const
 
 	//With a lot of meshes as shapes, the world debug takes forever (~200 ms)
 	//Maybe can be improved by overriding some debugDrawWorld functions
-	//In the end, is better to just debugDraw the selected item
+	//But its better to not use any debbuging options (btIDebugDraw::DBG_NoDebug) by default
 
-	//world->debugDrawWorld();
-
-	//Maybe better to only show shapes on the selected element
-
-	if (debug_drawer->getDebugMode() != btIDebugDraw::DBG_NoDebug)
-	{
-		GameObject* selected = App->level->GetSelectedGameObject();
-		if (selected != nullptr)
-		{
-			ComponentRigidBody* rigid_body = (ComponentRigidBody*)selected->GetComponent(Component::Type::RIGIDBODY);
-			if (rigid_body != nullptr)
-			{
-				Collider* collider = rigid_body->GetCollider();
-				if (collider != nullptr)
-				{
-					btCollisionShape* shape = collider->GetCollisionShape();
-					if (shape != nullptr)
-					{
-						btTransform world_transform;
-						rigid_body->getWorldTransform(world_transform);
-						world->debugDrawObject(world_transform, shape, btVector3(0.0f, 1.0f, 0.0f));
-					}
-				}
-			}
-		}
-	}
+	world->debugDrawWorld();
 	
 }

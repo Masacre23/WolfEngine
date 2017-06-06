@@ -59,7 +59,9 @@ private:
 	btBroadphaseInterface* broad_phase = nullptr;
 	btSequentialImpulseConstraintSolver* solver = nullptr;
 	btDiscreteDynamicsWorld* world = nullptr;
+
 	PhysicsDebugDrawer* debug_drawer = nullptr;
+	btIDebugDraw::DebugDrawModes debug_draw_mode = btIDebugDraw::DBG_NoDebug;
 
 	btVector3 gravity = btVector3(0.0f, -9.8f, 0.0f);
 

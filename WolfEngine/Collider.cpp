@@ -71,8 +71,7 @@ void ColliderBox::OnEditor()
 
 void ColliderBox::OnDebugDraw()
 {
-	if (App->time_controller->IsStopped())
-		App->renderer->debug_drawer->DrawBox(box, Colors::Green, transform);
+	App->renderer->debug_drawer->DrawBox(box, Colors::Green, transform);
 }
 
 void ColliderBox::SetOnVertices(float3* vertices, unsigned num_vertices)
@@ -104,8 +103,7 @@ void ColliderSphere::OnEditor()
 
 void ColliderSphere::OnDebugDraw()
 {
-	if (App->time_controller->IsStopped())
-		App->renderer->debug_drawer->DrawSphere(sphere, Colors::Green, transform);
+	App->renderer->debug_drawer->DrawSphere(sphere, Colors::Green, transform);
 }	
 
 void ColliderSphere::SetOnVertices(float3* vertices, unsigned num_vertices)
@@ -175,8 +173,7 @@ void ColliderCapsule::OnEditor()
 
 void ColliderCapsule::OnDebugDraw()
 {
-	if (App->time_controller->IsStopped())
-		App->renderer->debug_drawer->DrawCapsule(capsule, Colors::Green, transform);
+	App->renderer->debug_drawer->DrawCapsule(capsule, Colors::Green, transform);
 }
 
 void ColliderCapsule::SetOnVertices(float3* vertices, unsigned num_vertices)

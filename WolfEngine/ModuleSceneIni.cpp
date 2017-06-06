@@ -38,11 +38,7 @@ bool ModuleSceneIni::Start()
 	App->level->AddCamera();
 
 	GameObject* city = App->level->ImportScene("Resources/Models/street/", "Street.obj");
-	if (city != nullptr)
-	{
-		for (std::vector<GameObject*>::iterator it = city->childs.begin(); it != city->childs.end(); ++it)
-			(*it)->LoadRigidBody(Collider::Type::MESH, ComponentRigidBody::MotionType::STATIC);
-	}
+	city->LoadRigidBody(Collider::Type::MESH, ComponentRigidBody::MotionType::STATIC);
 
 	App->animations->Load("ArmyPilot_Idle", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 	App->animations->Load("ArmyPilot_Run_Forwards", "Resources/Models/ArmyPilot/Animations/ArmyPilot_Run_Forwards.fbx");
