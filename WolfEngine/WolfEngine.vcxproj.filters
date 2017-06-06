@@ -192,11 +192,11 @@
     <ClCompile Include="ComponentText.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentCanvas.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="ComponentAudioSource.cpp">
       <Filter>Game Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentCanvas.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
