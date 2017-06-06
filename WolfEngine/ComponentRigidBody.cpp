@@ -95,12 +95,24 @@ void ComponentRigidBody::OnPlay()
 void ComponentRigidBody::OnStop()
 {
 	btCollisionShape* collision_shape = nullptr;
+	Collider::Type collider_type = Collider::Type::UNKNOWN;
+
 	if (collider != nullptr)
+	{
 		collision_shape = collider->GetCollisionShape();
+		collider_type = collider->GetType();
+	}
+		
 	if (rigid_body != nullptr)
-		App->physics->DeleteRigidBody(rigid_body, collision_shape);
+	{
+		if (collider_type == Collider::Type::MESH)
+			App->physics->DeleteRigidBody(rigid_body);
+		else
+			App->physics->DeleteRigidBody(rigid_body, collision_shape);
+	}
+		
 	if (collider != nullptr)
-		collider->UnsetCollisionShape();
+		collider->OnStop();
 }
 
 void ComponentRigidBody::LoadRigidBody(Collider::Type collider_type, float mass, MotionType motion_type)
@@ -131,8 +143,16 @@ void ComponentRigidBody::LoadCollider(Collider::Type collider_type, std::vector<
 {
 	LoadCollider(collider_type);
 	collider->SetMeshes(meshes);
+
+	App->physics->DeleteCollisionShape(collider);
+	collider->UnsetCollisionShape();
+
 	if (collider_type != Collider::Type::MESH)
 		collider->SetShapeOnMeshes();
+	else
+	{
+		collider->SetCollisionShape(App->physics->CreateCollisionShape(collider));
+	}
 }
 
 void ComponentRigidBody::getWorldTransform(btTransform& worldTrans) const

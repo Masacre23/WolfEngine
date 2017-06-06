@@ -35,6 +35,9 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+	void OnPlay();
+	void OnStop();
+
 	void DrawDebug() const;
 
 	btRigidBody* AddRigidBody(ComponentRigidBody* component, const float3& scaling = float3::one);
@@ -43,10 +46,11 @@ public:
 	btCollisionShape* GetCollisionShape(btRigidBody* rigid_body);
 	const float3& GetCollisionShapeScale(btCollisionShape* collision_shape) const;
 
-private:
 	btCollisionShape* CreateCollisionShape(Collider* collider);
+	void DeleteCollisionShape(Collider* collider);
 	void DeleteCollisionShape(btCollisionShape* collision_shape);
 
+private:
 	btTriangleMesh* CreateTriangleMesh(Collider* collider);
 
 private:

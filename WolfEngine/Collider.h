@@ -35,6 +35,7 @@ public:
 	void SetCollisionShape(btCollisionShape* collision_shape) { this->collision_shape = collision_shape; }
 	btCollisionShape* GetCollisionShape() const { return collision_shape; }
 	void UnsetCollisionShape() { collision_shape = nullptr; }
+	virtual void OnStop() { collision_shape = nullptr; }
 
 	Type GetType() { return type; }
 	const std::vector<ComponentMesh*>& GetMeshes() const { return meshes; }
@@ -110,6 +111,7 @@ public:
 	ColliderMesh(ComponentRigidBody* parent);
 
 	void OnEditor();
+	void OnStop() {}
 
 private:
 

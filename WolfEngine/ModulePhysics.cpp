@@ -47,8 +47,8 @@ bool ModulePhysics::Start()
 {
 	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_conf);
 
-	debug_drawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-
+	debug_drawer->setDebugMode(btIDebugDraw::DBG_NoDebug);
+	
 	world->setDebugDrawer(debug_drawer);
 	world->setGravity(gravity);
 
@@ -70,6 +70,16 @@ bool ModulePhysics::CleanUp()
 	RELEASE(world);	
 
 	return true;
+}
+
+void ModulePhysics::OnPlay()
+{
+	debug_drawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+}
+
+void ModulePhysics::OnStop()
+{
+	debug_drawer->setDebugMode(btIDebugDraw::DBG_NoDebug);
 }
 
 update_status ModulePhysics::PreUpdate(float dt)
@@ -103,9 +113,12 @@ btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component, const fl
 	if (component->GetMotionType() == ComponentRigidBody::MotionType::DYNAMIC)
 		mass = component->GetMass();
 
-	btCollisionShape* collision_shape = CreateCollisionShape(component->GetCollider());
+	btCollisionShape* collision_shape = component->GetCollider()->GetCollisionShape();
+	if (collision_shape == nullptr)
+		collision_shape = CreateCollisionShape(component->GetCollider());
+		
 	collision_shape->setLocalScaling(scaling);
-	shapes.push_back(collision_shape);
+	//shapes.push_back(collision_shape);
 	
 	btVector3 local_inertia(0.0f, 0.0f, 0.0f);
 	if (mass != 0.0f)
@@ -115,7 +128,7 @@ btRigidBody* ModulePhysics::AddRigidBody(ComponentRigidBody* component, const fl
 	ret = new btRigidBody(rigidbody_info);
 	world->addRigidBody(ret);
 
-	collision_shape->getShapeType();
+	//collision_shape->getShapeType();
 
 	return ret;
 }
@@ -155,7 +168,17 @@ btCollisionShape* ModulePhysics::CreateCollisionShape(Collider* collider)
 		break;
 	}
 
+	if (ret != nullptr)
+		shapes.push_back(ret);
+
 	return ret;
+}
+
+void ModulePhysics::DeleteCollisionShape(Collider* collider)
+{
+	btCollisionShape* collision_shape = collider->GetCollisionShape();
+	if (collision_shape != nullptr)
+		DeleteCollisionShape(collision_shape);
 }
 
 void ModulePhysics::DeleteCollisionShape(btCollisionShape* collision_shape)
@@ -190,14 +213,8 @@ btTriangleMesh* ModulePhysics::CreateTriangleMesh(Collider* collider)
 			for (int i = 0; i < num_triangles; i++)
 			{
 				int row0 = indices[3 * i];
-				if (row0 > num_vertices)
-					APPLOG("ERRORRRR");
 				int row1 = indices[3 * i + 1];
-				if (row1 > num_vertices)
-					APPLOG("ERRORRRR");
 				int row2 = indices[3 * i + 2];
-				if (row2 > num_vertices)
-					APPLOG("ERRORRRR");
 				ret->addTriangle(vertex[row0], vertex[row1], vertex[row2]);
 			}
 		}
@@ -237,21 +254,24 @@ void ModulePhysics::DrawDebug() const
 
 	//Maybe better to only show shapes on the selected element
 
-	GameObject* selected = App->level->GetSelectedGameObject();
-	if (selected != nullptr)
+	if (debug_drawer->getDebugMode() != btIDebugDraw::DBG_NoDebug)
 	{
-		ComponentRigidBody* rigid_body = (ComponentRigidBody*)selected->GetComponent(Component::Type::RIGIDBODY);
-		if (rigid_body != nullptr)
+		GameObject* selected = App->level->GetSelectedGameObject();
+		if (selected != nullptr)
 		{
-			Collider* collider = rigid_body->GetCollider();
-			if (collider != nullptr)
+			ComponentRigidBody* rigid_body = (ComponentRigidBody*)selected->GetComponent(Component::Type::RIGIDBODY);
+			if (rigid_body != nullptr)
 			{
-				btCollisionShape* shape = collider->GetCollisionShape();
-				if (shape != nullptr)
+				Collider* collider = rigid_body->GetCollider();
+				if (collider != nullptr)
 				{
-					btTransform world_transform;
-					rigid_body->getWorldTransform(world_transform);
-					world->debugDrawObject(world_transform, shape, btVector3(0.0f, 1.0f, 0.0f));
+					btCollisionShape* shape = collider->GetCollisionShape();
+					if (shape != nullptr)
+					{
+						btTransform world_transform;
+						rigid_body->getWorldTransform(world_transform);
+						world->debugDrawObject(world_transform, shape, btVector3(0.0f, 1.0f, 0.0f));
+					}
 				}
 			}
 		}
