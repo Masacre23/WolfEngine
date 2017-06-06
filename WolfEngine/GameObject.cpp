@@ -10,6 +10,7 @@
 #include "ComponentRectTransform.h"
 #include "ComponentImage.h"
 #include "ComponentText.h"
+#include "ComponentCanvas.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
@@ -128,6 +129,13 @@ void GameObject::Draw() const
 		{
 			if (text->IsActive())
 				text->OnDraw();
+		}
+
+		ComponentCanvas* canvas = (ComponentCanvas*)GetComponent(Component::Type::CANVAS);
+		if (canvas != nullptr)
+		{
+			if (canvas->IsActive())
+				canvas->OnDraw();
 		}
 
 		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
@@ -278,7 +286,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 11, "Update component factory code");
+	static_assert(Component::Type::UNKNOWN == 12, "Update component factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -358,6 +366,9 @@ Component* GameObject::CreateComponent(Component::Type type)
 		break;
 	case Component::TEXT:
 		ret = new ComponentText(this);
+		break;
+	case Component::CANVAS:
+		ret = new ComponentCanvas(this);
 		break;
 	case Component::UNKNOWN:
 		break;

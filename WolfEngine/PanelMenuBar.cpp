@@ -96,14 +96,36 @@ void PanelMenuBar::Draw()
 		{
 			if (ImGui::MenuItem("Text"))
 			{
-				GameObject* go = App->level->CreateGameObject("Text");
+				GameObject* canvas = nullptr;
+				if (canvas_created)
+				{
+					canvas = App->level->GetRoot()->FindByName("Canvas");
+				}
+				else
+				{
+					canvas = App->level->CreateGameObject("Canvas");
+					canvas->CreateComponent(Component::Type::CANVAS);
+					canvas_created = true;
+				}
+				GameObject* go = App->level->CreateGameObject("Text", canvas, canvas);
 				go->CreateComponent(Component::Type::RECT_TRANSFORM);
 				go->CreateComponent(Component::Type::TEXT);
 			}
 
 			if (ImGui::MenuItem("Image"))
 			{
-				GameObject* go = App->level->CreateGameObject("Image");
+				GameObject* canvas = nullptr;
+				if (canvas_created)
+				{
+					canvas = App->level->GetRoot()->FindByName("Canvas");
+				}
+				else
+				{
+					canvas = App->level->CreateGameObject("Canvas");
+					canvas->CreateComponent(Component::Type::CANVAS);
+					canvas_created = true;
+				}
+				GameObject* go = App->level->CreateGameObject("Image", canvas, canvas);
 				go->CreateComponent(Component::Type::RECT_TRANSFORM);
 				go->CreateComponent(Component::Type::IMAGE);
 			}

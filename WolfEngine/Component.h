@@ -21,6 +21,7 @@ public:
 		RECT_TRANSFORM,
 		IMAGE,
 		TEXT,
+		CANVAS,
 		UNKNOWN
 	};
 

@@ -192,7 +192,12 @@
     <ClCompile Include="ComponentText.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentAudioSource.cpp" />
+    <ClCompile Include="ComponentCanvas.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentAudioSource.cpp">
+      <Filter>Game Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -381,6 +386,11 @@
     <ClInclude Include="Bass.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentAudioSource.h" />
+    <ClInclude Include="ComponentCanvas.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentAudioSource.h">
+      <Filter>Game Object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

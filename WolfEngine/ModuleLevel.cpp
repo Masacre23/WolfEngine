@@ -64,12 +64,21 @@ bool ModuleLevel::CleanUp()
 void ModuleLevel::Draw() const
 {
 	BROFILER_CATEGORY("ModuleLevel-Draw", Profiler::Color::GreenYellow);
+	GameObject* canvas = nullptr;
 
 	for (std::vector<GameObject*>::const_iterator it = root->childs.begin(); it != root->childs.end(); ++it)
 	{
-		if ((*it)->IsActive())
+		if ((*it)->GetComponent(Component::Type::CANVAS) != nullptr)
+		{
+			canvas = (*it);
+		}
+		else if ((*it)->IsActive())
 			(*it)->Draw();
 	}
+
+	if (canvas != nullptr && canvas->IsActive())
+		canvas->Draw();
+		
 }
 
 void ModuleLevel::DrawDebug() const
