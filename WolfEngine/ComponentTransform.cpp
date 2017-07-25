@@ -3,6 +3,7 @@
 #include "Interface.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "GameObject.h"
 #include "Globals.h"
 
 ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
@@ -29,10 +30,9 @@ void ComponentTransform::OnDebugDraw() const
 
 bool ComponentTransform::OnEditor()
 {
-	bool node_open = ImGui::CollapsingHeader("Transform");
 	float4x4 last_transform = local_transform;
 
-	if (node_open)
+	if (ImGui::CollapsingHeader("Transform"))
 	{
 		ImGui::DragFloat3("Position##Transform", (float*)&position, 0.1f);
 
