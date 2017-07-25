@@ -334,6 +334,8 @@ Component* GameObject::CreateComponent(Component::Type type)
 		break;
 	case Component::CAMERA:
 		ret = new ComponentCamera(this);
+		if (!App->level->GetMainCamera())
+			App->level->SetMainCamera((ComponentCamera*)ret);
 		break;
 	case Component::ANIMATION:
 		if (existing_component != nullptr)

@@ -7,6 +7,7 @@
 #include "ModuleLevel.h"
 #include "ModuleWindow.h"
 #include "ModulePhysics.h"
+#include "ModuleCamera.h"
 #include "JsonHandler.h"
 
 ModuleTimeController::ModuleTimeController() : Module(MODULE_TIME, true)
@@ -66,6 +67,7 @@ void ModuleTimeController::Play()
 
 	App->physics->OnPlay();
 	App->level->OnPlay();
+	App->camera->OnPlay();
 	
 	game_timer->Start();
 
@@ -99,6 +101,7 @@ void ModuleTimeController::Stop()
 {
 	time_scale = backed_time_scale;
 
+	App->camera->OnStop();
 	App->physics->OnStop();
 	App->level->OnStop();
 

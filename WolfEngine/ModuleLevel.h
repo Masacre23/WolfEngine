@@ -12,6 +12,7 @@ struct aiString;
 struct aiNode;
 
 class GameObject;
+class ComponentCamera;
 class MyQuadTree;
 class Primitive;
 
@@ -34,7 +35,11 @@ public:
 	GameObject* CreateGameObject(const char* texture, const Primitive& primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 
 	GameObject* ImportScene(const char* folder, const char* file, bool is_dynamic = false);
+
 	GameObject* AddCamera();
+
+	void SetMainCamera(ComponentCamera* camera) { main_camera = camera; }
+	ComponentCamera* GetMainCamera() const { return main_camera; }
 
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
@@ -60,6 +65,8 @@ private:
 	MyQuadTree* quadtree = nullptr;
 
 	GameObject* selected_gameobject = nullptr;
+
+	ComponentCamera* main_camera = nullptr;
 };
 
 #endif // !MODULELEVEL_H

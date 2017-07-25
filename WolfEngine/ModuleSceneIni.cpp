@@ -61,13 +61,6 @@ bool ModuleSceneIni::Start()
 	//GameObject* plane = App->level->CreateGameObject("Resources/chess.jpg", PrimitivePlane(6.0f), "Floor");
 	//plane->LoadRigidBody(Collider::Type::BOX, ComponentRigidBody::MotionType::STATIC);
 
-	//GameObject* camera = App->level->CreateGameObject("TestCamera");
-	//if (camera != nullptr)
-	//{
-	//	ComponentCamera* frustum_cam = (ComponentCamera*) camera->CreateComponent(Component::Type::CAMERA);
-	//	//App->camera->frustum_camera = frustum_cam;
-	//}
-
 	/*AABB bbox = AABB();
 	bbox.SetFromCenterAndSize(float3(0.0f, 0.0f, 0.0f), float3(10.0f, 10.0f, 10.0f));
 	quad_tree = new MyQuadTree(bbox);*/
@@ -78,13 +71,13 @@ bool ModuleSceneIni::Start()
 	//rain = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "rain");
 	//rain->CreateComponent(Component::Type::PARTICLE);
 
-	image = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Image");
+	/*image = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Image");
 	image->CreateComponent(Component::Type::RECT_TRANSFORM);
 	image->CreateComponent(Component::Type::IMAGE);
 
 	text = new GameObject(App->level->GetRoot(), App->level->GetRoot(), "Text");
 	text->CreateComponent(Component::Type::RECT_TRANSFORM);
-	text->CreateComponent(Component::Type::TEXT);
+	text->CreateComponent(Component::Type::TEXT);*/
 
 	App->program_shaders->Load("Prueba", "Resources/Shaders/vertex_shader.txt", "Resources/Shaders/fragment_shader.txt");
 
