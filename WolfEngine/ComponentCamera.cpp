@@ -45,7 +45,7 @@ bool ComponentCamera::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Camera"))
 	{
-		ImGui::Checkbox("Active", &enable);
+		ImGui::Checkbox("Active##Camera", &enable);
 
 		ImGui::Checkbox("Frustum culling", &frustum_culling);
 

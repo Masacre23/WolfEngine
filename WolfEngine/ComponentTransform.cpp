@@ -34,14 +34,14 @@ bool ComponentTransform::OnEditor()
 
 	if (node_open)
 	{
-		ImGui::DragFloat3("Position", (float*)&position, 0.1f);
+		ImGui::DragFloat3("Position##Transform", (float*)&position, 0.1f);
 
 		float3 rot = rotation_euler * RAD_TO_DEG;
-		ImGui::DragFloat3("Rotation", (float*)&rot, 1.0f, -180.0f, 180.0f);
+		ImGui::DragFloat3("Rotation##Transform", (float*)&rot, 1.0f, -180.0f, 180.0f);
 		rotation_euler = rot * DEG_TO_RAD;
 		rotation = Quat::FromEulerXYZ(rotation_euler[0], rotation_euler[1], rotation_euler[2]);
 
-		ImGui::DragFloat3("Scale", (float*)&scale, 0.1f);
+		ImGui::DragFloat3("Scale##Transform", (float*)&scale, 0.1f);
 
 		RecalculateLocalTransform();
 

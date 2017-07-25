@@ -61,11 +61,11 @@ bool ComponentBillboard::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Billboard"))
 	{
-		ImGui::Checkbox("Active", &enable);
+		ImGui::Checkbox("Active##Billboard", &enable);
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Delete"))
+		if (ImGui::Button("Delete##Billboard"))
 			this->~ComponentBillboard();
 
 		ImGui::SliderInt("Lines", &lines, 1, 10);

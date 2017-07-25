@@ -20,7 +20,7 @@ bool ModuleAudio::Init()
 	HSAMPLE sample = BASS_SampleLoad(false, "Resources/Audio/batman.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
 	HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
 
-	BASS_ChannelPlay(channel, FALSE);
+	//BASS_ChannelPlay(channel, FALSE);
 	return true;
 }
 
