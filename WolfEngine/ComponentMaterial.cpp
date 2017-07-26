@@ -81,11 +81,11 @@ bool ComponentMaterial::OnEditor()
 	{
 		if (ImGui::CollapsingHeader("Material"))
 		{
-			ImGui::Checkbox("Active", &enable);
+			ImGui::Checkbox("Active##Material", &enable);
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Delete"))
+			if (ImGui::Button("Delete##Material"))
 				parent->DeleteComponent(this);
 
 			ImGui::Checkbox("Has Shader", &has_shader);

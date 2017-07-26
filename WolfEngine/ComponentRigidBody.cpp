@@ -28,9 +28,9 @@ bool ComponentRigidBody::OnEditor()
 		ImGui::TextWrapped("Motion type:");
 
 		int type = motion_type;
-		ImGui::RadioButton("Static", &type, 0);
-		ImGui::RadioButton("Kinematic", &type, 1);
-		ImGui::RadioButton("Dynamic", &type, 2);
+		ImGui::RadioButton("Static##RigidB", &type, 0);
+		ImGui::RadioButton("Kinematic##RigidB", &type, 1);
+		ImGui::RadioButton("Dynamic##RigidB", &type, 2);
 		motion_type = MotionType(type);
 
 		if (motion_type == MotionType::DYNAMIC)
@@ -50,7 +50,7 @@ bool ComponentRigidBody::OnEditor()
 		if (collider != nullptr)
 		{
 			ImGui::SameLine();
-			if (ImGui::Button("Delete"))
+			if (ImGui::Button("Delete##RigidB"))
 			{
 				if (!App->time_controller->IsStopped())
 					this->OnStop();

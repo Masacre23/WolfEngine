@@ -20,6 +20,9 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	void OnPlay();
+	void OnStop();
+
 	void SetFOV(float fov);
 	void SetAspectRatio(float aspect_ratio);
 	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
@@ -37,7 +40,11 @@ public:
 
 public:
 	ComponentCamera* editor_camera = nullptr;
-	ComponentCamera* frustum_camera = nullptr;
+	ComponentCamera* game_camera = nullptr;
+
+	ComponentCamera* rendering_camera = nullptr;
+
+	bool use_game_cameras = false;
 
 private:
 	float NEARPLANE = 0.1f;

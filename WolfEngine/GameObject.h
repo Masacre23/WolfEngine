@@ -33,6 +33,8 @@ public:
 	void DebugDraw() const;
 	void DrawHierarchy() const;
 
+	void OnEditor();
+
 	void SetParent(GameObject* parent);
 	const GameObject* GetParent() const { return parent; }
 
@@ -47,6 +49,7 @@ public:
 	GameObject* FindByName(const std::string& name) const;
 
 	bool IsActive() const { return active; }
+	bool IsStatic() const { return is_static; }
 	bool IsPlayingAnimation() const;
 
 	void SetLocalTransform(const float3& position, const float3& scaling, const Quat& rotation);
@@ -102,7 +105,7 @@ public:
 private:
 	GameObject* parent = nullptr;
 	bool active = true;
-	
+	bool is_static = false;
 };
 
 #endif // !GAMEOBJECT_H

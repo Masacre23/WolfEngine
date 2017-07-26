@@ -26,6 +26,7 @@
 #include "OpenGL.h"
 #include "Color.h"
 #include "Primitive.h"
+#include "Interface.h"
 #include "Brofiler/include/Brofiler.h"
 
 GameObject::GameObject(GameObject* parent, GameObject* root_object, const std::string& name) : name(name), root(root_object)
@@ -54,10 +55,10 @@ bool GameObject::Update()
 {
 	if (App->camera->InsideCulling(bbox))
 	{
-		for (std::vector<Component*>::const_iterator it = components.begin(); it != components.cend(); ++it)
+		for (std::vector<Component*>::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 			if ((*it)->IsActive())
 				(*it)->OnUpdate();
-		for (std::vector<GameObject*>::const_iterator it = childs.begin(); it != childs.end(); ++it)
+		for (std::vector<GameObject*>::const_iterator it = childs.cbegin(); it != childs.cend(); ++it)
 			if ((*it)->IsActive())
 				(*it)->Update();
 	}
@@ -239,6 +240,23 @@ void GameObject::DrawHierarchy() const
 	glDepthRange(0.01, 1.0);
 }
 
+void GameObject::OnEditor()
+{
+	ImGui::Checkbox("##Active", &active);
+	ImGui::SameLine();
+
+	static char buf[64] = "";
+	strcpy(buf, name.c_str());
+	ImGui::InputText("##Name", buf, IM_ARRAYSIZE(buf)); //WARNING: Don't delete space
+	name = buf;
+
+	ImGui::Checkbox("Static", &is_static);
+
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->OnEditor();
+
+}
+
 void GameObject::RecursiveDrawHierarchy() const
 {
 	glPushMatrix();
@@ -335,6 +353,8 @@ Component* GameObject::CreateComponent(Component::Type type)
 		break;
 	case Component::CAMERA:
 		ret = new ComponentCamera(this);
+		if (!App->level->GetMainCamera())
+			App->level->SetMainCamera((ComponentCamera*)ret);
 		break;
 	case Component::ANIMATION:
 		if (existing_component != nullptr)

@@ -81,6 +81,8 @@ void PanelConfiguration::Draw()
 
 		ImGui::Checkbox("Frustum culling", &editor_camera->frustum_culling);
 
+		ImGui::Checkbox("Use game cameras", &App->camera->use_game_cameras);
+
 		if (ImGui::Button("Default camera configuration"))
 			App->camera->SetupFrustum(editor_camera);
 
