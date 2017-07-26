@@ -54,6 +54,7 @@ bool ModuleSceneIni::Start()
 
 	GameObject* cube = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveCube(float3::one, float3(2.0f, 2.0f, 0.0f)), "LennaCube");
 	cube->LoadRigidBody(Collider::Type::BOX);
+	cube->CreateComponent(Component::Type::AUDIO_LISTENER);
 
 	GameObject* sphere = App->level->CreateGameObject("Resources/Lenna.png", PrimitiveSphere(1.0f, float3(-2.0f, 2.0f, 0.0f)), "LennaSphere");
 	sphere->LoadRigidBody(Collider::Type::SPHERE);

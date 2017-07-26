@@ -198,6 +198,9 @@
     <ClCompile Include="ComponentCanvas.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentAudioListener.cpp">
+      <Filter>Game Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleAudio.h">
@@ -390,6 +393,9 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="ComponentAudioSource.h">
+      <Filter>Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentAudioListener.h">
       <Filter>Game Object</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "ComponentAudioListener.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
@@ -286,7 +287,7 @@ void GameObject::SetParent(GameObject * parent)
 
 Component* GameObject::CreateComponent(Component::Type type)
 {
-	static_assert(Component::Type::UNKNOWN == 12, "Update component factory code");
+	static_assert(Component::Type::UNKNOWN == 14, "Update component factory code");
 
 	const Component* existing_component = GetComponent(type);
 
@@ -369,6 +370,11 @@ Component* GameObject::CreateComponent(Component::Type type)
 		break;
 	case Component::CANVAS:
 		ret = new ComponentCanvas(this);
+		break;
+	case Component::AUDIO_LISTENER:
+		ret = new ComponentAudioListener(this);
+		break;
+	case Component::AUDIO_SOURCE:
 		break;
 	case Component::UNKNOWN:
 		break;

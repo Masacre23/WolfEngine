@@ -7,6 +7,8 @@
 #define MODULE_AUDIO "ModuleAudio"
 #define AUDIO_SECTION "Config.Modules.Audio"
 
+#define DEFAULT_FADE 2.0f
+
 class ModuleAudio : public Module
 {
 public:
@@ -15,22 +17,16 @@ public:
 
 	bool Init();
 	bool CleanUp();
+	update_status PostUpdate(float dt);
 
-	bool PlayMusic(const char* path) { return PlayMusic(path, DEFAULT_FADE); }
-	bool PlayMusic(const char* path, float fade_time);
-	void StopMusic();
 	unsigned int LoadFx(const char* path);
-	bool PlayFx(unsigned int fx, int repeat = 0);
+	void UnloadFx(unsigned long id);
 
-	bool IsPlayingMusic() const;
+public:
 
-	bool ConstantConfig();
-
-private:
-
-	float DEFAULT_FADE = 2.0f;
-	int VOLUME_MUSIC = 1;
-	int VOLUME_FX = 1;
+	float volume = 1.0f;
+	float volume_music = 1.0f;
+	float volume_fx = 1.0f;
 
 	//HCHANNEL channel;
 };
