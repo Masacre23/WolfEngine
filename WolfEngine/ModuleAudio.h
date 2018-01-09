@@ -28,7 +28,8 @@ public:
 	float volume_music = 1.0f;
 	float volume_fx = 1.0f;
 
-	//HCHANNEL channel;
+private:
+	
 };
 
 
