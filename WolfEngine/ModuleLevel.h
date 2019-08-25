@@ -6,16 +6,15 @@
 #include "Module.h"
 #include <vector>
 #include <string>
-#include <assimp/types.h>
-#include "MathGeoLib/src/Math/float3.h"
-#include "MathGeoLib/src/Math/Quat.h"
 
-struct aiNode;
-struct aiMesh;
-struct aiMaterial;
 struct aiScene;
+struct aiString;
+struct aiNode;
 
 class GameObject;
+class ComponentCamera;
+class MyQuadTree;
+class Primitive;
 
 class ModuleLevel : public Module
 {
@@ -24,24 +23,50 @@ public:
 	~ModuleLevel();
 
 	bool Init();
+	update_status PreUpdate(float dt);
+	update_status Update(float dt);
 	bool CleanUp();
 
 	void Draw() const;
+	void DrawDebug() const;
 
-	GameObject* CreateGameObject(GameObject* parent = nullptr, const std::string& name = "GameObject");
+	GameObject* CreateGameObject(const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
+	GameObject* CreateGameObject(const Primitive& primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
+	GameObject* CreateGameObject(const char* texture, const Primitive& primitive, const std::string& name = "GameObject", GameObject* parent = nullptr, GameObject* root_object = nullptr);
 
-	void ImportScene(const char* folder, const char* file);
+	GameObject* ImportScene(const char* folder, const char* file, bool is_dynamic = false);
+
+	GameObject* AddCamera();
+
+	void SetMainCamera(ComponentCamera* camera) { main_camera = camera; }
+	ComponentCamera* GetMainCamera() const { return main_camera; }
 
 	GameObject* GetRoot() { return root; }
 	const GameObject* GetRoot() const { return root; }
 
+	void SetSelectedGameObject(GameObject* selected) { selected_gameobject = selected; }
+	GameObject* GetSelectedGameObject() const { return selected_gameobject; }
+
+	void InsertGameObjectQuadTree(GameObject * game_object);
+	void OnPlay();
+	void OnStop();
+
 private:
-	void RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path);
+	GameObject* RecursiveLoadSceneNode(aiNode* scene_node, const aiScene* scene, GameObject* parent, const aiString& folder_path, GameObject* root_scene_object, bool is_dynamic = false);
 
 	void GetGLError(const char* string) const;
 
+public:
+	bool draw_quadtree_structure = false;
+
 private:
 	GameObject* root = nullptr;
+	GameObject* camera = nullptr;
+	MyQuadTree* quadtree = nullptr;
+
+	GameObject* selected_gameobject = nullptr;
+
+	ComponentCamera* main_camera = nullptr;
 };
 
 #endif // !MODULELEVEL_H

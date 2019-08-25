@@ -1,13 +1,14 @@
 #include "ComponentMaterial.h"
 #include "Application.h"
 #include "ModuleTextures.h"
+#include "ModuleProgramShaders.h"
+#include "ModuleCamera.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include "OpenGL.h"
 #include "GameObject.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 
 ComponentMaterial::ComponentMaterial(GameObject* parent) : Component(Component::Type::MATERIAL, parent)
 {
@@ -17,7 +18,7 @@ ComponentMaterial::~ComponentMaterial()
 {
 }
 
-void ComponentMaterial::Load(aiMaterial * material, const aiString& folder_path)
+void ComponentMaterial::Load(aiMaterial* material, const aiString& folder_path)
 {
 	aiColor4D ambient;
 	aiColor4D diffuse;
@@ -46,17 +47,17 @@ void ComponentMaterial::Load(aiMaterial * material, const aiString& folder_path)
 			aiString full_path = aiString(folder_path);
 			full_path.Append(path.data);
 
-			texture = App->textures->LoadTexture(full_path);
+			LoadTexture(full_path);
 		}
 	}
 }
 
-bool ComponentMaterial::OnUpdate()
+void ComponentMaterial::LoadTexture(const aiString& texture_path)
 {
-	return true;
+	texture = App->textures->LoadTexture(texture_path);
 }
 
-bool ComponentMaterial::OnDraw() const
+void ComponentMaterial::OnDraw() const
 {
 	glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
@@ -65,15 +66,63 @@ bool ComponentMaterial::OnDraw() const
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	return true;
+	if (has_shader) {
+		App->program_shaders->UseProgram("Prueba");
+		glUniform4f(App->program_shaders->GetUniformLocation("Prueba", "light_position"), 1, 1, 1, 0);
+		float3 camera = App->camera->GetPosition();
+		glUniform3f(App->program_shaders->GetUniformLocation("Prueba", "camera"), camera.x, camera.y, camera.z );
+		glUniform1i(App->program_shaders->GetUniformLocation("Prueba", "tex_coord"), 0);
+	}
 }
 
-bool ComponentMaterial::OnEditor(int selection_mask, int id)
+bool ComponentMaterial::OnEditor()
 {
-	if (ImGui::CollapsingHeader("Material"))
+	if (on_editor)
 	{
-		ImGui::Checkbox("Active", &enable);
-	}
+		if (ImGui::CollapsingHeader("Material"))
+		{
+			ImGui::Checkbox("Active##Material", &enable);
 
-	return ImGui::IsItemClicked();
+			ImGui::SameLine();
+
+			if (ImGui::Button("Delete##Material"))
+				parent->DeleteComponent(this);
+
+			ImGui::Checkbox("Has Shader", &has_shader);
+
+			ImGui::DragFloat4("Ambient", (float*)&ambient, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat4("Diffuse", (float*)&diffuse, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat4("Specular", (float*)&specular, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Shiness", (float*)&shiness, 1.0f, 0.0f, 128.0f);
+		}
+
+		return ImGui::IsItemClicked();
+	}
+	
+	return false;
+}
+
+void ComponentMaterial::SaveComponent()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		backed_ambient[i] = ambient[i];
+		backed_diffuse[i] = diffuse[i];
+		backed_specular[i] = specular[i];
+	}
+	backed_shiness = shiness;
+}
+
+void ComponentMaterial::RestoreComponent()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		ambient[i] = backed_ambient[i];
+		diffuse[i] = backed_diffuse[i];
+		specular[i] = backed_specular[i];
+	}
+	shiness = backed_shiness;
+
+	enable = true;
+	on_editor = true;
 }

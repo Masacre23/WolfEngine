@@ -1,0 +1,27 @@
+varying vec3 normal;
+varying vec3 vertex;
+varying vec3 light;
+varying vec2 tex_coord;
+varying float diffuse;
+uniform sampler2D diffuse_text;
+uniform vec3 camera;
+const float shininess = 64.0;
+
+void main()
+{
+	light = normalize(light - vertex);
+	vec3 eyes = normalize(camera - vertex);
+	vec3 reflection = normalize(-reflect(light, normal)); 
+	
+	float diffuse = max(dot(normal, light), 0.0);
+	float specular = 0;
+	if(diffuse != 0)
+	{
+		specular = max(pow(max(dot(reflection, eyes), 0.0), shininess), 0.05);
+	}
+	
+	//gl_FragColor = vec4(1.0,1.0,1.0,0.0) * diffuse + vec4(0.15, 0.15, 0.15, 1.0);
+	//gl_FragColor = vec4(1.0,1.0,1.0,1.0) * specular + vec4(0.15, 0.15, 0.15, 1.0);
+	//gl_FragColor = vec4(1.0,1.0,1.0,1.0) * diffuse + vec4(1.0,1.0,1.0,1.0) * specular + vec4(0.15, 0.15, 0.15, 1.0);
+	gl_FragColor = texture2D(diffuse_text, tex_coord) * diffuse + texture2D(diffuse_text, tex_coord) * specular + vec4(0.15, 0.15, 0.15, 1.0);
+}

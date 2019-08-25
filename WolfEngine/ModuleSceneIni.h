@@ -2,11 +2,13 @@
 #define MODULESCENEINI_H
 
 #include "Module.h"
-#include "Animation.h"
 #include "Globals.h"
+#include <vector>
+#include <list>
+#include <string>
 
-class Model;
 class GameObject;
+class MyQuadTree;
 
 class ModuleSceneIni : public Module
 {
@@ -17,6 +19,14 @@ public:
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
+
+private:
+	std::vector<GameObject*> empty_game_objects;
+	MyQuadTree* quad_tree = nullptr;
+	GameObject* grass = nullptr;
+	GameObject* rain = nullptr;
+	GameObject* image = nullptr;
+	GameObject* text = nullptr;
 };
 
 #endif

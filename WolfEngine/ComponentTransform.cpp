@@ -1,67 +1,107 @@
 #include "ComponentTransform.h"
 #include "OpenGL.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "GameObject.h"
 #include "Globals.h"
 
 ComponentTransform::ComponentTransform(GameObject* parent) : Component(Component::Type::TRANSFORM, parent)
 {
+	rotation_euler = rotation.ToEulerXYZ().Abs();
+	RecalculateLocalTransform();
 }
 
 ComponentTransform::~ComponentTransform()
 {
 }
 
-void ComponentTransform::Load(const float3& position, const float3& scale, const Quat& rotation)
+void ComponentTransform::OnDraw() const
 {
-	this->position = position;
-	this->scale = scale;
-	this->rotation = rotation;
-}
-
-bool ComponentTransform::OnUpdate()
-{
-	return true;
-}
-
-bool ComponentTransform::OnDraw() const
-{
-	float* transform = float4x4::FromTRS(position, rotation, scale).Transposed().ptr();
+	float* transform = global_transform.Transposed().ptr();
 	glMultMatrixf(transform);
-	
-	return true;
 }
 
-bool ComponentTransform::OnEditor(int selection_mask, int id)
+void ComponentTransform::OnDebugDraw() const
 {
-	//ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << id)) ? ImGuiTreeNodeFlags_Selected : 0);
-	//bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, "Transform");
-	bool node_open = ImGui::CollapsingHeader("Transform");
-	
-	if (node_open)
+	float* transform = global_transform.Transposed().ptr();
+	glMultMatrixf(transform);
+}
+
+bool ComponentTransform::OnEditor()
+{
+	float4x4 last_transform = local_transform;
+
+	if (ImGui::CollapsingHeader("Transform"))
 	{
-		float pos[3] = {position.x, position.y, position.z};
-		ImGui::DragFloat3("Position", pos, 0.1f);
-		position = float3(pos[0], pos[1], pos[2]);
+		ImGui::DragFloat3("Position##Transform", (float*)&position, 0.1f);
 
-		float3 rotation_euler = rotation.ToEulerXYZ() * RAD_TO_DEG;
-		float rot[3] = { rotation_euler.x, rotation_euler.y, rotation_euler.z };
-		ImGui::DragFloat3("Rotation", rot, 1.0f, -89.0f, 89.0f);
-		rotation = Quat::RotateX(rot[0] * DEG_TO_RAD).Mul(Quat::RotateY(rot[1] * DEG_TO_RAD)).Mul(Quat::RotateZ(rot[2] * DEG_TO_RAD));
+		float3 rot = rotation_euler * RAD_TO_DEG;
+		ImGui::DragFloat3("Rotation##Transform", (float*)&rot, 1.0f, -180.0f, 180.0f);
+		rotation_euler = rot * DEG_TO_RAD;
+		rotation = Quat::FromEulerXYZ(rotation_euler[0], rotation_euler[1], rotation_euler[2]);
 
-		float sca[3] = { scale.x, scale.y, scale.z };
-		ImGui::DragFloat3("Scale", sca, 0.1f, 0.0f);
-		scale = float3(sca[0], sca[1], sca[2]);
+		ImGui::DragFloat3("Scale##Transform", (float*)&scale, 0.1f);
 
-		//ImGui::TreePop();
+		RecalculateLocalTransform();
+
+		transform_change = !(last_transform.Equals(local_transform));
 	}
 
 	return ImGui::IsItemClicked();
 }
 
-float4x4 ComponentTransform::GetTransformMatrix()
+const float4x4& ComponentTransform::UpdateGlobalTransform(const float4x4& parent)
 {
-	return float4x4::FromTRS(position, rotation, scale).Transposed();
+	global_transform = parent * local_transform;
+
+	return global_transform;
+}
+
+void ComponentTransform::SetLocalTransform(const float3& position, const float3& scale, const Quat& rotation)
+{
+	this->position = position;
+	this->scale = scale;
+	this->rotation = rotation;
+	rotation_euler = rotation.ToEulerXYZ();
+
+	RecalculateLocalTransform();
+}
+
+void ComponentTransform::SetLocalTransform(const float3& position, const Quat& rotation)
+{
+	this->position = position;
+	this->rotation = rotation;
+	rotation_euler = rotation.ToEulerXYZ();
+
+	RecalculateLocalTransform();
+}
+
+void ComponentTransform::SetLocalTransform(const float3 & position)
+{
+	this->position = position;
+
+	RecalculateLocalTransform();
+}
+
+void ComponentTransform::RecalculateLocalTransform()
+{ 
+	local_transform = float4x4::FromTRS(position, rotation, scale);
+	transform_change = true;
+}
+
+void ComponentTransform::SaveComponent()
+{ 
+	backup_local_transform = local_transform;
+	backup_rotatio_euler = rotation_euler;
+}
+
+void ComponentTransform::RestoreComponent()
+{ 
+	local_transform = backup_local_transform;
+	position = local_transform.TranslatePart();
+	rotation_euler = backup_rotatio_euler;
+	rotation = Quat::FromEulerXYZ(rotation_euler[0], rotation_euler[1], rotation_euler[2]);
+	scale = local_transform.GetScale();
+	transform_change = true;
 }

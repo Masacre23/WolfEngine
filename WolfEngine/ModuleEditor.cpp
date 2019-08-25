@@ -3,17 +3,19 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleLevel.h"
+#include "ModuleTimeController.h"
 #include "GameObject.h"
 #include "Panel.h"
 #include "PanelInterface.h"
 #include "PanelMenuBar.h"
 #include "PanelConsole.h"
+#include "PanelGameTime.h"
 #include "JsonHandler.h"
 #include "Glew/include/GL/glew.h"   
 #include "SDL\include\SDL.h"
 
 
-ModuleEditor::ModuleEditor() : Module("ModuleEditor", true)
+ModuleEditor::ModuleEditor() : Module(MODULE_EDITOR, true)
 {
 	ImGuiStyle* style = &ImGui::GetStyle();
 	style->WindowPadding = ImVec2(15, 15);
@@ -93,11 +95,14 @@ bool ModuleEditor::Init()
 	
 	panels.push_back(menu = new PanelMenuBar());
 	panels.push_back(interfaces = new PanelInterface());
+	panels.push_back(game_time = new PanelGameTime());
 	return true;
 }
 
 update_status ModuleEditor::PreUpdate(float dt)
 {
+	BROFILER_CATEGORY("ModuleEditor-PreUpdate", Profiler::Color::Blue);
+
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 
 	return UPDATE_CONTINUE;
@@ -105,6 +110,8 @@ update_status ModuleEditor::PreUpdate(float dt)
 
 update_status ModuleEditor::Update(float dt)
 {
+	BROFILER_CATEGORY("ModuleEditor-Update", Profiler::Color::Red);
+
 	for (std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it)
 		if ((*it)->active)
 			(*it)->Draw();
@@ -131,8 +138,10 @@ void ModuleEditor::HandleInput(SDL_Event* event)
 	ImGui_ImplSdlGL3_ProcessEvent(event);
 }
 
-void ModuleEditor::Draw()
+void ModuleEditor::Draw() const
 {
+	BROFILER_CATEGORY("ModuleEditor-Draw", Profiler::Color::GreenYellow);
+
 	ImGui::Render();
 }
 

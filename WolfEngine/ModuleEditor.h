@@ -1,9 +1,10 @@
 #ifndef MODULEEDITOR_H
 #define MODULEEDITOR_H
 
+#define MODULE_EDITOR "ModuleEditor"
+
 #include "Module.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl_gl3.h"
+#include "Interface.h"
 #include <vector>
 #include <string>
 
@@ -11,6 +12,7 @@ class Panel;
 class PanelMenuBar;
 class PanelInterface;
 class PanelConsole;
+class PanelGameTime;
 
 class ModuleEditor : public Module
 {
@@ -24,7 +26,7 @@ public:
 	bool CleanUp();
 
 	void HandleInput(SDL_Event* event);
-	void Draw();
+	void Draw() const;
 	
 	void AddLog(const char* fmt);
 public:
@@ -42,6 +44,7 @@ public:
 
 	PanelMenuBar* menu = nullptr;
 	PanelInterface* interfaces = nullptr;
+	PanelGameTime* game_time = nullptr;
 
 private:
 	std::vector<Panel*> panels;

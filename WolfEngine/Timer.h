@@ -11,29 +11,48 @@ public:
 
 	void Start()
 	{
+		accumulated_ms = 0;
 		start_time = SDL_GetTicks();
 		running = true;
 	}
 
 	void Stop()
 	{
+		final_time = SDL_GetTicks();
+		accumulated_ms = 0;
+		running = false;
+	}
+
+	void Pause()
+	{
 		if (running)
 		{
 			final_time = SDL_GetTicks();
+			accumulated_ms += final_time - start_time;
 			running = false;
 		}
 	}
 
-	bool IsRunning() { return running; }
+	void Unpause()
+	{
+		if (!running)
+		{
+			start_time = SDL_GetTicks();
+			running = true;
+		}
+	}
+
+	bool IsRunning() const { return running; }
 
 	Uint32 GetTimeInMs() const 
 	{ 
 		Uint32 ret;
 
 		if (running)
-			ret = SDL_GetTicks() - start_time;
+			ret = SDL_GetTicks() - start_time + accumulated_ms;
 		else
-			ret = final_time - start_time;
+			ret = accumulated_ms;
+			//ret = final_time - start_time;
 
 		return ret; 
 	}
@@ -46,7 +65,9 @@ public:
 private:
 	Uint32 start_time = 0;
 	Uint32 final_time = 0;
+	Uint32 accumulated_ms = 0;
 	bool running = false;
+
 };
 
 #endif // !TIMER_H

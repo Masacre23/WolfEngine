@@ -4,10 +4,12 @@
 		"Resolution" : { 
 			"Width" : 1200, 
 			"Height" : 800
-			},
-		"FpsCap": 60
+			}
 	},
 	"Modules" : {
+		"TimeController" : {
+			"FpsCap": 200
+		},
 		"Input" : {
 			"MouseButtons" : 5,
 			"KeyboardKeys" : 300
@@ -20,13 +22,17 @@
 			"TitleWithInfoLength" : 200		
 		},
 		"Render" : { 
-			"Vsync" : true,
+			"Vsync" : false,
 			"DefaultBlitSpeed" : 1
 		},
 		"EditorCamera" : {
+			"NearPlane" : 0.1,
+			"FarPlane" : 5000.0,
+			"VerticalFOV" : 59.0,
+			"AspectRatio" : 1.5,
 			"RotationSpeed" : 0.5,
-			"TranslationSpeed" : 1.0,
-			"ZoomSpeedFactor" : 10,
+			"TranslationSpeed" : 10.0,
+			"ZoomSpeedFactor" : 20,
 			"InitialPosition" : [-1.0, 2.0, 4.0]
 		},
 		"Audio" : {

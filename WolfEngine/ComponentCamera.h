@@ -10,18 +10,30 @@ public:
 	ComponentCamera(GameObject* parent = nullptr);
 	~ComponentCamera();
 
+	void OnUpdate();
+	void OnDebugDraw() const;
+	bool OnEditor();
+
 	void SetFOV(float fov);
 	void SetAspectRatio(float aspect_ratio);
 	void SetPlaneDistances(float nearPlaneDistance, float farPlaneDistance);
 	void SetPosition(const float3& position);
+	void SetOrientation(const Quat& rotation);
 
 	void LookAt(const float3& position);
+
+	bool IsInsideFrustum(const AABB& box) const;
 
 	float* GetProjectionMatrix() const;
 	float* GetViewMatrix() const;
 
+private:
+	void SetAABB() const;
+
 public:
 	Frustum* frustum;
+	bool frustum_culling = true;
+
 };
 
 #endif // !COMPONENTCAMERA_H

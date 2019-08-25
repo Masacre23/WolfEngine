@@ -2,7 +2,6 @@
 #include "Globals.h"
 #include "parson\parson.h"
 #include "SDL/include/SDL_rect.h"
-#include "Animation.h"
 #include "Math.h"
 
 JSONParser::JSONParser(const char* file)
@@ -26,10 +25,10 @@ bool JSONParser::LoadObject(const char* name)
 			parsing_success = true;
 		}
 		else
-			LOG("JSONParser: Unable to load section %s.", name);
+			APPLOG("JSONParser: Unable to load section %s.", name);
 	}
 	else
-		LOG("JSONParser: Already one section loaded. Section %s not loaded.", name);
+		APPLOG("JSONParser: Already one section loaded. Section %s not loaded.", name);
 	
 	return parsing_success;
 }
@@ -39,7 +38,7 @@ bool JSONParser::UnloadObject()
 	bool ret = parsing_success;
 
 	if (parsing_success == false)
-		LOG("JSONParser: Parsing ended with some errors.");
+		APPLOG("JSONParser: Parsing ended with some errors.");
 
 	parsing_success = true;
 	loaded_object = nullptr;
@@ -61,13 +60,13 @@ bool JSONParser::LoadArrayInObject(const char * name)
 				ret = true;
 			}
 			else
-				LOG("JSONParser: Incorrect array value for %s.", name);
+				APPLOG("JSONParser: Incorrect array value for %s.", name);
 		}
 		else
-			LOG("JSONParser: Array %s not found.", name);
+			APPLOG("JSONParser: Array %s not found.", name);
 	}
 	else
-		LOG("JSONParser: No section loaded. Array %s cannot load.", name);
+		APPLOG("JSONParser: No section loaded. Array %s cannot load.", name);
 
 	return ret;
 }
@@ -119,13 +118,13 @@ const char* JSONParser::GetString(const char* name)
 		}
 		else
 		{
-			LOG("JSONParser: Incorrect string value for %s.", name);
+			APPLOG("JSONParser: Incorrect string value for %s.", name);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No section loaded.");
+		APPLOG("JSONParser: No section loaded.");
 		parsing_success = true;
 	}
 
@@ -144,13 +143,13 @@ int JSONParser::GetInt(const char * name)
 		}
 		else
 		{
-			LOG("JSONParser: Incorrect integer value for %s.", name);
+			APPLOG("JSONParser: Incorrect integer value for %s.", name);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No section loaded.");
+		APPLOG("JSONParser: No section loaded.");
 		parsing_success = false;
 	}
 
@@ -169,13 +168,13 @@ float JSONParser::GetFloat(const char * name)
 		}
 		else
 		{
-			LOG("JSONParser: Incorrect float value for %s.", name);
+			APPLOG("JSONParser: Incorrect float value for %s.", name);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No section loaded.");
+		APPLOG("JSONParser: No section loaded.");
 		parsing_success = false;
 	}
 
@@ -207,13 +206,13 @@ bool JSONParser::GetBoolMandatory(const char * name)
 		}
 		else
 		{
-			LOG("JSONParser: Incorrect boolean value for %s.", name);
+			APPLOG("JSONParser: Incorrect boolean value for %s.", name);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No section loaded.");
+		APPLOG("JSONParser: No section loaded.");
 		parsing_success = false;
 	}
 
@@ -232,13 +231,13 @@ int JSONParser::GetIntFromArray(size_t index_array)
 		}
 		else
 		{
-			LOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
+			APPLOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No array loaded to extract value.");
+		APPLOG("JSONParser: No array loaded to extract value.");
 		parsing_success = false;
 	}
 
@@ -257,13 +256,13 @@ const char * JSONParser::GetStringFromArray(size_t index_array)
 		}
 		else
 		{
-			LOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
+			APPLOG("JSONParser: Error loading element in loaded array. Index %i out of range.", index_array);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No array loaded to extract value.");
+		APPLOG("JSONParser: No array loaded to extract value.");
 		parsing_success = false;
 	}
 
@@ -285,19 +284,19 @@ int JSONParser::GetIntFromArrayInArray(size_t array_element, size_t index_array)
 			}
 			else
 			{
-				LOG("JSONParser: Error loading element in array. Index %i out of range.", index_array);
+				APPLOG("JSONParser: Error loading element in array. Index %i out of range.", index_array);
 				parsing_success = false;
 			}
 		}
 		else
 		{
-			LOG("JSONParser: Error loading array in loaded array. Index %i out of range.", array_element);
+			APPLOG("JSONParser: Error loading array in loaded array. Index %i out of range.", array_element);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No array loaded to extract value.");
+		APPLOG("JSONParser: No array loaded to extract value.");
 		parsing_success = false;
 	}
 
@@ -319,19 +318,19 @@ const char* JSONParser::GetStringFromArrayInArray(size_t array_element, size_t i
 			}
 			else
 			{
-				LOG("JSONParser: Error loading element in array. Index %i out of range.", index_array);
+				APPLOG("JSONParser: Error loading element in array. Index %i out of range.", index_array);
 				parsing_success = false;
 			}
 		}
 		else
 		{
-			LOG("JSONParser: Error loading array in loaded array. Index %i out of range.", array_element);
+			APPLOG("JSONParser: Error loading array in loaded array. Index %i out of range.", array_element);
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No array loaded to extract value.");
+		APPLOG("JSONParser: No array loaded to extract value.");
 		parsing_success = false;
 	}
 
@@ -350,13 +349,13 @@ void JSONParser::GetVector3(const char* name, float3* vector)
 		}
 		else
 		{
-			LOG("JSONParser: Error loading element in loaded array. Incorrect number of elements in array for float3.");
+			APPLOG("JSONParser: Error loading element in loaded array. Incorrect number of elements in array for float3.");
 			parsing_success = false;
 		}
 	}
 	else
 	{
-		LOG("JSONParser: No array loaded to extract value.");
+		APPLOG("JSONParser: No array loaded to extract value.");
 		parsing_success = false;
 	}
 }

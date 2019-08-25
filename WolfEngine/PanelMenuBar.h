@@ -19,6 +19,7 @@ public:
 	PanelAbout* about;
 	PanelConfiguration* config;
 	bool show_test_window = false;
+	bool canvas_created = false;
 };
 
 #endif

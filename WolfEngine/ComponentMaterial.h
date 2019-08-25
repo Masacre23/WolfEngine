@@ -2,7 +2,6 @@
 #define COMPONENTMATERIAL_H
 
 #include "Component.h"
-#include "MathGeoLib/src/Math/float4.h"
 
 struct aiMaterial;
 struct aiString;
@@ -14,10 +13,13 @@ public:
 	~ComponentMaterial();
 
 	void Load(aiMaterial* material, const aiString& folder_path);
+	void LoadTexture(const aiString& texture_path);
 
-	bool OnUpdate();
-	bool OnDraw() const;
-	bool OnEditor(int selection_mask, int id);
+	void OnDraw() const;
+	bool OnEditor();
+
+	void SaveComponent();
+	void RestoreComponent();
 
 private:
 	float ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -25,6 +27,13 @@ private:
 	float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float shiness = 0.0f;
 	unsigned texture = 0;
+	bool has_shader = false;
+	char* shader = nullptr;
+
+	float backed_ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float backed_diffuse[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float backed_specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float backed_shiness = 0.0f;
 };
 
 

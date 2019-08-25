@@ -1,11 +1,52 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleAudio.h"
-#include "SDL/include/SDL.h"
-#include "JsonHandler.h"
+#include "Bass.h"
 
-#include "SDL_mixer/include/SDL_mixer.h"
-#pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
+static const char* BASS_GetErrorString()
+{
+	switch (BASS_ErrorGetCode())
+	{
+	case -1: return "mystery problem";
+	case 0: return "all is OK";
+	case 1: return "memory error";
+	case 2: return "can't open the file";
+	case 3: return "can't find a free/valid driver";
+	case 4: return "the sample buffer was lost";
+	case 5: return "invalid handle";
+	case 6: return "unsupported sample format";
+	case 7: return "invalid position";
+	case 8: return "BASS_Init has not been successfully called";
+	case 9: return "BASS_Start has not been successfully called";
+	case 10: return "SSL/HTTPS support isn't available";
+	case 14: return "already initialized/paused/whatever";
+	case 18: return "can't get a free channel";
+	case 19: return "an illegal type was specified";
+	case 20: return "an illegal parameter was specified";
+	case 21: return "no 3D support";
+	case 22: return "no EAX support";
+	case 23: return "illegal device number";
+	case 24: return "not playing";
+	case 25: return "illegal sample rate";
+	case 27: return "the stream is not a file stream";
+	case 29: return "no hardware voices available";
+	case 31: return "the MOD music has no sequence data";
+	case 32: return "no internet connection could be opened";
+	case 33: return "couldn't create the file";
+	case 34: return "effects are not available";
+	case 37: return "requested data is not available";
+	case 38: return "the channel is/isn't a 'decoding channel'";
+	case 39: return "a sufficient DirectX version is not installed";
+	case 40: return "connection timedout";
+	case 41: return "unsupported file format";
+	case 42: return "unavailable speaker";
+	case 43: return "invalid BASS version (used by add-ons)";
+	case 44: return "codec is not available or supported";
+	case 45: return "the channel/file has ended";
+	case 46: return "the device is busy";
+	default: return "unknown error code";
+	}
+}
 
 ModuleAudio::ModuleAudio() : Module(MODULE_AUDIO)
 {
@@ -13,172 +54,74 @@ ModuleAudio::ModuleAudio() : Module(MODULE_AUDIO)
 
 ModuleAudio::~ModuleAudio()
 {
+	CleanUp();
 }
 
 bool ModuleAudio::Init()
 {
-	LOG("Loading Audio Mixer");
 	bool ret = true;
-	SDL_Init(0);
+	APPLOG("Loading Audio Mixer");
+	
+	BASS_Init(-1, 44100, 0, 0, NULL);
+	HSAMPLE sample = BASS_SampleLoad(false, "Resources/Audio/batman.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+	//BASS_SetVolume(0);
+	HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
 
-	if (ConstantConfig() == false)
+	/*if (BASS_Init(-1, 44100, BASS_DEVICE_3D, 0, NULL) != TRUE)
 	{
-		LOG("Problem retrieving value from configuration file");
+		APPLOG("BASS_Init() error: %s", BASS_GetErrorString());
 		ret = false;
-	}
-
-	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
-	{
-		LOG("SDL_INIT_AUDIO could not initialize! SDL_Error: %s\n", SDL_GetError());
-		ret = false;
-	}
-
-	int flags = MIX_INIT_OGG;
-	int init = Mix_Init(flags);
-
-	if ((init & flags) != flags)
-	{
-		LOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
-		ret = false;
-	}
-
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-	{
-		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-		ret = false;
-	}
-	else
-	{
-		Mix_Volume(-1, VOLUME_FX);
-		Mix_VolumeMusic(VOLUME_MUSIC);
-	}
+	}*/
 
 	return ret;
 }
 
 bool ModuleAudio::CleanUp()
 {
-	LOG("Freeing sound FX, closing Mixer and Audio subsystem");
-
-	if (music != nullptr)
-		Mix_FreeMusic(music);
-
-	for (std::vector<Mix_Chunk*>::iterator it = fx.begin(); it != fx.end(); ++it)
-		Mix_FreeChunk(*it);
-	fx.clear();
-
-	Mix_CloseAudio();
-	Mix_Quit();
-	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+	APPLOG("Freeing sound FX, closing Mixer and Audio subsystem");
+	BASS_Free();
 
 	return true;
 }
 
-bool ModuleAudio::PlayMusic(const char* path, float fade_time)
+update_status ModuleAudio::PostUpdate(float dt)
 {
-	bool ret = true;
 
-	if (music != nullptr)
-	{
-		if (fade_time > 0.0f)
-			Mix_FadeOutMusic((int)(fade_time*1000.0f));
-		else
-			Mix_HaltMusic();
-
-		Mix_FreeMusic(music);
-		music = nullptr;
-	}
-
-	music = Mix_LoadMUS(path);
-
-	if (music == nullptr)
-	{
-		LOG("Cannot load music %s. Mix_GetError(): %s\n", path, Mix_GetError());
-		ret = false;
-	}
-	else
-	{
-		if (fade_time > 0.0f)
-		{
-			if (Mix_FadeInMusic(music, -1, (int) (fade_time * 1000.0f)) < 0)
-			{
-				LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
-				ret = false;
-			}
-		}
-		else
-		{
-			if (Mix_PlayMusic(music, -1) < 0)
-			{
-				LOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
-				ret = false;
-			}
-		}
-	}
-
-	LOG("Successfully playing %s", path);
-	return ret;
-}
-
-void ModuleAudio::StopMusic()
-{
-	if (music != nullptr)
-	{
-		Mix_HaltMusic();
-		Mix_FreeMusic(music);
-		music = nullptr;
-	}
+	return UPDATE_CONTINUE;
 }
 
 unsigned int ModuleAudio::LoadFx(const char* path)
 {
-	unsigned int ret = 0;
-	Mix_Chunk* chunk = Mix_LoadWAV(path);
+	unsigned long ret = 0;
 
-	if (chunk == nullptr)
+	// WAV for samples
+	HSAMPLE sample = BASS_SampleLoad(false, path, 0, 0, 5, BASS_SAMPLE_OVER_VOL);
+
+	if (sample == 0) 
 	{
-		LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
+		APPLOG("BASS_SampleLoad() file [%s] error: %s", path, BASS_GetErrorString());
 	}
 	else
 	{
-		fx.push_back(chunk);
-		ret = fx.size() - 1;
+		ret = BASS_SampleGetChannel(sample, FALSE);
+
+		if (ret == 0)
+			APPLOG("BASS_SampleGetChannel() with id [%ul] error: %s", sample, BASS_GetErrorString());
 	}
 
 	return ret;
 }
 
-bool ModuleAudio::PlayFx(unsigned int id, int repeat)
+void ModuleAudio::UnloadFx(unsigned long channel)
 {
-	bool ret = false;
-
-	if (id < fx.size())
+	if (channel != 0)
 	{
-		Mix_PlayChannel(-1, fx[id], repeat);
-		ret = true;
+		BASS_CHANNELINFO info;
+		BASS_ChannelGetInfo(channel, &info);
+		if (info.filename != nullptr)
+			BASS_SampleFree(channel);
+		else
+			BASS_StreamFree(channel);
 	}
-
-	return ret;
 }
 
-bool ModuleAudio::IsPlayingMusic() const 
-{ 
-	return Mix_PlayingMusic(); 
-}
-
-bool ModuleAudio::ConstantConfig()
-{
-	bool ret = true;
-
-	if (App->parser->LoadObject(AUDIO_SECTION) == true)
-	{
-		DEFAULT_FADE = App->parser->GetFloat("MusicDefaultFadeTime");
-		VOLUME_MUSIC = App->parser->GetInt("MusicVolume");
-		VOLUME_FX = App->parser->GetInt("EffectsVolume");
-		ret = App->parser->UnloadObject();
-	}
-	else
-		ret = false;
-
-	return ret;
-}

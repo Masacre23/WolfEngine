@@ -2,6 +2,7 @@
 #define MODULE_H
 
 #include "Globals.h"
+#include "Brofiler/include/Brofiler.h"
 
 class Module
 {
@@ -21,12 +22,12 @@ public:
 		{
 			active = Start();
 			if (active == false)
-				LOG("Module unable to start correctly: %s ---", name);
+				APPLOG("Module unable to start correctly: %s ---", name);
 			return active;
 		}
 		else
 		{
-			LOG("Module already active: %s --------------", name);
+			APPLOG("Module already active: %s --------------", name);
 			return true;
 		}
 
@@ -39,12 +40,12 @@ public:
 		{
 			active = !CleanUp();
 			if (active == true)
-				LOG("Module unable to cleanup correctly: %s -", name);
+				APPLOG("Module unable to cleanup correctly: %s -", name);
 			return !active;
 		}
 		else
 		{
-			LOG("Module already disabled: %s ------------", name);
+			APPLOG("Module already disabled: %s ------------", name);
 			return true;
 		}
 
@@ -63,16 +64,22 @@ public:
 
 	virtual update_status PreUpdate(float dt)
 	{
+		BROFILER_CATEGORY(name, Profiler::Color::Blue);
+
 		return UPDATE_CONTINUE;
 	}
 
 	virtual update_status Update(float dt)
 	{
+		BROFILER_CATEGORY(name, Profiler::Color::Red);
+
 		return UPDATE_CONTINUE;
 	}
 
 	virtual update_status PostUpdate(float dt)
 	{
+		BROFILER_CATEGORY(name, Profiler::Color::Green);
+
 		return UPDATE_CONTINUE;
 	}
 
@@ -81,8 +88,10 @@ public:
 		return true;
 	}
 
-private:
+public:
 	const char* name = "";
+
+private:
 	bool active = true;
 };
 
