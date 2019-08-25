@@ -67,11 +67,11 @@ bool ModuleAudio::Init()
 	//BASS_SetVolume(0);
 	HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
 
-	if (BASS_Init(-1, 44100, BASS_DEVICE_3D, 0, NULL) != TRUE)
+	/*if (BASS_Init(-1, 44100, BASS_DEVICE_3D, 0, NULL) != TRUE)
 	{
 		APPLOG("BASS_Init() error: %s", BASS_GetErrorString());
 		ret = false;
-	}
+	}*/
 
 	return ret;
 }
