@@ -16,8 +16,8 @@ bool ModuleAudio::Init()
 	APPLOG("Loading Audio Mixer");
 	
 	BASS_Init(-1, 44100, 0, 0, NULL);
-	BASS_SetVolume(1);
 	HSAMPLE sample = BASS_SampleLoad(false, "Resources/Audio/batman.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+	//BASS_SetVolume(0);
 	HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
 
 	BASS_ChannelPlay(channel, FALSE);
