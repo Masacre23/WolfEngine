@@ -226,7 +226,7 @@ btTriangleMesh* ModulePhysics::CreateTriangleMesh(Collider* collider)
 
 btCollisionShape* ModulePhysics::GetCollisionShape(btRigidBody* rigid_body)
 {
-	btCollisionShape* ret;
+	btCollisionShape* ret = nullptr;
 
 	if (rigid_body != nullptr)
 		ret = rigid_body->getCollisionShape();

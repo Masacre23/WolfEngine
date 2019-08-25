@@ -15,7 +15,7 @@ public:
 	bool OnEditor();
 
 public:
-	char* path = "Resources/Lenna.png";
+	char* path = "Resources/Default.png";
 	GLuint texture;
 	ComponentRectTransform* rect_transform = nullptr;
 };

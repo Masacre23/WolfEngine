@@ -44,7 +44,8 @@ void ComponentImage::OnDraw() const
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef(rect_transform->pos[0], rect_transform->pos[1], 0);
-	glBindTexture(GL_TEXTURE_2D, App->textures->texture_debug);
+	//glBindTexture(GL_TEXTURE_2D, App->textures->texture_debug);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	glTexCoord2i(0, 0);
@@ -81,6 +82,16 @@ bool ComponentImage::OnEditor()
 
 	if (node_open)
 	{
+		static char buf[1024] = "Resources/";
+		//strcpy(buf, path);
+		ImGui::InputText("##TextureImage", buf, IM_ARRAYSIZE(buf));
+
+		if (ImGui::Button("Apply"))
+		{
+			//strcpy(path, buf);
+			texture = App->textures->LoadTexture(aiString(buf));
+			//strcpy(buf, path);
+		}
 	}
 
 	return ImGui::IsItemClicked();
