@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleRender.h"
+#include "ModuleLevel.h"
 #include "ComponentCamera.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
@@ -45,7 +46,17 @@ bool ComponentCamera::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Camera"))
 	{
-		ImGui::Checkbox("Active", &enable);
+		//ImGui::Checkbox("Active##Camera", &enable);
+
+		if (App->level->GetMainCamera() == this)
+		{
+			ImGui::Text("Main Camera");
+		}
+		else
+		{
+			if (ImGui::Button("Set as Main Camera"))
+				App->level->SetMainCamera(this);
+		}
 
 		ImGui::Checkbox("Frustum culling", &frustum_culling);
 

@@ -69,11 +69,11 @@ bool ComponentParticleSystem::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Particle System"))
 	{
-		ImGui::Checkbox("Active", &enable);
+		ImGui::Checkbox("Active##Particles", &enable);
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Delete"))
+		if (ImGui::Button("Delete##Particles"))
 			this->~ComponentParticleSystem();
 
 		ImGui::SliderInt("Max particles", (int*)&maxparticles, 1, 1000);

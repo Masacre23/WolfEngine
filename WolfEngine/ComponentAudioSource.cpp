@@ -1,6 +1,6 @@
 #include "ComponentAudioSource.h"
 
-ComponentAudioSource::ComponentAudioSource(GameObject * parent) : Component(Component::Type::ANIMATION, parent)
+ComponentAudioSource::ComponentAudioSource(GameObject * parent) : Component(Component::Type::AUDIO_SOURCE, parent)
 {
 }
 

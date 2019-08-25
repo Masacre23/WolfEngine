@@ -301,11 +301,11 @@ bool ComponentMesh::OnEditor()
 	{
 		if (ImGui::CollapsingHeader("Mesh"))
 		{
-			ImGui::Checkbox("Active", &enable);
+			ImGui::Checkbox("Active##Mesh", &enable);
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Delete"))
+			if (ImGui::Button("Delete##Mesh"))
 				parent->DeleteComponent(this);
 
 			ImGui::Checkbox("Draw normals", &draw_normals);

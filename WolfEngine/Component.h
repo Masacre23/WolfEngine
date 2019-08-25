@@ -22,6 +22,8 @@ public:
 		IMAGE,
 		TEXT,
 		CANVAS,
+		AUDIO_LISTENER,
+		AUDIO_SOURCE,
 		UNKNOWN
 	};
 

@@ -9,6 +9,7 @@
 
 class ComponentAnim : public Component
 {
+
 public:
 	ComponentAnim(GameObject* parent);
 	~ComponentAnim();
